@@ -33,6 +33,8 @@ public class indexerSubsystem extends SubsystemBase {
 
   private DutyCycleOut dutyCycleOut = new DutyCycleOut(0.0);
 
+  private indexerIO io;
+
   // Constructor: Configure motor settings upon subsystem creation
   public indexerSubsystem() {
     // Set the neutral mode (Coast or Brake) based on constants
@@ -57,9 +59,13 @@ public class indexerSubsystem extends SubsystemBase {
     indexer.getConfigurator().apply(indexerConfigs);
   }
 
+  public indexerSubsystem(indexerIO io) {
+    this.io = io;
+  }
+
   // Stop the indexer motor by setting it to neutral
   public void shutDown() {
-    indexer.setControl(neutralOut);
+    io.setOpenLoop(0.0);
   }
 
   // Basic voltage control method; can be reused by higher-level logic
@@ -79,5 +85,13 @@ public class indexerSubsystem extends SubsystemBase {
     } else {
       shutDown();
     }
+  }
+
+  public void runVelocity(double velocity) {
+    io.setOpenLoop(velocity);
+  }
+
+  public void defaultIdleVelocity() {
+    runVelocity(0.2);
   }
 }

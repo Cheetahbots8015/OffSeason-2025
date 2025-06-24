@@ -72,6 +72,7 @@ public class RollerIOTalonFX implements RollerIO {
 
   @Override
   public void setOpenLoop(double output) {
+
     roller.setControl(new DutyCycleOut(output));
   }
 }

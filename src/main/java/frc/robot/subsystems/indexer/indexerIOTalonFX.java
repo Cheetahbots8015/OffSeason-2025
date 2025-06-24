@@ -15,7 +15,6 @@ import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Current;
 import edu.wpi.first.units.measure.Voltage;
 import frc.robot.IndexerConstants;
-
 import frc.robot.subsystems.indexer.indexerIO.indexerIOInputs;
 
 public class indexerIOTalonFX implements indexerIO {
@@ -37,16 +36,16 @@ public class indexerIOTalonFX implements indexerIO {
 
     // Set motor inversion based on desired rotation direction
     indexerConfigs.MotorOutput.withInverted(
- IndexerConstants.inverted_CounterClockwisePositive
+        IndexerConstants.inverted_CounterClockwisePositive
             ? InvertedValue.CounterClockwise_Positive
             : InvertedValue.Clockwise_Positive);
 
     // Set PID and feedforward constants from constants file
-    indexerConfigs.Slot0.kP =  IndexerConstants.kP;
-    indexerConfigs.Slot0.kI =  IndexerConstants.kI;
-    indexerConfigs.Slot0.kD =  IndexerConstants.kD;
-    indexerConfigs.Slot0.kA =  IndexerConstants.kA;
-    indexerConfigs.Slot0.kS =  IndexerConstants.kS;
+    indexerConfigs.Slot0.kP = IndexerConstants.kP;
+    indexerConfigs.Slot0.kI = IndexerConstants.kI;
+    indexerConfigs.Slot0.kD = IndexerConstants.kD;
+    indexerConfigs.Slot0.kA = IndexerConstants.kA;
+    indexerConfigs.Slot0.kS = IndexerConstants.kS;
     indexerConfigs.Slot0.kV = IndexerConstants.kV;
 
     // Apply the configuration to the motor
