@@ -28,7 +28,6 @@ import frc.robot.commands.ClimberInCommand;
 import frc.robot.commands.ClimberOutCommand;
 import frc.robot.commands.ClimberStopCommand;
 import frc.robot.commands.DriveCommands;
-import frc.robot.commands.RollerDeafultCommand;
 import frc.robot.commands.RollerInCommand;
 import frc.robot.commands.RollerOutCommand;
 import frc.robot.commands.RollerStopCommand;
@@ -64,7 +63,6 @@ public class RobotContainer {
   // Dashboard inputs
   private final LoggedDashboardChooser<Command> autoChooser;
 
-  private final Command rollerDeafultCommand;
   private final Command rollerIn;
   private final Command rollerStop;
   private final Command rollerOut;
@@ -116,15 +114,13 @@ public class RobotContainer {
         break;
     }
 
-    rollerDeafultCommand = new RollerDeafultCommand(m_roller);
-    rollerIn = new RollerInCommand(m_roller);
-    rollerStop = new RollerStopCommand(m_roller);
-    rollerOut = new RollerOutCommand(m_roller);
-
     climberDeafultCommand = new ClimberDeafultCommand(m_climber);
     climberIn = new ClimberInCommand(m_climber);
     climberStop = new ClimberStopCommand(m_climber);
     climberOut = new ClimberOutCommand(m_climber);
+    rollerIn = new RollerInCommand(m_climber);
+    rollerOut = new RollerOutCommand(m_climber);
+    rollerStop = new RollerStopCommand(m_climber);
 
     // Set up auto routines
     autoChooser = new LoggedDashboardChooser<>("Auto Choices", AutoBuilder.buildAutoChooser());
@@ -186,10 +182,9 @@ public class RobotContainer {
                     drive)
                 .ignoringDisable(true));
 
-    m_roller.setDefaultCommand(rollerDeafultCommand);
+    m_climber.setDefaultCommand(climberDeafultCommand);
     controller.leftBumper().whileTrue(rollerIn).onFalse(rollerStop);
     controller.leftTrigger().whileTrue(rollerOut).onFalse(rollerStop);
-    m_climber.setDefaultCommand(climberDeafultCommand);
     controller.rightBumper().whileTrue(climberIn).onFalse(climberStop);
     controller.rightTrigger().whileTrue(climberOut).onFalse(climberStop);
   }

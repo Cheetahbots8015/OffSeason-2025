@@ -1,13 +1,13 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.subsystems.roller.RollerSubsystem;
-import frc.robot.subsystems.roller.RollerSubsystem.rollerIdleState;
+import frc.robot.subsystems.climber.ClimberSubsystem;
+import frc.robot.subsystems.climber.ClimberSubsystem.rollerIdleState;
 
 public class RollerStopCommand extends Command {
-  private final RollerSubsystem m_subsystem;
+  private final ClimberSubsystem m_subsystem;
 
-  public RollerStopCommand(RollerSubsystem subsystem) {
+  public RollerStopCommand(ClimberSubsystem subsystem) {
     m_subsystem = subsystem;
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(subsystem);
@@ -16,13 +16,13 @@ public class RollerStopCommand extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    m_subsystem.setSystemIdleState(rollerIdleState.stop);
+    m_subsystem.setSystemIdleState(rollerIdleState.stop, m_subsystem.getclimberSystemIdleState());
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    m_subsystem.setSystemIdleState(rollerIdleState.stop);
+    m_subsystem.setSystemIdleState(rollerIdleState.stop, m_subsystem.getclimberSystemIdleState());
   }
 
   // Called once the command ends or is interrupted.
@@ -34,6 +34,6 @@ public class RollerStopCommand extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return m_subsystem.getSystemIdleState() == rollerIdleState.stop;
+    return m_subsystem.getrollerSystemIdleState() == rollerIdleState.stop;
   }
 }
