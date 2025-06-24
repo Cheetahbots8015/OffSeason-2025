@@ -31,9 +31,9 @@ public class RollerSubsystem extends SubsystemBase {
 
   public void defaultIdelVelocity() {
     if (systemIdleState == rollerIdleState.in) {
-      runVelocity(0.2);
+      runVelocity(0.1);
     } else if (systemIdleState == rollerIdleState.out) {
-      runVelocity(-0.2);
+      runVelocity(-0.1);
     } else {
       shutdown();
     }
