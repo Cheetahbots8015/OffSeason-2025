@@ -3,6 +3,7 @@ package frc.robot.subsystems.roller;
 import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.ctre.phoenix6.controls.DutyCycleOut;
 import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.hardware.ParentDevice;
 import com.ctre.phoenix6.hardware.TalonFX;
@@ -71,6 +72,6 @@ public class RollerIOTalonFX implements RollerIO {
 
   @Override
   public void setOpenLoop(double output) {
-    roller.setControl(voltageRequest.withOutput(output));
+    roller.setControl(new DutyCycleOut(output));
   }
 }

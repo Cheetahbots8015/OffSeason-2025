@@ -23,6 +23,10 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
+import frc.robot.commands.ClimberDeafultCommand;
+import frc.robot.commands.ClimberInCommand;
+import frc.robot.commands.ClimberOutCommand;
+import frc.robot.commands.ClimberStopCommand;
 import frc.robot.commands.DriveCommands;
 import frc.robot.commands.RollerDeafultCommand;
 import frc.robot.commands.RollerInCommand;
@@ -64,6 +68,10 @@ public class RobotContainer {
   private final Command rollerIn;
   private final Command rollerStop;
   private final Command rollerOut;
+  private final Command climberDeafultCommand;
+  private final Command climberIn;
+  private final Command climberStop;
+  private final Command climberOut;
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
@@ -112,6 +120,11 @@ public class RobotContainer {
     rollerIn = new RollerInCommand(m_roller);
     rollerStop = new RollerStopCommand(m_roller);
     rollerOut = new RollerOutCommand(m_roller);
+
+    climberDeafultCommand = new ClimberDeafultCommand(m_climber);
+    climberIn = new ClimberInCommand(m_climber);
+    climberStop = new ClimberStopCommand(m_climber);
+    climberOut = new ClimberOutCommand(m_climber);
 
     // Set up auto routines
     autoChooser = new LoggedDashboardChooser<>("Auto Choices", AutoBuilder.buildAutoChooser());
@@ -176,6 +189,9 @@ public class RobotContainer {
     m_roller.setDefaultCommand(rollerDeafultCommand);
     controller.leftBumper().whileTrue(rollerIn).onFalse(rollerStop);
     controller.leftTrigger().whileTrue(rollerOut).onFalse(rollerStop);
+    m_climber.setDefaultCommand(climberDeafultCommand);
+    controller.rightBumper().whileTrue(climberIn).onFalse(climberStop);
+    controller.rightTrigger().whileTrue(climberOut).onFalse(climberStop);
   }
 
   /**

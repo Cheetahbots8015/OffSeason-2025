@@ -3,6 +3,7 @@ package frc.robot.subsystems.climber;
 import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.ctre.phoenix6.controls.DutyCycleOut;
 import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.hardware.ParentDevice;
 import com.ctre.phoenix6.hardware.TalonFX;
@@ -71,6 +72,6 @@ public class ClimberIOTalonFX implements ClimberIO {
 
   @Override
   public void setOpenLoop(double output) {
-    climber.setControl(voltageRequest.withOutput(output));
+    climber.setControl(new DutyCycleOut(output));
   }
 }
