@@ -2,6 +2,7 @@
 
 package frc.robot.subsystems.climber;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import org.littletonrobotics.junction.Logger;
 
@@ -16,13 +17,19 @@ public class ClimberSubsystem extends SubsystemBase {
   private final ClimberIOInputsAutoLogged inputs = new ClimberIOInputsAutoLogged();
   private climberIdleState systemIdleState = climberIdleState.stop;
 
+  private double idleSpeed = 0.1;
+
   public ClimberSubsystem(ClimberIO io) {
     this.io = io;
+
+    SmartDashboard.putNumber("Intaking Idle Speed", idleSpeed);
   }
 
   public void periodic() {
     io.updateInputs(inputs);
     Logger.processInputs("Climber", inputs);
+
+    idleSpeed = SmartDashboard.getNumber("Intaking Idle Speed", idleSpeed);
   }
 
   public void runVelocity(double velocity) {
@@ -31,9 +38,9 @@ public class ClimberSubsystem extends SubsystemBase {
 
   public void defaultIdelVelocity() {
     if (systemIdleState == climberIdleState.in) {
-      runVelocity(0.2);
+      runVelocity(idleSpeed);
     } else if (systemIdleState == climberIdleState.out) {
-      runVelocity(-0.2);
+      runVelocity(-idleSpeed);
     } else {
       shutdown();
     }
