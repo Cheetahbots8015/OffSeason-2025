@@ -19,17 +19,24 @@ import frc.robot.RollerConstants;
 public class RollerIOTalonFX implements RollerIO {
   // Hardware objects
   private final TalonFX roller;
+  private final TalonFX climber;
   private TalonFXConfiguration rollerConfigs = new TalonFXConfiguration();
+  private TalonFXConfiguration climberConfigs = new TalonFXConfiguration();
   // Voltage control requests
   private final VoltageOut voltageRequest = new VoltageOut(0);
   // Inputs from roller
-  private final StatusSignal<Angle> Position;
-  private final StatusSignal<AngularVelocity> Velocity;
-  private final StatusSignal<Voltage> AppliedVolts;
-  private final StatusSignal<Current> Current;
+  private final StatusSignal<Angle> RollerPosition;
+  private final StatusSignal<AngularVelocity> RollerVelocity;
+  private final StatusSignal<Voltage> RollerAppliedVolts;
+  private final StatusSignal<Current> RollerCurrent;
+  private final StatusSignal<Angle> ClimberPosition;
+  private final StatusSignal<AngularVelocity> ClimberVelocity;
+  private final StatusSignal<Voltage> ClimberAppliedVolts;
+  private final StatusSignal<Current> ClimberCurrent;
 
   public RollerIOTalonFX() {
     roller = new TalonFX(RollerConstants.rollerID, "rio");
+    climber = new TalonFX(RollerConstants.climberID, "rio");
     rollerConfigs.MotorOutput.withNeutralMode(
         RollerConstants.neutralmode_Coast ? NeutralModeValue.Coast : NeutralModeValue.Brake);
 
@@ -40,34 +47,68 @@ public class RollerIOTalonFX implements RollerIO {
             : InvertedValue.Clockwise_Positive);
 
     // Set PID and feedforward constants from constants file
-    rollerConfigs.Slot0.kP = RollerConstants.kP;
-    rollerConfigs.Slot0.kI = RollerConstants.kI;
-    rollerConfigs.Slot0.kD = RollerConstants.kD;
-    rollerConfigs.Slot0.kA = RollerConstants.kA;
-    rollerConfigs.Slot0.kS = RollerConstants.kS;
-    rollerConfigs.Slot0.kV = RollerConstants.kV;
+    rollerConfigs.Slot0.kP = RollerConstants.rollerkP;
+    rollerConfigs.Slot0.kI = RollerConstants.rollerkI;
+    rollerConfigs.Slot0.kD = RollerConstants.rollerkD;
+    rollerConfigs.Slot0.kA = RollerConstants.rollerkA;
+    rollerConfigs.Slot0.kS = RollerConstants.rollerkS;
+    rollerConfigs.Slot0.kV = RollerConstants.rollerkV;
+
+    climberConfigs.Slot0.kP = RollerConstants.climberkP;
+    climberConfigs.Slot0.kI = RollerConstants.climberkI;
+    climberConfigs.Slot0.kD = RollerConstants.climberkD;
+    climberConfigs.Slot0.kA = RollerConstants.climberkA;
+    climberConfigs.Slot0.kS = RollerConstants.climberkS;
+    climberConfigs.Slot0.kV = RollerConstants.climberkV;
 
     // Apply the configuration to the motor
     roller.getConfigurator().apply(rollerConfigs);
+    climber.getConfigurator().apply(climberConfigs);
 
     // Create drive status signals
-    Position = roller.getPosition();
-    Velocity = roller.getVelocity();
-    AppliedVolts = roller.getMotorVoltage();
-    Current = roller.getStatorCurrent();
+    RollerPosition = roller.getPosition();
+    RollerVelocity = roller.getVelocity();
+    RollerAppliedVolts = roller.getMotorVoltage();
+    RollerCurrent = roller.getStatorCurrent();
+    ClimberPosition = climber.getPosition();
+    ClimberVelocity = climber.getVelocity();
+    ClimberAppliedVolts = climber.getMotorVoltage();
+    ClimberCurrent = climber.getStatorCurrent();
 
-    BaseStatusSignal.setUpdateFrequencyForAll(50.0, Velocity, AppliedVolts, Current, Position);
-    ParentDevice.optimizeBusUtilizationForAll(roller);
+    BaseStatusSignal.setUpdateFrequencyForAll(
+        50.0,
+        RollerPosition,
+        RollerVelocity,
+        RollerAppliedVolts,
+        RollerCurrent,
+        ClimberPosition,
+        ClimberVelocity,
+        ClimberAppliedVolts,
+        ClimberCurrent);
+    ParentDevice.optimizeBusUtilizationForAll(roller, climber);
   }
 
   @Override
   public void updateInputs(RollerIOInputs inputs) {
-    BaseStatusSignal.refreshAll(Position, Velocity, AppliedVolts, Current);
+    BaseStatusSignal.refreshAll(
+        RollerPosition,
+        RollerVelocity,
+        RollerAppliedVolts,
+        RollerCurrent,
+        ClimberPosition,
+        ClimberVelocity,
+        ClimberAppliedVolts,
+        ClimberCurrent);
     // Update roller inputs
-    inputs.PositionRad = Units.rotationsToRadians(Position.getValueAsDouble());
-    inputs.VelocityRadPerSec = Units.rotationsToRadians(Velocity.getValueAsDouble());
-    inputs.AppliedVolts = AppliedVolts.getValueAsDouble();
-    inputs.CurrentAmps = Current.getValueAsDouble();
+    inputs.RollerPositionRad = Units.rotationsToRadians(RollerPosition.getValueAsDouble());
+    inputs.RollerVelocityRadPerSec = Units.rotationsToRadians(RollerVelocity.getValueAsDouble());
+    inputs.RollerAppliedVolts = RollerAppliedVolts.getValueAsDouble();
+    inputs.RollerCurrentAmps = RollerCurrent.getValueAsDouble();
+
+    inputs.ClimberPositionRad = Units.rotationsToRadians(ClimberPosition.getValueAsDouble());
+    inputs.ClimberVelocityRadPerSec = Units.rotationsToRadians(ClimberVelocity.getValueAsDouble());
+    inputs.ClimberAppliedVolts = ClimberAppliedVolts.getValueAsDouble();
+    inputs.ClimberCurrentAmps = ClimberCurrent.getValueAsDouble();
   }
 
   @Override

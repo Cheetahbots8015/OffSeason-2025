@@ -12,9 +12,17 @@ public class RollerSubsystem extends SubsystemBase {
     stop
   }
 
+  public enum climberIdleState {
+    in,
+    out,
+    stop
+  }
+
   private final RollerIO io;
   private final RollerIOInputsAutoLogged inputs = new RollerIOInputsAutoLogged();
-  private rollerIdleState systemIdleState = rollerIdleState.stop;
+  private rollerIdleState rollersystemIdleState = rollerIdleState.stop;
+  private climberIdleState climbersystemIdleState = climberIdleState.stop;
+  private double rol = 0.0, cli = 0.0;
 
   public RollerSubsystem(RollerIO io) {
     this.io = io;
@@ -25,29 +33,42 @@ public class RollerSubsystem extends SubsystemBase {
     Logger.processInputs("Roller", inputs);
   }
 
-  public void runVelocity(double velocity) {
-    io.setOpenLoop(velocity);
+  public void runVelocity(double rollerOutput, double climberOutput) {
+    io.setOpenLoop(rollerOutput, climberOutput);
   }
 
   public void defaultIdelVelocity() {
-    if (systemIdleState == rollerIdleState.in) {
-      runVelocity(0.1);
-    } else if (systemIdleState == rollerIdleState.out) {
-      runVelocity(-0.1);
+    if (rollersystemIdleState == rollerIdleState.in) {
+      rol = 0.1;
+    } else if (rollersystemIdleState == rollerIdleState.out) {
+      rol = -0.1;
     } else {
-      shutdown();
+      rol = 0;
     }
+    if (climbersystemIdleState == climbersystemIdleState.in) {
+      cli = 0.1;
+    } else if (rollersystemIdleState == rollerIdleState.out) {
+      cli = -0.1;
+    } else {
+      cli = 0;
+    }
+    io.setOpenLoop(rol, cli);
   }
 
-  public void setSystemIdleState(rollerIdleState state) {
-    systemIdleState = state;
+  public void setSystemIdleState(rollerIdleState state, climberIdleState state2) {
+    rollersystemIdleState = state;
+    climbersystemIdleState = state2;
   }
 
-  public rollerIdleState getSystemIdleState() {
-    return systemIdleState;
+  public rollerIdleState getrollerSystemIdleState() {
+    return rollersystemIdleState;
+  }
+
+  public climberIdleState getclimberSystemIdleState() {
+    return climbersystemIdleState;
   }
 
   public void shutdown() {
-    io.setOpenLoop(0.0);
+    io.setOpenLoop(0.0, 0.0);
   }
 }

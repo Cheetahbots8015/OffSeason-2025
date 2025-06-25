@@ -16,13 +16,13 @@ public class ClimberStopCommand extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    m_subsystem.setSystemIdleState(climberIdleState.stop);
+    m_subsystem.setSystemIdleState(m_subsystem.getrollerSystemIdleState(), climberIdleState.stop);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    m_subsystem.setSystemIdleState(climberIdleState.stop);
+    m_subsystem.setSystemIdleState(m_subsystem.getrollerSystemIdleState(), climberIdleState.stop);
   }
 
   // Called once the command ends or is interrupted.
@@ -34,6 +34,6 @@ public class ClimberStopCommand extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return m_subsystem.getSystemIdleState() == climberIdleState.stop;
+    return m_subsystem.getclimberSystemIdleState() == climberIdleState.stop;
   }
 }
