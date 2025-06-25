@@ -14,6 +14,20 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.IndexerConstants;
 import org.littletonrobotics.junction.Logger;
 
+
+import com.ctre.phoenix6.StatusSignal;
+import com.ctre.phoenix6.configs.CANrangeConfiguration;
+import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.ctre.phoenix6.controls.NeutralOut;
+import com.ctre.phoenix6.controls.VelocityTorqueCurrentFOC;
+import com.ctre.phoenix6.controls.VoltageOut;
+import com.ctre.phoenix6.hardware.CANrange;
+import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.signals.InvertedValue;
+import com.ctre.phoenix6.signals.NeutralModeValue;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
+
 public class indexerSubsystem extends SubsystemBase {
 
   // TalonFX motor controller for the roller
@@ -36,6 +50,11 @@ public class indexerSubsystem extends SubsystemBase {
   private indexerIO io;
   private final indexerIOInputsAutoLogged inputs = new indexerIOInputsAutoLogged();
 
+   // canRange initialization with configs, data came from IndexerConstants.java
+  private final CANrange canRange =
+      new CANrange(IndexerConstants.canRangeID, IndexerConstants.canName);
+  private final CANrangeConfiguration canRangeConfigs = new CANrangeConfiguration();
+  
   // Constructor: Configure motor settings upon subsystem creation
   public indexerSubsystem() {
     // Set the neutral mode (Coast or Brake) based on constants
@@ -56,6 +75,16 @@ public class indexerSubsystem extends SubsystemBase {
     indexerConfigs.Slot0.kS = IndexerConstants.kS;
     indexerConfigs.Slot0.kV = IndexerConstants.kV;
 
+
+    // config canRange
+    canRangeConfigs.ProximityParams.ProximityThreshold = IndexerConstants.canRangeThreshold;
+    canRangeConfigs.ProximityParams.MinSignalStrengthForValidMeasurement =
+        IndexerConstants.minSignalStrength;
+    canRangeConfigs.ProximityParams.ProximityHysteresis = IndexerConstants.canRangeHysteresis;
+
+    // apply canRange configs
+    canRange.getConfigurator().apply(canRangeConfigs);
+
     // Apply the configuration to the motor
     indexer.getConfigurator().apply(indexerConfigs);
   }
@@ -63,10 +92,18 @@ public class indexerSubsystem extends SubsystemBase {
   public indexerSubsystem(indexerIO io) {
     this.io = io;
   }
+  
+  // get the signal, than convert it into distance(m)
+  double distance = canRange.getDistance().getValueAsDouble();
 
   public void periodic() {
     io.updateInputs(inputs);
     Logger.processInputs("Indexer", inputs);
+    
+    
+
+
+    
   }
 
   // Stop the indexer motor by setting it to neutral
