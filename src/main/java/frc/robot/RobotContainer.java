@@ -28,12 +28,8 @@ import frc.robot.commands.ClimberInCommand;
 import frc.robot.commands.ClimberOutCommand;
 import frc.robot.commands.ClimberStopCommand;
 import frc.robot.commands.DriveCommands;
-<<<<<<< HEAD
 import frc.robot.commands.IndexerDefaultCommand;
 import frc.robot.commands.IndexerStopCommand;
-import frc.robot.commands.RollerDeafultCommand;
-=======
->>>>>>> 213c3eab49056091150b9f17300848e13aaa8bd9
 import frc.robot.commands.RollerInCommand;
 import frc.robot.commands.RollerOutCommand;
 import frc.robot.commands.RollerStopCommand;
@@ -205,7 +201,7 @@ public class RobotContainer {
     controller.leftBumper().whileTrue(rollerIn).onFalse(rollerStop);
     controller.leftTrigger().whileTrue(rollerOut).onFalse(rollerStop);
     controller.rightBumper().whileTrue(climberIn).onFalse(climberStop);
-    // controller.rightTrigger().whileTrue(climberOut).onFalse(climberStop);
+    controller.rightTrigger().whileTrue(climberOut).onFalse(climberStop);
     controller.x().whileTrue(Indexer).onFalse(IndexerStop);
   }
 
