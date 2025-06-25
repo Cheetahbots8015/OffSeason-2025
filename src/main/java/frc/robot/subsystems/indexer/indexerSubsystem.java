@@ -2,7 +2,6 @@
 
 package frc.robot.subsystems.indexer;
 
-// Import necessary CTRE Phoenix 6 classes for motor control and configuration
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.DutyCycleOut;
 import com.ctre.phoenix6.controls.NeutralOut;
@@ -13,6 +12,7 @@ import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.IndexerConstants;
+import org.littletonrobotics.junction.Logger;
 
 public class indexerSubsystem extends SubsystemBase {
 
@@ -34,6 +34,7 @@ public class indexerSubsystem extends SubsystemBase {
   private DutyCycleOut dutyCycleOut = new DutyCycleOut(0.0);
 
   private indexerIO io;
+  private final indexerIOInputsAutoLogged inputs = new indexerIOInputsAutoLogged();
 
   // Constructor: Configure motor settings upon subsystem creation
   public indexerSubsystem() {
@@ -61,6 +62,11 @@ public class indexerSubsystem extends SubsystemBase {
 
   public indexerSubsystem(indexerIO io) {
     this.io = io;
+  }
+
+  public void periodic() {
+    io.updateInputs(inputs);
+    Logger.processInputs("Indexer", inputs);
   }
 
   // Stop the indexer motor by setting it to neutral

@@ -29,6 +29,7 @@ import frc.robot.commands.ClimberOutCommand;
 import frc.robot.commands.ClimberStopCommand;
 import frc.robot.commands.DriveCommands;
 import frc.robot.commands.IndexerDefaultCommand;
+import frc.robot.commands.IndexerStopCommand;
 import frc.robot.commands.RollerDeafultCommand;
 import frc.robot.commands.RollerInCommand;
 import frc.robot.commands.RollerOutCommand;
@@ -41,6 +42,7 @@ import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.drive.GyroIO;
 import frc.robot.subsystems.drive.ModuleIO;
 import frc.robot.subsystems.drive.ModuleIOSim;
+import frc.robot.subsystems.indexer.indexerIOSim;
 import frc.robot.subsystems.indexer.indexerIOTalonFX;
 import frc.robot.subsystems.indexer.indexerSubsystem;
 import frc.robot.subsystems.roller.RollerIOSim;
@@ -108,7 +110,7 @@ public class RobotContainer {
                 new ModuleIOSim(TunerConstants.BackRight));
         m_roller = new RollerSubsystem(new RollerIOSim());
         m_climber = new ClimberSubsystem(new ClimberIOSim());
-        m_indexer = new indexerSubsystem(new indexerIOTalonFX());
+        m_indexer = new indexerSubsystem(new indexerIOSim());
         break;
 
       default:
@@ -137,7 +139,7 @@ public class RobotContainer {
     climberOut = new ClimberOutCommand(m_climber);
 
     Indexer = new IndexerDefaultCommand(m_indexer);
-    IndexerStop = new IndexerDefaultCommand(m_indexer);
+    IndexerStop = new IndexerStopCommand(m_indexer);
 
     // Set up auto routines
     autoChooser = new LoggedDashboardChooser<>("Auto Choices", AutoBuilder.buildAutoChooser());
@@ -204,8 +206,8 @@ public class RobotContainer {
     controller.leftTrigger().whileTrue(rollerOut).onFalse(rollerStop);
     m_climber.setDefaultCommand(climberDeafultCommand);
     controller.rightBumper().whileTrue(climberIn).onFalse(climberStop);
-    controller.rightTrigger().whileTrue(climberOut).onFalse(climberStop);
-    m_controller.rightTrigger().whileTrue(Indexer).onFalse(IndexerStop);
+    // controller.rightTrigger().whileTrue(climberOut).onFalse(climberStop);
+    controller.x().whileTrue(Indexer).onFalse(IndexerStop);
   }
 
   /**
