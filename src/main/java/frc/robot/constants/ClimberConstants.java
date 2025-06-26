@@ -1,4 +1,4 @@
-package frc.robot;
+package frc.robot.constants;
 
 public class ClimberConstants {
   public static final int climberID = 5;

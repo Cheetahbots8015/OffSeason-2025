@@ -14,7 +14,7 @@ import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Current;
 import edu.wpi.first.units.measure.Voltage;
-import frc.robot.RollerConstants;
+import frc.robot.constants.RollerConstants;
 
 public class RollerIOTalonFX implements RollerIO {
   // Hardware objects
