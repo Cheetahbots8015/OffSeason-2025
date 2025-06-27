@@ -4,6 +4,7 @@ import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.DutyCycleOut;
+import com.ctre.phoenix6.hardware.CANrange;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
@@ -20,6 +21,7 @@ public class IntakeIOTalonFX implements IntakeIO {
   private final TalonFX indexer;
   private final TalonFX intake;
   private final TalonFX arm;
+  private final CANrange canrange;
   private TalonFXConfiguration indexerConfigs = new TalonFXConfiguration();
   private TalonFXConfiguration intakeConfigs = new TalonFXConfiguration();
   private TalonFXConfiguration armConfigs = new TalonFXConfiguration();
@@ -42,10 +44,13 @@ public class IntakeIOTalonFX implements IntakeIO {
   private final StatusSignal<Voltage> ArmAppliedVolts;
   private final StatusSignal<Current> ArmCurrent;
 
+  // Inputs from canrange
+  private final StatusSignal<Boolean> Canrange;
   public IntakeIOTalonFX() {
-    indexer = new TalonFX(IntakeConstants.indexerID, "rio");
-    intake = new TalonFX(IntakeConstants.intakeID, "rio");
-    arm = new TalonFX(IntakeConstants.intakeID, "rio");
+    indexer = new TalonFX(IntakeConstants.indexerID, IntakeConstants.canName);
+    intake = new TalonFX(IntakeConstants.intakeID, IntakeConstants.canName);
+    arm = new TalonFX(IntakeConstants.intakeID, IntakeConstants.canName);
+    canrange = new CANrange(IntakeConstants.canRangeID,IntakeConstants.canName);
     indexerConfigs.MotorOutput.withNeutralMode(
         IntakeConstants.indexer_neutralmode_Coast
             ? NeutralModeValue.Coast
@@ -122,6 +127,9 @@ public class IntakeIOTalonFX implements IntakeIO {
     ArmAppliedVolts = arm.getMotorVoltage();
     ArmCurrent = arm.getStatorCurrent();
 
+    // Create canrange status signals
+    Canrange = canrange.getIsDetected();
+
     BaseStatusSignal.setUpdateFrequencyForAll(
         50.0,
         IndexerVelocity,
@@ -135,7 +143,8 @@ public class IntakeIOTalonFX implements IntakeIO {
         ArmPosition,
         ArmVelocity,
         ArmAppliedVolts,
-        ArmCurrent);
+        ArmCurrent,
+        Canrange);
   }
 
   @Override
@@ -152,7 +161,8 @@ public class IntakeIOTalonFX implements IntakeIO {
         ArmPosition,
         ArmVelocity,
         ArmAppliedVolts,
-        ArmCurrent);
+        ArmCurrent,
+        Canrange);
     // Update indexer inputs
     inputs.IndexerPositionRad = Units.rotationsToRadians(IndexerPosition.getValueAsDouble());
     inputs.IndexerVelocityRadPerSec = Units.rotationsToRadians(IndexerVelocity.getValueAsDouble());
@@ -168,6 +178,8 @@ public class IntakeIOTalonFX implements IntakeIO {
     inputs.ArmVelocityRadPerSec = Units.rotationsToRadians(ArmVelocity.getValueAsDouble());
     inputs.ArmAppliedVolts = ArmAppliedVolts.getValueAsDouble();
     inputs.ArmCurrentAmps = ArmCurrent.getValueAsDouble();
+    // Update canrange inputs
+    inputs.Canrange = Canrange.getValue();
   }
 
   @Override
@@ -181,4 +193,9 @@ public class IntakeIOTalonFX implements IntakeIO {
   public void setArmVoltage(double volts){
     arm.setVoltage(volts);
   };
+
+  @Override
+  public boolean getCanRange(){
+    return Canrange.getValue();
+  }
 }
