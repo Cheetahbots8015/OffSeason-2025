@@ -1,4 +1,4 @@
-package frc.robot.generated.intake;
+package frc.robot.subsystems.intake;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.system.plant.DCMotor;
