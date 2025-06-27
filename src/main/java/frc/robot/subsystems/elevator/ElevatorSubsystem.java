@@ -10,6 +10,8 @@ import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.hardware.TalonFX;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.ElevatorConstants;
+import frc.robot.subsystems.elevator.ElevatorIO.ElevatorIOInputs;
+
 import org.littletonrobotics.junction.Logger;
 
 public class ElevatorSubsystem extends SubsystemBase {
@@ -90,5 +92,9 @@ public class ElevatorSubsystem extends SubsystemBase {
 
   public void defaultIdleVelocity() {
     runVelocity(0.2);
+  }
+
+  public ElevatorIOInputs getElevatorIOInputs(){
+    return inputs;
   }
 }

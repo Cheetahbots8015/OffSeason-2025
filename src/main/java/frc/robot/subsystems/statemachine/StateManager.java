@@ -1,21 +1,18 @@
 package frc.robot.subsystems.statemachine;
 
+import frc.robot.IntakeConstants;
 import frc.robot.subsystems.claw.ClawSubsystem;
 import frc.robot.subsystems.climber.ClimberSubsystem;
 import frc.robot.subsystems.elevator.ElevatorSubsystem;
+import frc.robot.subsystems.elevator.ElevatorIO.ElevatorIOInputs;
 import frc.robot.subsystems.intake.IntakeSubsystem;
 import frc.robot.subsystems.pivot.PivotSubsystem;
+import frc.robot.subsystems.statemachine.StateManagerIO.StateManagerIOInputs;
+import frc.robot.subsystems.statemachine.StateManagerIO.StateManagerIOInputs.MachineState;
 
 public class StateManager {
-  public enum MachineState {
-    FinishedIntaking,
-    InClaw,
-    Shooting,
-    IDLE
-  }
-
-  private MachineState currentMachineState = MachineState.IDLE;
-  private MachineState targetMachineState = null;
+  private StateManagerIO io;
+  private StateManagerIOInputs inputs;
 
   private boolean isUpdating;
 
@@ -27,15 +24,18 @@ public class StateManager {
 
   private boolean intakingRequest = false;
   private boolean clawRequest = false;
+  private boolean reefRequest = false;
   private boolean shootingRequest = false;
   private boolean idleRequest = false;
 
   public StateManager(
+      StateManagerIO io,
       PivotSubsystem pivot,
       ClawSubsystem claw,
       ElevatorSubsystem elevator,
       ClimberSubsystem climber,
       IntakeSubsystem intake) {
+    this.io = io;
     this.pivot = pivot;
     this.claw = claw;
     this.elevator = elevator;
@@ -43,75 +43,59 @@ public class StateManager {
     this.intake = intake;
   }
 
-  public void checkStates(){
-    switch (currentMachineState) {
-        case FinishedIntaking:
-            if (clawRequest){
-                isUpdating = true;
-                targetMachineState = MachineState.InClaw;
-            }
-            if (shootingRequest){
-                isUpdating = true;
-                targetMachineState = MachineState.Shooting;
-            }
-            if (idleRequest){
-                isUpdating = true;
-                targetMachineState = MachineState.IDLE;
-            }
-            break;
+  public void checkStates() {
+    // Command Scheduler will automatically set the requests to false when needed.
+    switch (inputs.currentMachineState) {
+      case FinishedIntaking:
+        
+        break;
 
-        case InClaw:
-            if (intakingRequest){
-                isUpdating = true;
-                targetMachineState = MachineState.FinishedIntaking;
-            }
-            if (shootingRequest){
-                isUpdating = true;
-                targetMachineState = MachineState.Shooting;
-            }
-            if (idleRequest){
-                isUpdating = true;
-                targetMachineState = MachineState.IDLE;
-            }
-            break;
+      case InClaw:
+        
+        break;
 
-        case Shooting:
-            if (intakingRequest){
-                isUpdating = true;
-                targetMachineState = MachineState.FinishedIntaking;
-            }
-            if (clawRequest){
-                isUpdating = true;
-                targetMachineState = MachineState.InClaw;
-            }
-            if (idleRequest){
-                isUpdating = true;
-                targetMachineState = MachineState.IDLE;
-            }
-            break;
+      case ReefPosition:
+        
+        break;
 
-        case IDLE:
-            if (intakingRequest){
-                isUpdating = true;
-                targetMachineState = MachineState.FinishedIntaking;
-            }
-            if (clawRequest){
-                isUpdating = true;
-                targetMachineState = MachineState.InClaw;
-            }
-            if (shootingRequest){
-                isUpdating = true;
-                targetMachineState = MachineState.Shooting;
-            }
-            break;
+      case Shooting:
 
-        default:
+        break;
 
-            break;
+      case IDLE:
+        updateStateWithRequest(intakingRequest, MachineState.FinishedIntaking, intake.getCanRange());
+        updateStateWithRequest(clawRequest, MachineState.InClaw, !intake.getCanRange());
+        updateStateWithRequest(reefRequest, MachineState.ReefPosition, );
+        updateStateWithRequest(shootingRequest, MachineState.Shooting, );
+        break;
+
+      default:
+        break;
     }
   }
 
-  private void setCurrentMachineState(MachineState state){
-    currentMachineState = state;
+  private void updateStateWithRequest(boolean triggeredCondition, MachineState target, boolean... successfulCondition){
+    if (triggeredCondition) {
+        isUpdating = true;
+        inputs.targetMachineState = target;
+
+        boolean allTrue = true;
+        for (boolean b : successfulCondition) {
+            if (!b) {
+                allTrue = false;
+                break;
+            }
+        }
+
+        if (allTrue) {
+          inputs.currentMachineState = inputs.targetMachineState;
+          inputs.targetMachineState = null;
+          isUpdating = false;
+        }
+    }
+  }
+
+  private void setCurrentMachineState(MachineState state) {
+    inputs.currentMachineState = state;
   }
 }

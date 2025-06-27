@@ -20,7 +20,7 @@ public interface IntakeIO {
     public double ArmAppliedVolts = 0.0;
     public double ArmCurrentAmps = 0.0;
 
-    public boolean Canrange = false;
+    public boolean CanrangeDetected = false;
   }
 
   /** Updates the set of loggable inputs. */
@@ -31,7 +31,16 @@ public interface IntakeIO {
   public default void setOpenLoop(double indexerOutput, double intakeOutput, double armOutput) {}
   ;
 
-  public default void setArmVoltage(double volts){};
+  public default void setArmVoltage(double volts) {}
+  ;
 
-  public default boolean getCanRange(){return false;};
+  public default boolean getCanRange() {
+    return false;
+  }
+  ;
+
+  public default void setRollersOpenLoop(double indexerOutput, double intakeOutput){}
+
+  public default void setArmPositon(double position) {}
+  ;
 }
