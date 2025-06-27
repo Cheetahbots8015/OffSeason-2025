@@ -2,20 +2,18 @@
 
 package frc.robot.subsystems.intake;
 
-import edu.wpi.first.math.util.Units;
-import edu.wpi.first.units.measure.Voltage;
+import static edu.wpi.first.units.Units.Volt;
+
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
-
-import static edu.wpi.first.units.Units.Volt;
-
 import org.littletonrobotics.junction.Logger;
 
 public class IntakeSubsystem extends SubsystemBase {
   private IntakeIO io;
   private final IntakeIOInputsAutoLogged inputs = new IntakeIOInputsAutoLogged();
   private final SysIdRoutine sysId;
+
   public IntakeSubsystem(IntakeIO io) {
     this.io = io;
     sysId =
@@ -24,9 +22,8 @@ public class IntakeSubsystem extends SubsystemBase {
                 null,
                 null,
                 null,
-                (state) -> Logger.recordOutput("Arm/SysIdState", state.toString())),
-            new SysIdRoutine.Mechanism(
-              (voltage) -> setArmVoltage(voltage.in(Volt)), null, this));
+                (state) -> Logger.recordOutput("Intake/Arm/SysIdState", state.toString())),
+            new SysIdRoutine.Mechanism((voltage) -> setArmVoltage(voltage.in(Volt)), null, this));
   }
 
   public void periodic() {
@@ -42,10 +39,11 @@ public class IntakeSubsystem extends SubsystemBase {
   public void runVelocity(double indexerOutput, double intakeOutput, double armOutput) {
     io.setOpenLoop(indexerOutput, intakeOutput, armOutput);
   }
-  
-  public void setArmVoltage(double volts){
+
+  public void setArmVoltage(double volts) {
     io.setArmVoltage(volts);
   }
+
   public Command sysIdQuasistatic(SysIdRoutine.Direction direction) {
     return sysId.quasistatic(direction);
   }
