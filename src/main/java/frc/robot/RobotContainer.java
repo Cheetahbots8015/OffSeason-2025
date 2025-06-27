@@ -23,14 +23,9 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
-import frc.robot.commands.ClimberDeafultCommand;
-import frc.robot.commands.ClimberInCommand;
-import frc.robot.commands.ClimberOutCommand;
-import frc.robot.commands.ClimberStopCommand;
+
 import frc.robot.commands.DriveCommands;
-import frc.robot.commands.RollerInCommand;
-import frc.robot.commands.RollerOutCommand;
-import frc.robot.commands.RollerStopCommand;
+
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.climber.ClimberIOSim;
 import frc.robot.subsystems.climber.ClimberIOTalonFX;
@@ -41,7 +36,7 @@ import frc.robot.subsystems.drive.ModuleIO;
 import frc.robot.subsystems.drive.ModuleIOSim;
 import frc.robot.subsystems.intake.IntakeIOSim;
 import frc.robot.subsystems.intake.IntakeSubsystem;
-import frc.robot.subsystems.intake.indexerIOTalonFX;
+
 import frc.robot.subsystems.roller.RollerIOSim;
 import frc.robot.subsystems.roller.RollerIOTalonFX;
 import frc.robot.subsystems.roller.RollerSubsystem;
@@ -58,7 +53,7 @@ public class RobotContainer {
   private final Drive drive;
   private final RollerSubsystem m_roller;
   private final ClimberSubsystem m_climber;
-  private final IntakeSubsystem m_indexer;
+
   final Joystick joystick = new Joystick(0);
 
   // Controller
@@ -67,14 +62,6 @@ public class RobotContainer {
 
   // Dashboard inputs
   private final LoggedDashboardChooser<Command> autoChooser;
-
-  private final Command rollerIn;
-  private final Command rollerStop;
-  private final Command rollerOut;
-  private final Command climberDeafultCommand;
-  private final Command climberIn;
-  private final Command climberStop;
-  private final Command climberOut;
 
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
@@ -91,7 +78,6 @@ public class RobotContainer {
                 new ModuleIOSim(TunerConstants.BackRight));
         m_roller = new RollerSubsystem(new RollerIOTalonFX() {});
         m_climber = new ClimberSubsystem(new ClimberIOTalonFX());
-        m_indexer = new IntakeSubsystem(new indexerIOTalonFX());
         break;
 
       case SIM:
@@ -105,7 +91,6 @@ public class RobotContainer {
                 new ModuleIOSim(TunerConstants.BackRight));
         m_roller = new RollerSubsystem(new RollerIOSim());
         m_climber = new ClimberSubsystem(new ClimberIOSim());
-        m_indexer = new IntakeSubsystem(new IntakeIOSim());
         break;
 
       default:
@@ -119,17 +104,8 @@ public class RobotContainer {
                 new ModuleIO() {});
         m_roller = new RollerSubsystem(new RollerIOTalonFX() {});
         m_climber = new ClimberSubsystem(new ClimberIOTalonFX());
-        m_indexer = new IntakeSubsystem(new indexerIOTalonFX());
         break;
     }
-
-    climberDeafultCommand = new ClimberDeafultCommand(m_climber);
-    climberIn = new ClimberInCommand(m_climber);
-    climberStop = new ClimberStopCommand(m_climber);
-    climberOut = new ClimberOutCommand(m_climber);
-    rollerIn = new RollerInCommand(m_climber);
-    rollerOut = new RollerOutCommand(m_climber);
-    rollerStop = new RollerStopCommand(m_climber);
 
 
     // Set up auto routines
@@ -191,12 +167,6 @@ public class RobotContainer {
                             new Pose2d(drive.getPose().getTranslation(), new Rotation2d())),
                     drive)
                 .ignoringDisable(true));
-
-    m_climber.setDefaultCommand(climberDeafultCommand);
-    controller.leftBumper().whileTrue(rollerIn).onFalse(rollerStop);
-    controller.leftTrigger().whileTrue(rollerOut).onFalse(rollerStop);
-    controller.rightBumper().whileTrue(climberIn).onFalse(climberStop);
-    controller.rightTrigger().whileTrue(climberOut).onFalse(climberStop);
   }
 
   /**

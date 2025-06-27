@@ -44,11 +44,9 @@ public class ClimberIOTalonFX implements ClimberIO {
         ClimberConstants.pivot_inverted_CounterClockwisePositive
             ? InvertedValue.CounterClockwise_Positive
             : InvertedValue.Clockwise_Positive);
-    
+
     pivotConfigs.MotorOutput.withNeutralMode(
-        ClimberConstants.pivot_neutralmode_Coast 
-            ? NeutralModeValue.Coast 
-            : NeutralModeValue.Brake);
+        ClimberConstants.pivot_neutralmode_Coast ? NeutralModeValue.Coast : NeutralModeValue.Brake);
 
     // Set motor inversion based on desired rotation direction
     pivotConfigs.MotorOutput.withInverted(

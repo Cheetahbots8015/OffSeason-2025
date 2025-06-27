@@ -12,7 +12,6 @@ public class IntakeIOSim implements IntakeIO {
   private double IndexerAppliedVolts = 0.0;
   private double IntakeAppliedVolts = 0.0;
 
-
   public IntakeIOSim() {
     indexerIOSim = new DCMotorSim(LinearSystemId.createDCMotorSystem(GEARBOX, 0.001, 1), GEARBOX);
     intakeIOSim = new DCMotorSim(LinearSystemId.createDCMotorSystem(GEARBOX, 0.001, 1), GEARBOX);
