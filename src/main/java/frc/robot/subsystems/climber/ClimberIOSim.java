@@ -9,8 +9,8 @@ public class ClimberIOSim implements ClimberIO {
   private static final DCMotor GEARBOX = DCMotor.getKrakenX60Foc(1);
   private final DCMotorSim rollerSim;
   private final DCMotorSim climberSim;
-  private double RollerAppliedVolts = 0.0;
-  private double ClimberAppliedVolts = 0.0;
+  private double ClawAppliedVolts = 0.0;
+  private double PivotAppliedVolts = 0.0;
 
   public ClimberIOSim() {
     rollerSim = new DCMotorSim(LinearSystemId.createDCMotorSystem(GEARBOX, 0.001, 1), GEARBOX);
@@ -21,25 +21,25 @@ public class ClimberIOSim implements ClimberIO {
   public void updateInputs(ClimberIOInputs inputs) {
 
     // Update simulation state
-    rollerSim.setInputVoltage(MathUtil.clamp(RollerAppliedVolts, -12.0, 12.0));
+    rollerSim.setInputVoltage(MathUtil.clamp(ClawAppliedVolts, -12.0, 12.0));
     rollerSim.update(0.02);
-    climberSim.setInputVoltage(MathUtil.clamp(ClimberAppliedVolts, -12.0, 12.0));
+    climberSim.setInputVoltage(MathUtil.clamp(PivotAppliedVolts, -12.0, 12.0));
     climberSim.update(0.02);
 
     // Update roller inputs
-    inputs.RollerPositionRad = rollerSim.getAngularPositionRad();
-    inputs.RollerVelocityRadPerSec = rollerSim.getAngularVelocityRadPerSec();
-    inputs.RollerAppliedVolts = RollerAppliedVolts;
-    inputs.RollerCurrentAmps = Math.abs(rollerSim.getCurrentDrawAmps());
-    inputs.ClimberPositionRad = climberSim.getAngularPositionRad();
-    inputs.ClimberVelocityRadPerSec = climberSim.getAngularVelocityRadPerSec();
-    inputs.ClimberAppliedVolts = ClimberAppliedVolts;
-    inputs.ClimberCurrentAmps = Math.abs(climberSim.getCurrentDrawAmps());
+    inputs.ClawPositionRad = rollerSim.getAngularPositionRad();
+    inputs.ClawVelocityRadPerSec = rollerSim.getAngularVelocityRadPerSec();
+    inputs.ClawAppliedVolts = ClawAppliedVolts;
+    inputs.ClawCurrentAmps = Math.abs(rollerSim.getCurrentDrawAmps());
+    inputs.PivotPositionRad = climberSim.getAngularPositionRad();
+    inputs.PivotVelocityRadPerSec = climberSim.getAngularVelocityRadPerSec();
+    inputs.PivotAppliedVolts = PivotAppliedVolts;
+    inputs.PivotCurrentAmps = Math.abs(climberSim.getCurrentDrawAmps());
   }
 
   @Override
-  public void setOpenLoop(double rollerOutput, double climberOutput) {
-    RollerAppliedVolts = rollerOutput * 12.0;
-    ClimberAppliedVolts = climberOutput * 12.0;
+  public void setOpenLoop(double clawOutput, double pivotOutput) {
+    ClawAppliedVolts = clawOutput * 12.0;
+    PivotAppliedVolts = pivotOutput * 12.0;
   }
 }
