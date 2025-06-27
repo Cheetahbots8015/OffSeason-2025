@@ -39,6 +39,7 @@ import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.drive.GyroIO;
 import frc.robot.subsystems.drive.ModuleIO;
 import frc.robot.subsystems.drive.ModuleIOSim;
+
 import frc.robot.subsystems.roller.RollerIOSim;
 import frc.robot.subsystems.roller.RollerIOTalonFX;
 import frc.robot.subsystems.roller.RollerSubsystem;
@@ -55,7 +56,7 @@ public class RobotContainer {
   private final Drive drive;
   private final RollerSubsystem m_roller;
   private final ClimberSubsystem m_climber;
-  //   private final indexerSubsystem m_indexer;
+
   final Joystick joystick = new Joystick(0);
 
   // Controller
@@ -73,8 +74,7 @@ public class RobotContainer {
   private final Command climberStop;
   private final Command climberOut;
 
-  //   private final Command Indexer;
-  //   private final Command IndexerStop;
+
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
@@ -130,8 +130,6 @@ public class RobotContainer {
     rollerOut = new RollerOutCommand(m_climber);
     rollerStop = new RollerStopCommand(m_climber);
 
-    // Indexer = new IndexerDefaultCommand(m_indexer);
-    // IndexerStop = new IndexerStopCommand(m_indexer);
 
     // Set up auto routines
     autoChooser = new LoggedDashboardChooser<>("Auto Choices", AutoBuilder.buildAutoChooser());
@@ -196,7 +194,7 @@ public class RobotContainer {
     controller.leftTrigger().whileTrue(rollerOut).onFalse(rollerStop);
     controller.rightBumper().whileTrue(climberIn).onFalse(climberStop);
     controller.rightTrigger().whileTrue(climberOut).onFalse(climberStop);
-    // controller.x().whileTrue(Indexer).onFalse(IndexerStop);
+
   }
 
   /**
