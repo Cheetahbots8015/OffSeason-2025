@@ -8,8 +8,6 @@ import com.ctre.phoenix6.controls.NeutralOut;
 import com.ctre.phoenix6.controls.VelocityTorqueCurrentFOC;
 import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.hardware.TalonFX;
-import com.ctre.phoenix6.signals.InvertedValue;
-import com.ctre.phoenix6.signals.NeutralModeValue;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.ElevatorConstants;
 import org.littletonrobotics.junction.Logger;
@@ -54,19 +52,6 @@ public class ElevatorSubsystem extends SubsystemBase {
 
   public ElevatorSubsystem(ElevatorIO io) {
     this.io = io;
-
-    // Set the neutral mode (Coast or Brake) based on constants
-    elevatorConfigs.MotorOutput.withNeutralMode(
-        ElevatorConstants.neutralmode_Coast ? NeutralModeValue.Coast : NeutralModeValue.Brake);
-
-    // Set motor inversion based on desired rotation direction
-    elevatorConfigs.MotorOutput.withInverted(
-        ElevatorConstants.inverted_CounterClockwisePositive
-            ? InvertedValue.CounterClockwise_Positive
-            : InvertedValue.Clockwise_Positive);
-
-    // Apply the configuration to the motor
-    elevator.getConfigurator().apply(elevatorConfigs);
   }
 
   public void periodic() {
