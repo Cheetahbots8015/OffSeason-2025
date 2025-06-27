@@ -1,9 +1,11 @@
 // RollerSubsystem - Subsystem to control a single TalonFX motor for a roller
 
-package frc.robot.subsystems.intake;
+package frc.robot.generated.intake;
 
 import com.ctre.phoenix6.configs.CANrangeConfiguration;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.subsystems.intake.IntakeIOInputsAutoLogged;
+
 import org.littletonrobotics.junction.Logger;
 
 public class IntakeSubsystem extends SubsystemBase {

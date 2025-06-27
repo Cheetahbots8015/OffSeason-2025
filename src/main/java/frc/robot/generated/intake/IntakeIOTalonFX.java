@@ -1,4 +1,4 @@
-package frc.robot.subsystems.intake;
+package frc.robot.generated.intake;
 
 import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.StatusSignal;
@@ -15,7 +15,7 @@ import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Current;
 import edu.wpi.first.units.measure.Voltage;
 import frc.robot.IntakeConstants;
-import frc.robot.subsystems.intake.IntakeIO.IntakeIOInputs;
+import frc.robot.generated.intake.IntakeIO.IntakeIOInputs;
 
 public class IntakeIOTalonFX implements IntakeIO {
   // Hardware objects
