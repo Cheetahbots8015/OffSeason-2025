@@ -15,7 +15,6 @@ import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Current;
 import edu.wpi.first.units.measure.Voltage;
 import frc.robot.ClawConstants;
-import frc.robot.ClawConstants;
 
 public class ClawIOTalonFX implements ClawIO {
   // Hardware objects

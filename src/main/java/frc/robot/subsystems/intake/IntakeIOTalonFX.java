@@ -41,9 +41,11 @@ public class IntakeIOTalonFX implements IntakeIO {
 
   public IntakeIOTalonFX() {
     indexer = new TalonFX(IntakeConstants.indexerID, "rio");
-    intake = new TalonFX(IntakeConstants.intakeID,"rio");
+    intake = new TalonFX(IntakeConstants.intakeID, "rio");
     indexerConfigs.MotorOutput.withNeutralMode(
-        IntakeConstants.indexer_neutralmode_Coast ? NeutralModeValue.Coast : NeutralModeValue.Brake);
+        IntakeConstants.indexer_neutralmode_Coast
+            ? NeutralModeValue.Coast
+            : NeutralModeValue.Brake);
 
     // Set motor inversion based on desired rotation direction
     indexerConfigs.MotorOutput.withInverted(
@@ -92,15 +94,30 @@ public class IntakeIOTalonFX implements IntakeIO {
     IntakeAppliedVolts = intake.getMotorVoltage();
     IntakeCurrent = intake.getStatorCurrent();
 
-    BaseStatusSignal.setUpdateFrequencyForAll(50.0, IndexerVelocity, IndexerAppliedVolts, IndexerCurrent, IndexerPosition,
-    IntakePosition,IntakeVelocity,IntakeAppliedVolts,IntakeCurrent);
-    ParentDevice.optimizeBusUtilizationForAll(indexer,intake);
+    BaseStatusSignal.setUpdateFrequencyForAll(
+        50.0,
+        IndexerVelocity,
+        IndexerAppliedVolts,
+        IndexerCurrent,
+        IndexerPosition,
+        IntakePosition,
+        IntakeVelocity,
+        IntakeAppliedVolts,
+        IntakeCurrent);
+    ParentDevice.optimizeBusUtilizationForAll(indexer, intake);
   }
 
   @Override
   public void updateInputs(IntakeIOInputs inputs) {
-    BaseStatusSignal.refreshAll(IndexerVelocity, IndexerAppliedVolts, IndexerCurrent, IndexerPosition,
-    IntakePosition,IntakeVelocity,IntakeAppliedVolts,IntakeCurrent);
+    BaseStatusSignal.refreshAll(
+        IndexerVelocity,
+        IndexerAppliedVolts,
+        IndexerCurrent,
+        IndexerPosition,
+        IntakePosition,
+        IntakeVelocity,
+        IntakeAppliedVolts,
+        IntakeCurrent);
     // Update indexer inputs
     inputs.IndexerPositionRad = Units.rotationsToRadians(IndexerPosition.getValueAsDouble());
     inputs.IndexerVelocityRadPerSec = Units.rotationsToRadians(IndexerVelocity.getValueAsDouble());
@@ -110,7 +127,7 @@ public class IntakeIOTalonFX implements IntakeIO {
     inputs.IntakePositionRad = Units.rotationsToRadians(IntakePosition.getValueAsDouble());
     inputs.IntakeVelocityRadPerSec = Units.rotationsToRadians(IntakeVelocity.getValueAsDouble());
     inputs.IntakeAppliedVolts = IntakeAppliedVolts.getValueAsDouble();
-    inputs.IndexerCurrentAmps = IndexerCurrent.getValueAsDouble();    
+    inputs.IndexerCurrentAmps = IndexerCurrent.getValueAsDouble();
   }
 
   @Override

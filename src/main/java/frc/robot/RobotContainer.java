@@ -39,7 +39,6 @@ import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.drive.GyroIO;
 import frc.robot.subsystems.drive.ModuleIO;
 import frc.robot.subsystems.drive.ModuleIOSim;
-
 import frc.robot.subsystems.roller.RollerIOSim;
 import frc.robot.subsystems.roller.RollerIOTalonFX;
 import frc.robot.subsystems.roller.RollerSubsystem;
@@ -74,7 +73,6 @@ public class RobotContainer {
   private final Command climberStop;
   private final Command climberOut;
 
-
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
     switch (Constants.currentMode) {
@@ -104,7 +102,6 @@ public class RobotContainer {
         m_roller = new RollerSubsystem(new RollerIOSim());
         m_climber = new ClimberSubsystem(new ClimberIOSim());
 
-
         break;
 
       default:
@@ -129,8 +126,6 @@ public class RobotContainer {
     rollerIn = new RollerInCommand(m_climber);
     rollerOut = new RollerOutCommand(m_climber);
     rollerStop = new RollerStopCommand(m_climber);
-
-
 
     // Set up auto routines
     autoChooser = new LoggedDashboardChooser<>("Auto Choices", AutoBuilder.buildAutoChooser());
@@ -188,7 +183,6 @@ public class RobotContainer {
     controller.leftTrigger().whileTrue(rollerOut).onFalse(rollerStop);
     controller.rightBumper().whileTrue(climberIn).onFalse(climberStop);
     controller.rightTrigger().whileTrue(climberOut).onFalse(climberStop);
-
   }
 
   /**
