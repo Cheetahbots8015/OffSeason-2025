@@ -10,30 +10,18 @@ public class ClawSysIdCommand extends Command {
     DYNAMIC
   }
 
-  public enum Direction {
-    FORWARD(1),
-    REVERSE(-1);
-
-    public final int value;
-
-    Direction(int value) {
-      this.value = value;
-    }
-  }
 
   private final ClawSubsystem clawSubsystem;
-  private final ClawIOTalonFX clawIO;
   private final TestType testType;
-  private final Direction direction;
+  private final boolean isForward;
 
   private double startTime;
   private double appliedVoltage = 0;
 
-  public ClawSysIdCommand(ClawSubsystem clawSubsystem, TestType testType, Direction direction) {
+  public ClawSysIdCommand(ClawSubsystem clawSubsystem, TestType testType, boolean isForward) {
     this.clawSubsystem = clawSubsystem;
-    this.clawIO = (ClawIOTalonFX) clawSubsystem.getIO();
     this.testType = testType;
-    this.direction = direction;
+    this.isForward = isForward;
 
     addRequirements(clawSubsystem);
   }
@@ -51,20 +39,20 @@ public class ClawSysIdCommand extends Command {
     switch (testType) {
       case QUASISTATIC:
         // Ramp voltage from 0 to 12V over 3 seconds
-        appliedVoltage = direction.value * Math.min(12, 4 * elapsedTime);
+        appliedVoltage = isForward? 1:-1 * Math.min(12, 4 * elapsedTime);
         break;
       case DYNAMIC:
         // Apply step voltage of 7V for 2 seconds
-        appliedVoltage = direction.value * 7;
+        appliedVoltage = isForward? 1:-1 * 7;
         break;
     }
 
-    clawIO.setIntakeVoltage(appliedVoltage);
+    clawSubsystem.setIntakeVoltage(appliedVoltage);
   }
 
   @Override
   public void end(boolean interrupted) {
-    clawIO.setIntakeVoltage(0);
+    clawSubsystem.setIntakeVoltage(0);
   }
 
   @Override
@@ -79,6 +67,6 @@ public class ClawSysIdCommand extends Command {
   public String getName() {
     return String.format(
         "ClawSysId-%s-%s",
-        testType.toString(), direction == Direction.FORWARD ? "Forward" : "Reverse");
+        testType.toString(), isForward? "Forward" : "Reverse");
   }
 }
