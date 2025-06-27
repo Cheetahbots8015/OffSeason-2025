@@ -1,12 +1,12 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.subsystems.indexer.indexerSubsystem;
+import frc.robot.subsystems.intake.intakeSubsystem;
 
 public class IndexerStopCommand extends Command {
-  private final indexerSubsystem m_subsystem;
+  private final intakeSubsystem m_subsystem;
 
-  public IndexerStopCommand(indexerSubsystem subsystem) {
+  public IndexerStopCommand(intakeSubsystem subsystem) {
     m_subsystem = subsystem;
     addRequirements(subsystem);
   }

@@ -41,9 +41,9 @@ import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.drive.GyroIO;
 import frc.robot.subsystems.drive.ModuleIO;
 import frc.robot.subsystems.drive.ModuleIOSim;
-import frc.robot.subsystems.indexer.indexerIOSim;
-import frc.robot.subsystems.indexer.indexerIOTalonFX;
-import frc.robot.subsystems.indexer.indexerSubsystem;
+import frc.robot.subsystems.intake.intakeIOSim;
+import frc.robot.subsystems.intake.indexerIOTalonFX;
+import frc.robot.subsystems.intake.intakeSubsystem;
 import frc.robot.subsystems.roller.RollerIOSim;
 import frc.robot.subsystems.roller.RollerIOTalonFX;
 import frc.robot.subsystems.roller.RollerSubsystem;
@@ -60,7 +60,7 @@ public class RobotContainer {
   private final Drive drive;
   private final RollerSubsystem m_roller;
   private final ClimberSubsystem m_climber;
-  private final indexerSubsystem m_indexer;
+  private final intakeSubsystem m_indexer;
   final Joystick joystick = new Joystick(0);
 
   // Controller
@@ -94,7 +94,7 @@ public class RobotContainer {
                 new ModuleIOSim(TunerConstants.BackRight));
         m_roller = new RollerSubsystem(new RollerIOTalonFX() {});
         m_climber = new ClimberSubsystem(new ClimberIOTalonFX());
-        m_indexer = new indexerSubsystem(new indexerIOTalonFX());
+        m_indexer = new intakeSubsystem(new indexerIOTalonFX());
         break;
 
       case SIM:
@@ -108,7 +108,7 @@ public class RobotContainer {
                 new ModuleIOSim(TunerConstants.BackRight));
         m_roller = new RollerSubsystem(new RollerIOSim());
         m_climber = new ClimberSubsystem(new ClimberIOSim());
-        m_indexer = new indexerSubsystem(new indexerIOSim());
+        m_indexer = new intakeSubsystem(new intakeIOSim());
         break;
 
       default:
@@ -122,7 +122,7 @@ public class RobotContainer {
                 new ModuleIO() {});
         m_roller = new RollerSubsystem(new RollerIOTalonFX() {});
         m_climber = new ClimberSubsystem(new ClimberIOTalonFX());
-        m_indexer = new indexerSubsystem(new indexerIOTalonFX());
+        m_indexer = new intakeSubsystem(new indexerIOTalonFX());
         break;
     }
 

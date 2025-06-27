@@ -1,0 +1,24 @@
+package frc.robot.subsystems.intake;
+
+import org.littletonrobotics.junction.AutoLog;
+
+public interface intakeIO {
+  @AutoLog
+  public static class intakeIOInputs {
+    public double IntakePositionRad = 0.0;
+    public double IntakeVelocityRadPerSec = 0.0;
+    public double IntakeAppliedVolts = 0.0;
+    public double IntakeCurrentAmps = 0.0;
+
+    public double IndexerPositionRad = 0.0;
+    public double IndexerVelocityRadPerSec = 0.0;
+    public double IndexerAppliedVolts = 0.0;
+    public double IndexerCurrentAmps = 0.0;
+  }
+
+  /** Updates the set of loggable inputs. */
+  public default void updateInputs(intakeIOInputs inputs) {}
+
+  /** Run the roller at the specified open loop value. */
+  public default void setOpenLoop(double indexerOutput, double intakeOutput) {}
+}
