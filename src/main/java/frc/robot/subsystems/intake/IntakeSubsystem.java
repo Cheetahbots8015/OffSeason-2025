@@ -44,6 +44,10 @@ public class IntakeSubsystem extends SubsystemBase {
     io.setArmVoltage(volts);
   }
 
+  public boolean getCanRange(){
+    return io.getCanRange();
+  }
+
   public Command sysIdQuasistatic(SysIdRoutine.Direction direction) {
     return sysId.quasistatic(direction);
   }
