@@ -5,7 +5,7 @@ import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.system.plant.LinearSystemId;
 import edu.wpi.first.wpilibj.simulation.DCMotorSim;
 
-public class intakeIOSim implements intakeIO {
+public class IntakeIOSim implements IntakeIO {
   private static final DCMotor GEARBOX = DCMotor.getKrakenX60Foc(1);
   private final DCMotorSim indexerIOSim;
   private final DCMotorSim intakeIOSim;
@@ -13,13 +13,13 @@ public class intakeIOSim implements intakeIO {
   private double IntakeAppliedVolts = 0.0;
 
 
-  public intakeIOSim() {
+  public IntakeIOSim() {
     indexerIOSim = new DCMotorSim(LinearSystemId.createDCMotorSystem(GEARBOX, 0.001, 1), GEARBOX);
     intakeIOSim = new DCMotorSim(LinearSystemId.createDCMotorSystem(GEARBOX, 0.001, 1), GEARBOX);
   }
 
   @Override
-  public void updateInputs(intakeIOInputs inputs) {
+  public void updateInputs(IntakeIOInputs inputs) {
 
     // Update simulation state
     indexerIOSim.setInputVoltage(MathUtil.clamp(IndexerAppliedVolts, -12.0, 12.0));

@@ -15,9 +15,9 @@ import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Current;
 import edu.wpi.first.units.measure.Voltage;
 import frc.robot.IntakeConstants;
-import frc.robot.subsystems.intake.intakeIO.intakeIOInputs;
+import frc.robot.subsystems.intake.IntakeIO.IntakeIOInputs;
 
-public class indexerIOTalonFX implements intakeIO {
+public class IntakeIOTalonFX implements IntakeIO {
   // Hardware objects
   private final TalonFX indexer;
   private final TalonFX intake;
@@ -39,7 +39,7 @@ public class indexerIOTalonFX implements intakeIO {
   private final StatusSignal<Voltage> IntakeAppliedVolts;
   private final StatusSignal<Current> IntakeCurrent;
 
-  public indexerIOTalonFX() {
+  public IntakeIOTalonFX() {
     indexer = new TalonFX(IntakeConstants.indexerID, "rio");
     intake = new TalonFX(IntakeConstants.intakeID,"rio");
     indexerConfigs.MotorOutput.withNeutralMode(
@@ -98,18 +98,24 @@ public class indexerIOTalonFX implements intakeIO {
   }
 
   @Override
-  public void updateInputs(intakeIOInputs inputs) {
+  public void updateInputs(IntakeIOInputs inputs) {
     BaseStatusSignal.refreshAll(IndexerVelocity, IndexerAppliedVolts, IndexerCurrent, IndexerPosition,
     IntakePosition,IntakeVelocity,IntakeAppliedVolts,IntakeCurrent);
     // Update indexer inputs
-    inputs.PositionRad = Units.rotationsToRadians(Position.getValueAsDouble());
-    inputs.VelocityRadPerSec = Units.rotationsToRadians(Velocity.getValueAsDouble());
-    inputs.AppliedVolts = AppliedVolts.getValueAsDouble();
-    inputs.CurrentAmps = Current.getValueAsDouble();
+    inputs.IndexerPositionRad = Units.rotationsToRadians(IndexerPosition.getValueAsDouble());
+    inputs.IndexerVelocityRadPerSec = Units.rotationsToRadians(IndexerVelocity.getValueAsDouble());
+    inputs.IndexerAppliedVolts = IndexerAppliedVolts.getValueAsDouble();
+    inputs.IndexerCurrentAmps = IndexerCurrent.getValueAsDouble();
+    // Update intake inputs
+    inputs.IntakePositionRad = Units.rotationsToRadians(IntakePosition.getValueAsDouble());
+    inputs.IntakeVelocityRadPerSec = Units.rotationsToRadians(IntakeVelocity.getValueAsDouble());
+    inputs.IntakeAppliedVolts = IntakeAppliedVolts.getValueAsDouble();
+    inputs.IndexerCurrentAmps = IndexerCurrent.getValueAsDouble();    
   }
 
   @Override
-  public void setOpenLoop(double output) {
-    indexer.setControl(new DutyCycleOut(output));
+  public void setOpenLoop(double indexerOutput, double intakeOutput) {
+    indexer.setControl(new DutyCycleOut(indexerOutput));
+    intake.setControl(new DutyCycleOut(intakeOutput));
   }
 }
