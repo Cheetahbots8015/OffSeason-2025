@@ -1,7 +1,7 @@
 package frc.robot;
 
 public class ClimberConstants {
-  public static final int climberID = 10;
+  public static final int climberID = 38;
   public static final boolean neutralmode_Coast = false;
   public static final boolean inverted_CounterClockwisePositive = true;
   public static final double positionDeadband = 1.00;

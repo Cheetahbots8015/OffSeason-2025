@@ -29,7 +29,7 @@ public class ClimberIOTalonFX implements ClimberIO {
   private final StatusSignal<Current> Current;
 
   public ClimberIOTalonFX() {
-    climber = new TalonFX(ClimberConstants.climberID, "rio");
+    climber = new TalonFX(ClimberConstants.climberID, "canivore");
     climberConfigs.MotorOutput.withNeutralMode(
         ClimberConstants.neutralmode_Coast ? NeutralModeValue.Coast : NeutralModeValue.Brake);
 

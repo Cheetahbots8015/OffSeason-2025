@@ -1,4 +1,4 @@
-package frc.robot.subsystems.roller;
+package frc.robot.subsystems.elevator;
 
 import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.StatusSignal;
@@ -14,56 +14,56 @@ import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Current;
 import edu.wpi.first.units.measure.Voltage;
-import frc.robot.RollerConstants;
+import frc.robot.ElevatorConstants;
 
-public class RollerIOTalonFX implements RollerIO {
+public class ElevatorIOTalonFX implements ElevatorIO {
   // Hardware objects
-  private final TalonFX roller;
-  private TalonFXConfiguration rollerConfigs = new TalonFXConfiguration();
+  private final TalonFX elevator;
+  private TalonFXConfiguration elevatorConfigs = new TalonFXConfiguration();
   // Voltage control requests
   private final VoltageOut voltageRequest = new VoltageOut(0);
-  // Inputs from roller
+  // Inputs from elevator
   private final StatusSignal<Angle> Position;
   private final StatusSignal<AngularVelocity> Velocity;
   private final StatusSignal<Voltage> AppliedVolts;
   private final StatusSignal<Current> Current;
 
-  public RollerIOTalonFX() {
-    roller = new TalonFX(RollerConstants.rollerID, "canivore");
-    rollerConfigs.MotorOutput.withNeutralMode(
-        RollerConstants.neutralmode_Coast ? NeutralModeValue.Coast : NeutralModeValue.Brake);
+  public ElevatorIOTalonFX() {
+    elevator = new TalonFX(ElevatorConstants.elevatorID, "canivore");
+    elevatorConfigs.MotorOutput.withNeutralMode(
+        ElevatorConstants.neutralmode_Coast ? NeutralModeValue.Coast : NeutralModeValue.Brake);
 
     // Set motor inversion based on desired rotation direction
-    rollerConfigs.MotorOutput.withInverted(
-        RollerConstants.inverted_CounterClockwisePositive
+    elevatorConfigs.MotorOutput.withInverted(
+        ElevatorConstants.inverted_CounterClockwisePositive
             ? InvertedValue.CounterClockwise_Positive
             : InvertedValue.Clockwise_Positive);
 
     // Set PID and feedforward constants from constants file
-    rollerConfigs.Slot0.kP = RollerConstants.kP;
-    rollerConfigs.Slot0.kI = RollerConstants.kI;
-    rollerConfigs.Slot0.kD = RollerConstants.kD;
-    rollerConfigs.Slot0.kA = RollerConstants.kA;
-    rollerConfigs.Slot0.kS = RollerConstants.kS;
-    rollerConfigs.Slot0.kV = RollerConstants.kV;
+    elevatorConfigs.Slot0.kP = ElevatorConstants.kP;
+    elevatorConfigs.Slot0.kI = ElevatorConstants.kI;
+    elevatorConfigs.Slot0.kD = ElevatorConstants.kD;
+    elevatorConfigs.Slot0.kA = ElevatorConstants.kA;
+    elevatorConfigs.Slot0.kS = ElevatorConstants.kS;
+    elevatorConfigs.Slot0.kV = ElevatorConstants.kV;
 
     // Apply the configuration to the motor
-    roller.getConfigurator().apply(rollerConfigs);
+    elevator.getConfigurator().apply(elevatorConfigs);
 
     // Create drive status signals
-    Position = roller.getPosition();
-    Velocity = roller.getVelocity();
-    AppliedVolts = roller.getMotorVoltage();
-    Current = roller.getStatorCurrent();
+    Position = elevator.getPosition();
+    Velocity = elevator.getVelocity();
+    AppliedVolts = elevator.getMotorVoltage();
+    Current = elevator.getStatorCurrent();
 
     BaseStatusSignal.setUpdateFrequencyForAll(50.0, Velocity, AppliedVolts, Current, Position);
-    ParentDevice.optimizeBusUtilizationForAll(roller);
+    ParentDevice.optimizeBusUtilizationForAll(elevator);
   }
 
   @Override
-  public void updateInputs(RollerIOInputs inputs) {
+  public void updateInputs(ElevatorIOInputs inputs) {
     BaseStatusSignal.refreshAll(Position, Velocity, AppliedVolts, Current);
-    // Update roller inputs
+    // Update Elevator inputs
     inputs.PositionRad = Units.rotationsToRadians(Position.getValueAsDouble());
     inputs.VelocityRadPerSec = Units.rotationsToRadians(Velocity.getValueAsDouble());
     inputs.AppliedVolts = AppliedVolts.getValueAsDouble();
@@ -72,6 +72,6 @@ public class RollerIOTalonFX implements RollerIO {
 
   @Override
   public void setOpenLoop(double output) {
-    roller.setControl(new DutyCycleOut(output));
+    elevator.setControl(new DutyCycleOut(output));
   }
 }
