@@ -36,10 +36,6 @@ import frc.robot.subsystems.drive.ModuleIO;
 import frc.robot.subsystems.drive.ModuleIOSim;
 import frc.robot.subsystems.intake.IntakeIOSim;
 import frc.robot.subsystems.intake.IntakeSubsystem;
-
-import frc.robot.subsystems.roller.RollerIOSim;
-import frc.robot.subsystems.roller.RollerIOTalonFX;
-import frc.robot.subsystems.roller.RollerSubsystem;
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 
 /**
@@ -51,14 +47,11 @@ import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 public class RobotContainer {
   // Subsystems
   private final Drive drive;
-  private final RollerSubsystem m_roller;
-  private final ClimberSubsystem m_climber;
 
   final Joystick joystick = new Joystick(0);
 
   // Controller
   private final CommandXboxController controller = new CommandXboxController(0);
-  private final CommandXboxController m_controller = new CommandXboxController(1);
 
   // Dashboard inputs
   private final LoggedDashboardChooser<Command> autoChooser;
@@ -76,8 +69,6 @@ public class RobotContainer {
                 new ModuleIOSim(TunerConstants.FrontRight),
                 new ModuleIOSim(TunerConstants.BackLeft),
                 new ModuleIOSim(TunerConstants.BackRight));
-        m_roller = new RollerSubsystem(new RollerIOTalonFX() {});
-        m_climber = new ClimberSubsystem(new ClimberIOTalonFX());
         break;
 
       case SIM:
@@ -89,8 +80,6 @@ public class RobotContainer {
                 new ModuleIOSim(TunerConstants.FrontRight),
                 new ModuleIOSim(TunerConstants.BackLeft),
                 new ModuleIOSim(TunerConstants.BackRight));
-        m_roller = new RollerSubsystem(new RollerIOSim());
-        m_climber = new ClimberSubsystem(new ClimberIOSim());
         break;
 
       default:
@@ -102,8 +91,6 @@ public class RobotContainer {
                 new ModuleIO() {},
                 new ModuleIO() {},
                 new ModuleIO() {});
-        m_roller = new RollerSubsystem(new RollerIOTalonFX() {});
-        m_climber = new ClimberSubsystem(new ClimberIOTalonFX());
         break;
     }
 
