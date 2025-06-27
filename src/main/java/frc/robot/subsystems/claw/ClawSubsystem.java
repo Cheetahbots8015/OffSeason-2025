@@ -37,4 +37,8 @@ public class ClawSubsystem extends SubsystemBase {
   public void shutdown() {
     io.setOpenLoop(0.0, 0.0);
   }
+
+  public ClawIO getIO() {
+    return io;
+  }
 }
