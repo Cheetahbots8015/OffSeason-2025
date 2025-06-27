@@ -47,6 +47,15 @@ public class ElevatorIOTalonFX implements ElevatorIO {
     elevatorConfigs.Slot0.kS = ElevatorConstants.kS;
     elevatorConfigs.Slot0.kV = ElevatorConstants.kV;
 
+    // elevatorConfigs.SoftwareLimitSwitch.ForwardSoftLimitEnable =
+    //     ElevatorConstants.forwardSoftLimitEnable;
+    // elevatorConfigs.SoftwareLimitSwitch.ForwardSoftLimitThreshold =
+    //     ElevatorConstants.forwardSoftLimitThreshold;
+    // elevatorConfigs.SoftwareLimitSwitch.ReverseSoftLimitEnable =
+    //     ElevatorConstants.reverseSoftLimitEnable;
+    // elevatorConfigs.SoftwareLimitSwitch.ReverseSoftLimitThreshold =
+    //     ElevatorConstants.reverseSoftLimitThreshold;
+
     // Apply the configuration to the motor
     elevator.getConfigurator().apply(elevatorConfigs);
 
@@ -71,7 +80,7 @@ public class ElevatorIOTalonFX implements ElevatorIO {
   }
 
   @Override
-  public void setOpenLoop(double output) {
+  public void setDutyCycleOut(double output) {
     elevator.setControl(new DutyCycleOut(output));
   }
 }

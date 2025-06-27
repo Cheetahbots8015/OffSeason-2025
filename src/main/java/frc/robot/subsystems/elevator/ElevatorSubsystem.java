@@ -32,10 +32,10 @@ public class ElevatorSubsystem extends SubsystemBase {
   }
 
   public void runVelocity(double velocity) {
-    io.setOpenLoop(velocity);
+    io.setDutyCycleOut(velocity);
   }
 
-  public void defaultIdelVelocity() {
+  public void openLoopDefaultIdelVelocity() {
     if (systemIdleState == elevatorIdleState.in) {
       runVelocity(idleSpeed);
     } else if (systemIdleState == elevatorIdleState.out) {
@@ -54,6 +54,6 @@ public class ElevatorSubsystem extends SubsystemBase {
   }
 
   public void shutdown() {
-    io.setOpenLoop(-0.05);
+    io.setDutyCycleOut(0);
   }
 }
