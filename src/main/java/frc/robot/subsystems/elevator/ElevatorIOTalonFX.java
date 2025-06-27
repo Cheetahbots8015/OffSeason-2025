@@ -1,4 +1,4 @@
-package frc.robot.subsystems.indexer;
+package frc.robot.subsystems.elevator;
 
 import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.StatusSignal;
@@ -14,13 +14,13 @@ import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Current;
 import edu.wpi.first.units.measure.Voltage;
-import frc.robot.IndexerConstants;
-import frc.robot.subsystems.indexer.indexerIO.indexerIOInputs;
+import frc.robot.ElevatorConstants;
+import frc.robot.subsystems.elevator.ElevatorIO.ElevatorIOInputs;
 
-public class indexerIOTalonFX implements indexerIO {
+public class ElevatorIOTalonFX implements ElevatorIO {
   // Hardware objects
-  private final TalonFX indexer;
-  private TalonFXConfiguration indexerConfigs = new TalonFXConfiguration();
+  private final TalonFX elevator;
+  private TalonFXConfiguration elevatorConfigs = new TalonFXConfiguration();
   // Voltage control requests
   private final VoltageOut voltageRequest = new VoltageOut(0);
   // Inputs from roller
@@ -29,42 +29,42 @@ public class indexerIOTalonFX implements indexerIO {
   private final StatusSignal<Voltage> AppliedVolts;
   private final StatusSignal<Current> Current;
 
-  public indexerIOTalonFX() {
-    indexer = new TalonFX(IndexerConstants.indexerID, "rio");
-    indexerConfigs.MotorOutput.withNeutralMode(
-        IndexerConstants.neutralmode_Coast ? NeutralModeValue.Coast : NeutralModeValue.Brake);
+  public ElevatorIOTalonFX() {
+    elevator = new TalonFX(ElevatorConstants.elevatorID, "rio");
+    elevatorConfigs.MotorOutput.withNeutralMode(
+        ElevatorConstants.neutralmode_Coast ? NeutralModeValue.Coast : NeutralModeValue.Brake);
 
     // Set motor inversion based on desired rotation direction
-    indexerConfigs.MotorOutput.withInverted(
-        IndexerConstants.inverted_CounterClockwisePositive
+    elevatorConfigs.MotorOutput.withInverted(
+        ElevatorConstants.inverted_CounterClockwisePositive
             ? InvertedValue.CounterClockwise_Positive
             : InvertedValue.Clockwise_Positive);
 
     // Set PID and feedforward constants from constants file
-    indexerConfigs.Slot0.kP = IndexerConstants.kP;
-    indexerConfigs.Slot0.kI = IndexerConstants.kI;
-    indexerConfigs.Slot0.kD = IndexerConstants.kD;
-    indexerConfigs.Slot0.kA = IndexerConstants.kA;
-    indexerConfigs.Slot0.kS = IndexerConstants.kS;
-    indexerConfigs.Slot0.kV = IndexerConstants.kV;
+    elevatorConfigs.Slot0.kP = ElevatorConstants.kP;
+    elevatorConfigs.Slot0.kI = ElevatorConstants.kI;
+    elevatorConfigs.Slot0.kD = ElevatorConstants.kD;
+    elevatorConfigs.Slot0.kA = ElevatorConstants.kA;
+    elevatorConfigs.Slot0.kS = ElevatorConstants.kS;
+    elevatorConfigs.Slot0.kV = ElevatorConstants.kV;
 
     // Apply the configuration to the motor
-    indexer.getConfigurator().apply(indexerConfigs);
+    elevator.getConfigurator().apply(elevatorConfigs);
 
     // Create drive status signals
-    Position = indexer.getPosition();
-    Velocity = indexer.getVelocity();
-    AppliedVolts = indexer.getMotorVoltage();
-    Current = indexer.getStatorCurrent();
+    Position = elevator.getPosition();
+    Velocity = elevator.getVelocity();
+    AppliedVolts = elevator.getMotorVoltage();
+    Current = elevator.getStatorCurrent();
 
     BaseStatusSignal.setUpdateFrequencyForAll(50.0, Velocity, AppliedVolts, Current, Position);
-    ParentDevice.optimizeBusUtilizationForAll(indexer);
+    ParentDevice.optimizeBusUtilizationForAll(elevator);
   }
 
   @Override
-  public void updateInputs(indexerIOInputs inputs) {
+  public void updateInputs(ElevatorIOInputs inputs) {
     BaseStatusSignal.refreshAll(Position, Velocity, AppliedVolts, Current);
-    // Update indexer inputs
+    // Update elevator inputs
     inputs.PositionRad = Units.rotationsToRadians(Position.getValueAsDouble());
     inputs.VelocityRadPerSec = Units.rotationsToRadians(Velocity.getValueAsDouble());
     inputs.AppliedVolts = AppliedVolts.getValueAsDouble();
@@ -73,6 +73,6 @@ public class indexerIOTalonFX implements indexerIO {
 
   @Override
   public void setOpenLoop(double output) {
-    indexer.setControl(new DutyCycleOut(output));
+    elevator.setControl(new DutyCycleOut(output));
   }
 }
