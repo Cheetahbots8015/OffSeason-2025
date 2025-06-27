@@ -28,8 +28,6 @@ import frc.robot.commands.ClimberInCommand;
 import frc.robot.commands.ClimberOutCommand;
 import frc.robot.commands.ClimberStopCommand;
 import frc.robot.commands.DriveCommands;
-import frc.robot.commands.IndexerDefaultCommand;
-import frc.robot.commands.IndexerStopCommand;
 import frc.robot.commands.RollerInCommand;
 import frc.robot.commands.RollerOutCommand;
 import frc.robot.commands.RollerStopCommand;
@@ -77,8 +75,7 @@ public class RobotContainer {
   private final Command climberIn;
   private final Command climberStop;
   private final Command climberOut;
-  private final Command Indexer;
-  private final Command IndexerStop;
+
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
@@ -134,8 +131,6 @@ public class RobotContainer {
     rollerOut = new RollerOutCommand(m_climber);
     rollerStop = new RollerStopCommand(m_climber);
 
-    Indexer = new IndexerDefaultCommand(m_indexer);
-    IndexerStop = new IndexerStopCommand(m_indexer);
 
     // Set up auto routines
     autoChooser = new LoggedDashboardChooser<>("Auto Choices", AutoBuilder.buildAutoChooser());
@@ -202,7 +197,6 @@ public class RobotContainer {
     controller.leftTrigger().whileTrue(rollerOut).onFalse(rollerStop);
     controller.rightBumper().whileTrue(climberIn).onFalse(climberStop);
     controller.rightTrigger().whileTrue(climberOut).onFalse(climberStop);
-    controller.x().whileTrue(Indexer).onFalse(IndexerStop);
   }
 
   /**
