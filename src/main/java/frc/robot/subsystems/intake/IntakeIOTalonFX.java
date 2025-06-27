@@ -13,13 +13,13 @@ import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Current;
 import edu.wpi.first.units.measure.Voltage;
 import frc.robot.IntakeConstants;
-import frc.robot.subsystems.intake.IntakeIO.IntakeIOInputs;
 
 public class IntakeIOTalonFX implements IntakeIO {
   // Hardware objects
   private final TalonFX indexer;
   private final TalonFX intake;
   private final TalonFX arm;
+  
   private TalonFXConfiguration indexerConfigs = new TalonFXConfiguration();
   private TalonFXConfiguration intakeConfigs = new TalonFXConfiguration();
   private TalonFXConfiguration armConfigs = new TalonFXConfiguration();
