@@ -37,4 +37,15 @@ public class ClawSubsystem extends SubsystemBase {
   public void shutdown() {
     io.setOpenLoop(0.0, 0.0);
   }
+
+  public ClawIO getIO() {
+    return io;
+  }
+  public void setIntakeVoltage(double volts){
+    io.setIntakeVoltage(volts);
+  }
+  public void setShooterVoltage(double volts) {
+    io.setShooterVoltage(volts);
+  }
+
 }
