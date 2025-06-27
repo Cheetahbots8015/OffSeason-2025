@@ -176,4 +176,9 @@ public class IntakeIOTalonFX implements IntakeIO {
     intake.setControl(new DutyCycleOut(intakeOutput));
     arm.setControl(new DutyCycleOut(armOutput));
   }
+
+  @Override
+  public void setArmVoltage(double volts){
+    arm.setVoltage(volts);
+  };
 }
