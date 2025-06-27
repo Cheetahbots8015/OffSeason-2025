@@ -8,8 +8,6 @@ import com.ctre.phoenix6.controls.NeutralOut;
 import com.ctre.phoenix6.controls.VelocityTorqueCurrentFOC;
 import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.hardware.TalonFX;
-import com.ctre.phoenix6.signals.InvertedValue;
-import com.ctre.phoenix6.signals.NeutralModeValue;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.ElevatorConstants;
 import org.littletonrobotics.junction.Logger;
@@ -37,20 +35,20 @@ public class ElevatorSubsystem extends SubsystemBase {
   private final ElevatorIOInputsAutoLogged inputs = new ElevatorIOInputsAutoLogged();
 
   // Constructor: Configure motor settings upon subsystem creation
-  public ElevatorSubsystem() {
-    // Set the neutral mode (Coast or Brake) based on constants
-    elevatorConfigs.MotorOutput.withNeutralMode(
-        ElevatorConstants.neutralmode_Coast ? NeutralModeValue.Coast : NeutralModeValue.Brake);
+  // public ElevatorSubsystem() {
+  // Set the neutral mode (Coast or Brake) based on constants
+  // elevatorConfigs.MotorOutput.withNeutralMode(
+  //     ElevatorConstants.neutralmode_Coast ? NeutralModeValue.Coast : NeutralModeValue.Brake);
 
-    // Set motor inversion based on desired rotation direction
-    elevatorConfigs.MotorOutput.withInverted(
-        ElevatorConstants.inverted_CounterClockwisePositive
-            ? InvertedValue.CounterClockwise_Positive
-            : InvertedValue.Clockwise_Positive);
+  // Set motor inversion based on desired rotation direction
+  // elevatorConfigs.MotorOutput.withInverted(
+  //     ElevatorConstants.inverted_CounterClockwisePositive
+  //         ? InvertedValue.CounterClockwise_Positive
+  //         : InvertedValue.Clockwise_Positive);
 
-    // Apply the configuration to the motor
-    elevator.getConfigurator().apply(elevatorConfigs);
-  }
+  // Apply the configuration to the motor
+  // elevator.getConfigurator().apply(elevatorConfigs);
+  // }
 
   public ElevatorSubsystem(ElevatorIO io) {
     this.io = io;
@@ -58,7 +56,7 @@ public class ElevatorSubsystem extends SubsystemBase {
 
   public void periodic() {
     io.updateInputs(inputs);
-    Logger.processInputs("Indexer", inputs);
+    Logger.processInputs("Elevator", inputs);
   }
 
   // Stop the indexer motor by setting it to neutral
