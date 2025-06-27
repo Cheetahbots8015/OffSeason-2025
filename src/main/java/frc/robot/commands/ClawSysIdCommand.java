@@ -1,7 +1,6 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.subsystems.claw.ClawIOTalonFX;
 import frc.robot.subsystems.claw.ClawSubsystem;
 
 public class ClawSysIdCommand extends Command {
@@ -9,7 +8,6 @@ public class ClawSysIdCommand extends Command {
     QUASISTATIC,
     DYNAMIC
   }
-
 
   private final ClawSubsystem clawSubsystem;
   private final TestType testType;
@@ -39,11 +37,11 @@ public class ClawSysIdCommand extends Command {
     switch (testType) {
       case QUASISTATIC:
         // Ramp voltage from 0 to 12V over 3 seconds
-        appliedVoltage = isForward? 1:-1 * Math.min(12, 4 * elapsedTime);
+        appliedVoltage = isForward ? 1 : -1 * Math.min(12, 4 * elapsedTime);
         break;
       case DYNAMIC:
         // Apply step voltage of 7V for 2 seconds
-        appliedVoltage = isForward? 1:-1 * 7;
+        appliedVoltage = isForward ? 1 : -1 * 7;
         break;
     }
 
@@ -65,8 +63,6 @@ public class ClawSysIdCommand extends Command {
 
   @Override
   public String getName() {
-    return String.format(
-        "ClawSysId-%s-%s",
-        testType.toString(), isForward? "Forward" : "Reverse");
+    return String.format("ClawSysId-%s-%s", testType.toString(), isForward ? "Forward" : "Reverse");
   }
 }
