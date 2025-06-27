@@ -123,4 +123,14 @@ public class ClimberIOTalonFX implements ClimberIO {
     claw.setControl(new DutyCycleOut(clawOutput));
     pivot.setControl(new DutyCycleOut(pivotOutput));
   }
+
+  @Override
+  public void setClawVoltage(double volts){
+    claw.setVoltage(volts);
+  }
+
+  @Override
+  public void setPivotVoltage(double volts){
+    pivot.setVoltage(volts);
+  }
 }
