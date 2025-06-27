@@ -19,11 +19,19 @@ public interface IntakeIO {
     public double ArmVelocityRadPerSec = 0.0;
     public double ArmAppliedVolts = 0.0;
     public double ArmCurrentAmps = 0.0;
+
+    public boolean Canrange = false;
   }
 
   /** Updates the set of loggable inputs. */
   public default void updateInputs(IntakeIOInputs inputs) {}
+  ;
 
   /** Run the roller at the specified open loop value. */
   public default void setOpenLoop(double indexerOutput, double intakeOutput, double armOutput) {}
+  ;
+
+  public default void setArmVoltage(double volts){};
+
+  public default boolean getCanRange(){return false;};
 }
