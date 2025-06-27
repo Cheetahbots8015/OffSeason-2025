@@ -14,11 +14,16 @@ public interface IntakeIO {
     public double IndexerVelocityRadPerSec = 0.0;
     public double IndexerAppliedVolts = 0.0;
     public double IndexerCurrentAmps = 0.0;
+
+    public double ArmPositionRad = 0.0;
+    public double ArmVelocityRadPerSec = 0.0;
+    public double ArmAppliedVolts = 0.0;
+    public double ArmCurrentAmps = 0.0;
   }
 
   /** Updates the set of loggable inputs. */
   public default void updateInputs(IntakeIOInputs inputs) {}
 
   /** Run the roller at the specified open loop value. */
-  public default void setOpenLoop(double indexerOutput, double intakeOutput) {}
+  public default void setOpenLoop(double indexerOutput, double intakeOutput, double armOutput) {}
 }

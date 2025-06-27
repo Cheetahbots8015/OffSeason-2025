@@ -20,10 +20,10 @@ public class IntakeSubsystem extends SubsystemBase {
 
   // Stop the indexer motor by setting it to neutral
   public void shutDown() {
-    io.setOpenLoop(0.0, 0.0);
+    io.setOpenLoop(0.0, 0.0, 0.0);
   }
 
-  public void runVelocity(double indexerOutput, double intakeOutput) {
-    io.setOpenLoop(indexerOutput, intakeOutput);
+  public void runVelocity(double indexerOutput, double intakeOutput, double armOutput) {
+    io.setOpenLoop(indexerOutput, intakeOutput, armOutput);
   }
 }

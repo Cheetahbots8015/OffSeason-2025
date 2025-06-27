@@ -116,4 +116,15 @@ public class ClawIOTalonFX implements ClawIO {
 
     intake.setControl(new DutyCycleOut(output));
   }
+
+  // SysId methods
+  @Override
+  public void setIntakeVoltage(double volts) {
+    intake.setControl(voltageRequest.withOutput(volts));
+  }
+
+  @Override
+  public void setShooterVoltage(double volts) {
+    shooter.setControl(voltageRequest.withOutput(volts));
+  }
 }
