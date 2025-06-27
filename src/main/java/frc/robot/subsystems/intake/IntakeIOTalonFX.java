@@ -1,0 +1,121 @@
+package frc.robot.subsystems.intake;
+
+import com.ctre.phoenix6.BaseStatusSignal;
+import com.ctre.phoenix6.StatusSignal;
+import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.ctre.phoenix6.controls.DutyCycleOut;
+import com.ctre.phoenix6.controls.VoltageOut;
+import com.ctre.phoenix6.hardware.ParentDevice;
+import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.signals.InvertedValue;
+import com.ctre.phoenix6.signals.NeutralModeValue;
+import edu.wpi.first.math.util.Units;
+import edu.wpi.first.units.measure.Angle;
+import edu.wpi.first.units.measure.AngularVelocity;
+import edu.wpi.first.units.measure.Current;
+import edu.wpi.first.units.measure.Voltage;
+import frc.robot.IntakeConstants;
+import frc.robot.subsystems.intake.IntakeIO.IntakeIOInputs;
+
+public class IntakeIOTalonFX implements IntakeIO {
+  // Hardware objects
+  private final TalonFX indexer;
+  private final TalonFX intake;
+  private TalonFXConfiguration indexerConfigs = new TalonFXConfiguration();
+  private TalonFXConfiguration intakeConfigs = new TalonFXConfiguration();
+
+  // Voltage control requests
+  private final VoltageOut voltageRequest = new VoltageOut(0);
+
+  // Inputs from indexer
+  private final StatusSignal<Angle> IndexerPosition;
+  private final StatusSignal<AngularVelocity> IndexerVelocity;
+  private final StatusSignal<Voltage> IndexerAppliedVolts;
+  private final StatusSignal<Current> IndexerCurrent;
+
+  // Inputs from intake
+  private final StatusSignal<Angle> IntakePosition;
+  private final StatusSignal<AngularVelocity> IntakeVelocity;
+  private final StatusSignal<Voltage> IntakeAppliedVolts;
+  private final StatusSignal<Current> IntakeCurrent;
+
+  public IntakeIOTalonFX() {
+    indexer = new TalonFX(IntakeConstants.indexerID, "rio");
+    intake = new TalonFX(IntakeConstants.intakeID,"rio");
+    indexerConfigs.MotorOutput.withNeutralMode(
+        IntakeConstants.indexer_neutralmode_Coast ? NeutralModeValue.Coast : NeutralModeValue.Brake);
+
+    // Set motor inversion based on desired rotation direction
+    indexerConfigs.MotorOutput.withInverted(
+        IntakeConstants.indexer_inverted_CounterClockwisePositive
+            ? InvertedValue.CounterClockwise_Positive
+            : InvertedValue.Clockwise_Positive);
+
+    // Set PID and feedforward constants from constants file
+    indexerConfigs.Slot0.kP = IntakeConstants.indexer_kP;
+    indexerConfigs.Slot0.kI = IntakeConstants.indexer_kI;
+    indexerConfigs.Slot0.kD = IntakeConstants.indexer_kD;
+    indexerConfigs.Slot0.kA = IntakeConstants.indexer_kA;
+    indexerConfigs.Slot0.kS = IntakeConstants.indexer_kS;
+    indexerConfigs.Slot0.kV = IntakeConstants.indexer_kV;
+
+    intakeConfigs.MotorOutput.withNeutralMode(
+        IntakeConstants.intake_neutralmode_Coast ? NeutralModeValue.Coast : NeutralModeValue.Brake);
+
+    // Set motor inversion based on desired rotation direction
+    intakeConfigs.MotorOutput.withInverted(
+        IntakeConstants.intake_inverted_CounterClockwisePositive
+            ? InvertedValue.CounterClockwise_Positive
+            : InvertedValue.Clockwise_Positive);
+
+    // Set PID and feedforward constants from constants file
+    intakeConfigs.Slot0.kP = IntakeConstants.intake_kP;
+    intakeConfigs.Slot0.kI = IntakeConstants.intake_kI;
+    intakeConfigs.Slot0.kD = IntakeConstants.intake_kD;
+    intakeConfigs.Slot0.kA = IntakeConstants.intake_kA;
+    intakeConfigs.Slot0.kS = IntakeConstants.intake_kS;
+    intakeConfigs.Slot0.kV = IntakeConstants.intake_kV;
+
+    // Apply the configuration to the motor
+    indexer.getConfigurator().apply(indexerConfigs);
+    intake.getConfigurator().apply(intakeConfigs);
+
+    // Create Indexer status signals
+    IndexerPosition = indexer.getPosition();
+    IndexerVelocity = indexer.getVelocity();
+    IndexerAppliedVolts = indexer.getMotorVoltage();
+    IndexerCurrent = indexer.getStatorCurrent();
+
+    // Create Intake status signals
+    IntakePosition = intake.getPosition();
+    IntakeVelocity = intake.getVelocity();
+    IntakeAppliedVolts = intake.getMotorVoltage();
+    IntakeCurrent = intake.getStatorCurrent();
+
+    BaseStatusSignal.setUpdateFrequencyForAll(50.0, IndexerVelocity, IndexerAppliedVolts, IndexerCurrent, IndexerPosition,
+    IntakePosition,IntakeVelocity,IntakeAppliedVolts,IntakeCurrent);
+    ParentDevice.optimizeBusUtilizationForAll(indexer,intake);
+  }
+
+  @Override
+  public void updateInputs(IntakeIOInputs inputs) {
+    BaseStatusSignal.refreshAll(IndexerVelocity, IndexerAppliedVolts, IndexerCurrent, IndexerPosition,
+    IntakePosition,IntakeVelocity,IntakeAppliedVolts,IntakeCurrent);
+    // Update indexer inputs
+    inputs.IndexerPositionRad = Units.rotationsToRadians(IndexerPosition.getValueAsDouble());
+    inputs.IndexerVelocityRadPerSec = Units.rotationsToRadians(IndexerVelocity.getValueAsDouble());
+    inputs.IndexerAppliedVolts = IndexerAppliedVolts.getValueAsDouble();
+    inputs.IndexerCurrentAmps = IndexerCurrent.getValueAsDouble();
+    // Update intake inputs
+    inputs.IntakePositionRad = Units.rotationsToRadians(IntakePosition.getValueAsDouble());
+    inputs.IntakeVelocityRadPerSec = Units.rotationsToRadians(IntakeVelocity.getValueAsDouble());
+    inputs.IntakeAppliedVolts = IntakeAppliedVolts.getValueAsDouble();
+    inputs.IndexerCurrentAmps = IndexerCurrent.getValueAsDouble();    
+  }
+
+  @Override
+  public void setOpenLoop(double indexerOutput, double intakeOutput) {
+    indexer.setControl(new DutyCycleOut(indexerOutput));
+    intake.setControl(new DutyCycleOut(intakeOutput));
+  }
+}
