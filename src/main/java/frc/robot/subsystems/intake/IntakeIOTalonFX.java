@@ -190,10 +190,9 @@ public class IntakeIOTalonFX implements IntakeIO {
   }
 
   @Override
-  public void setArmVoltage(double volts){
+  public void setArmVoltage(double volts) {
     arm.setVoltage(volts);
   };
-
   @Override
   public boolean getCanRange(){
     return Canrange.getValue();
