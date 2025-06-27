@@ -41,11 +41,12 @@ public class ClawSubsystem extends SubsystemBase {
   public ClawIO getIO() {
     return io;
   }
-  public void setIntakeVoltage(double volts){
+
+  public void setIntakeVoltage(double volts) {
     io.setIntakeVoltage(volts);
   }
+
   public void setShooterVoltage(double volts) {
     io.setShooterVoltage(volts);
   }
-
 }
