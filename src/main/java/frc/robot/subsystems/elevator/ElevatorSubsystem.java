@@ -54,6 +54,6 @@ public class ElevatorSubsystem extends SubsystemBase {
   }
 
   public void shutdown() {
-    io.setDutyCycleOut(0);
+    io.setDutyCycleOut(0.0);
   }
 }

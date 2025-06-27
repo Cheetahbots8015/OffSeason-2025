@@ -1,7 +1,7 @@
 package frc.robot;
 
 public class ElevatorConstants {
-  public static final int elevatorID = 39;
+  public static final int elevatorID = 36;
   public static final boolean neutralmode_Coast = true;
   public static final boolean inverted_CounterClockwisePositive = true;
   public static final double dutyCycleDeadband = 0.05;
