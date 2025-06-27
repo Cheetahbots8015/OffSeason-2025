@@ -2,10 +2,7 @@
 
 package frc.robot.subsystems.intake;
 
-import com.ctre.phoenix6.configs.CANrangeConfiguration;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.subsystems.intake.IntakeIOInputsAutoLogged;
-
 import org.littletonrobotics.junction.Logger;
 
 public class IntakeSubsystem extends SubsystemBase {
@@ -16,7 +13,6 @@ public class IntakeSubsystem extends SubsystemBase {
     this.io = io;
   }
 
-
   public void periodic() {
     io.updateInputs(inputs);
     Logger.processInputs("Intake", inputs);
@@ -24,10 +20,10 @@ public class IntakeSubsystem extends SubsystemBase {
 
   // Stop the indexer motor by setting it to neutral
   public void shutDown() {
-    io.setOpenLoop(0.0,0.0);
+    io.setOpenLoop(0.0, 0.0);
   }
 
   public void runVelocity(double indexerOutput, double intakeOutput) {
-    io.setOpenLoop(indexerOutput,intakeOutput);
+    io.setOpenLoop(indexerOutput, intakeOutput);
   }
 }
