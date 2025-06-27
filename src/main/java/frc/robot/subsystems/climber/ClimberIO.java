@@ -5,15 +5,19 @@ import org.littletonrobotics.junction.AutoLog;
 public interface ClimberIO {
   @AutoLog
   public static class ClimberIOInputs {
-    public double PositionRad = 0.0;
-    public double VelocityRadPerSec = 0.0;
-    public double AppliedVolts = 0.0;
-    public double CurrentAmps = 0.0;
+    public double ClawPositionRad = 0.0;
+    public double ClawVelocityRadPerSec = 0.0;
+    public double ClawAppliedVolts = 0.0;
+    public double ClawCurrentAmps = 0.0;
+    public double PivotPositionRad = 0.0;
+    public double PivotVelocityRadPerSec = 0.0;
+    public double PivotAppliedVolts = 0.0;
+    public double PivotCurrentAmps = 0.0;
   }
 
   /** Updates the set of loggable inputs. */
   public default void updateInputs(ClimberIOInputs inputs) {}
 
   /** Run the climber at the specified open loop value. */
-  public default void setOpenLoop(double output) {}
+  public default void setOpenLoop(double rollerOutput, double climberOutput) {}
 }

@@ -1,159 +1,138 @@
 package frc.robot.subsystems.intake;
 
+import com.ctre.phoenix6.BaseStatusSignal;
+import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.DutyCycleOut;
 import com.ctre.phoenix6.controls.VoltageOut;
+import com.ctre.phoenix6.hardware.ParentDevice;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
-import com.reduxrobotics.sensors.canandcolor.DigoutChannel.Index;
-
+import edu.wpi.first.math.util.Units;
+import edu.wpi.first.units.measure.Angle;
+import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Current;
-import frc.robot.constants.IntakeConstants;
+import edu.wpi.first.units.measure.Voltage;
+import frc.robot.IntakeConstants;
+import frc.robot.subsystems.intake.IntakeIO.IntakeIOInputs;
 
 public class IntakeIOTalonFX implements IntakeIO {
   // Hardware objects
-  private final TalonFX roller;
-  private final TalonFX pivot;
   private final TalonFX indexer;
-
-  private TalonFXConfiguration rollerConfigs = new TalonFXConfiguration();
-  private TalonFXConfiguration pivotConfigs = new TalonFXConfiguration();
+  private final TalonFX intake;
   private TalonFXConfiguration indexerConfigs = new TalonFXConfiguration();
+  private TalonFXConfiguration intakeConfigs = new TalonFXConfiguration();
 
   // Voltage control requests
   private final VoltageOut voltageRequest = new VoltageOut(0);
 
-  // Inputs from roller
-  //   private final StatusSignal<Angle> rollerPosition;
-  //   private final StatusSignal<AngularVelocity> rollerVelocity;
-  //   private final StatusSignal<Voltage> rollerAppliedVolts;
-  //   private final StatusSignal<Current> rollerCurrent;
+  // Inputs from indexer
+  private final StatusSignal<Angle> IndexerPosition;
+  private final StatusSignal<AngularVelocity> IndexerVelocity;
+  private final StatusSignal<Voltage> IndexerAppliedVolts;
+  private final StatusSignal<Current> IndexerCurrent;
 
-  //   private final StatusSignal<Angle> pivotPosition;
-  //   private final StatusSignal<AngularVelocity> pivotVelocity;
-  //   private final StatusSignal<Voltage> pivotAppliedVolts;
-  //   private final StatusSignal<Current> pivotCurrent;
+  // Inputs from intake
+  private final StatusSignal<Angle> IntakePosition;
+  private final StatusSignal<AngularVelocity> IntakeVelocity;
+  private final StatusSignal<Voltage> IntakeAppliedVolts;
+  private final StatusSignal<Current> IntakeCurrent;
 
   public IntakeIOTalonFX() {
-    roller = new TalonFX(IntakeConstants.rollerID, IntakeConstants.rollerCanName);
-    pivot = new TalonFX(IntakeConstants.pivotID, IntakeConstants.pivotCanName);
-    indexer = new TalonFX(IntakeConstants.indexerID, IntakeConstants.indexerCanName);
-
-    rollerConfigs.MotorOutput.withNeutralMode(
-        IntakeConstants.rollerNeutralmode_Coast 
-          ? NeutralModeValue.Coast 
-          : NeutralModeValue.Brake
-    );
-
-    rollerConfigs.MotorOutput.withInverted(
-        IntakeConstants.rollerCounterClockwisePositive
-          ? InvertedValue.CounterClockwise_Positive
-          : InvertedValue.Clockwise_Positive
-    );
-
-
-    pivotConfigs.MotorOutput.withNeutralMode(
-        IntakeConstants.pivotNeutralmode_Coast 
-          ? NeutralModeValue.Coast 
-          : NeutralModeValue.Brake
-    );
-    
-    pivotConfigs.MotorOutput.withInverted(
-        IntakeConstants.pivotCounterClockwisePositive
-          ? InvertedValue.CounterClockwise_Positive
-          : InvertedValue.Clockwise_Positive
-    );
-
-
+    indexer = new TalonFX(IntakeConstants.indexerID, "rio");
+    intake = new TalonFX(IntakeConstants.intakeID, "rio");
     indexerConfigs.MotorOutput.withNeutralMode(
-        IntakeConstants.pivotNeutralmode_Coast 
-          ? NeutralModeValue.Coast 
-          : NeutralModeValue.Brake
-    );
-    
-    indexerConfigs.MotorOutput.withInverted(
-        IntakeConstants.pivotCounterClockwisePositive
-          ? InvertedValue.CounterClockwise_Positive
-          : InvertedValue.Clockwise_Positive
-    );
+        IntakeConstants.indexer_neutralmode_Coast
+            ? NeutralModeValue.Coast
+            : NeutralModeValue.Brake);
 
+    // Set motor inversion based on desired rotation direction
+    indexerConfigs.MotorOutput.withInverted(
+        IntakeConstants.indexer_inverted_CounterClockwisePositive
+            ? InvertedValue.CounterClockwise_Positive
+            : InvertedValue.Clockwise_Positive);
 
     // Set PID and feedforward constants from constants file
-    rollerConfigs.Slot0.kP = IntakeConstants.kP;
-    rollerConfigs.Slot0.kI = IntakeConstants.kI;
-    rollerConfigs.Slot0.kD = IntakeConstants.kD;
-    rollerConfigs.Slot0.kA = IntakeConstants.kA;
-    rollerConfigs.Slot0.kS = IntakeConstants.kS;
-    rollerConfigs.Slot0.kV = IntakeConstants.kV;
+    indexerConfigs.Slot0.kP = IntakeConstants.indexer_kP;
+    indexerConfigs.Slot0.kI = IntakeConstants.indexer_kI;
+    indexerConfigs.Slot0.kD = IntakeConstants.indexer_kD;
+    indexerConfigs.Slot0.kA = IntakeConstants.indexer_kA;
+    indexerConfigs.Slot0.kS = IntakeConstants.indexer_kS;
+    indexerConfigs.Slot0.kV = IntakeConstants.indexer_kV;
+
+    intakeConfigs.MotorOutput.withNeutralMode(
+        IntakeConstants.intake_neutralmode_Coast ? NeutralModeValue.Coast : NeutralModeValue.Brake);
+
+    // Set motor inversion based on desired rotation direction
+    intakeConfigs.MotorOutput.withInverted(
+        IntakeConstants.intake_inverted_CounterClockwisePositive
+            ? InvertedValue.CounterClockwise_Positive
+            : InvertedValue.Clockwise_Positive);
+
+    // Set PID and feedforward constants from constants file
+    intakeConfigs.Slot0.kP = IntakeConstants.intake_kP;
+    intakeConfigs.Slot0.kI = IntakeConstants.intake_kI;
+    intakeConfigs.Slot0.kD = IntakeConstants.intake_kD;
+    intakeConfigs.Slot0.kA = IntakeConstants.intake_kA;
+    intakeConfigs.Slot0.kS = IntakeConstants.intake_kS;
+    intakeConfigs.Slot0.kV = IntakeConstants.intake_kV;
 
     // Apply the configuration to the motor
-    roller.getConfigurator().apply(rollerConfigs);
-
-    pivot.getConfigurator().apply(pivotConfigs);
-
     indexer.getConfigurator().apply(indexerConfigs);
+    intake.getConfigurator().apply(intakeConfigs);
 
-    // Create drive status signals
-    // rollerPosition = roller.getPosition();
-    // rollerVelocity = roller.getVelocity();
-    // rollerAppliedVolts = roller.getMotorVoltage();
-    // rollerCurrent = roller.getStatorCurrent();
+    // Create Indexer status signals
+    IndexerPosition = indexer.getPosition();
+    IndexerVelocity = indexer.getVelocity();
+    IndexerAppliedVolts = indexer.getMotorVoltage();
+    IndexerCurrent = indexer.getStatorCurrent();
 
-    // pivotPosition = pivot.getPosition();
-    // pivotVelocity = pivot.getVelocity();
-    // pivotAppliedVolts = pivot.getMotorVoltage();
-    // pivotCurrent = pivot.getStatorCurrent();
+    // Create Intake status signals
+    IntakePosition = intake.getPosition();
+    IntakeVelocity = intake.getVelocity();
+    IntakeAppliedVolts = intake.getMotorVoltage();
+    IntakeCurrent = intake.getStatorCurrent();
 
-    // BaseStatusSignal.setUpdateFrequencyForAll(50.0,
-    //                                 rollerVelocity, rollerAppliedVolts, rollerCurrent,
-    // rollerPosition,
-    //                                 pivotVelocity, pivotAppliedVolts, pivotCurrent,
-    // pivotPosition);
-    // //To be cooked
-    // ParentDevice.optimizeBusUtilizationForAll(roller, pivot);
+    BaseStatusSignal.setUpdateFrequencyForAll(
+        50.0,
+        IndexerVelocity,
+        IndexerAppliedVolts,
+        IndexerCurrent,
+        IndexerPosition,
+        IntakePosition,
+        IntakeVelocity,
+        IntakeAppliedVolts,
+        IntakeCurrent);
+    ParentDevice.optimizeBusUtilizationForAll(indexer, intake);
   }
 
   @Override
   public void updateInputs(IntakeIOInputs inputs) {
-    // BaseStatusSignal.refreshAll(rollerVelocity, rollerAppliedVolts, rollerCurrent,
-    // rollerPosition,
-    //                             pivotVelocity, pivotAppliedVolts, pivotCurrent, pivotPosition);
-    // Update roller inputs
-    inputs.RollerPositionRotation = roller.getPosition().getValueAsDouble();
-    inputs.RollerVelocityRPS = roller.getVelocity().getValueAsDouble();
-    inputs.RollerAppliedVolts = roller.getMotorVoltage().getValueAsDouble();
-    inputs.RollerCurrentAmps = roller.getSupplyCurrent().getValueAsDouble();
-
-    inputs.PivotPositionRotation = pivot.getPosition().getValueAsDouble();
-    inputs.PivotVelocityRPS = pivot.getVelocity().getValueAsDouble();
-    inputs.PivotAppliedVolts = pivot.getMotorVoltage().getValueAsDouble();
-    inputs.PivotCurrentAmps = pivot.getSupplyCurrent().getValueAsDouble();
-
-    inputs.IndexerPositionRotation = pivot.getPosition().getValueAsDouble();
-    inputs.IndexerVelocityRPS = pivot.getVelocity().getValueAsDouble();
-    inputs.IndexerAppliedVolts = pivot.getMotorVoltage().getValueAsDouble();
-    inputs.IndexerCurrentAmps = pivot.getSupplyCurrent().getValueAsDouble();
+    BaseStatusSignal.refreshAll(
+        IndexerVelocity,
+        IndexerAppliedVolts,
+        IndexerCurrent,
+        IndexerPosition,
+        IntakePosition,
+        IntakeVelocity,
+        IntakeAppliedVolts,
+        IntakeCurrent);
+    // Update indexer inputs
+    inputs.IndexerPositionRad = Units.rotationsToRadians(IndexerPosition.getValueAsDouble());
+    inputs.IndexerVelocityRadPerSec = Units.rotationsToRadians(IndexerVelocity.getValueAsDouble());
+    inputs.IndexerAppliedVolts = IndexerAppliedVolts.getValueAsDouble();
+    inputs.IndexerCurrentAmps = IndexerCurrent.getValueAsDouble();
+    // Update intake inputs
+    inputs.IntakePositionRad = Units.rotationsToRadians(IntakePosition.getValueAsDouble());
+    inputs.IntakeVelocityRadPerSec = Units.rotationsToRadians(IntakeVelocity.getValueAsDouble());
+    inputs.IntakeAppliedVolts = IntakeAppliedVolts.getValueAsDouble();
+    inputs.IndexerCurrentAmps = IndexerCurrent.getValueAsDouble();
   }
 
   @Override
-  public void setRollerVoltage(double output) {
-    roller.setVoltage(output);
+  public void setOpenLoop(double indexerOutput, double intakeOutput) {
+    indexer.setControl(new DutyCycleOut(indexerOutput));
+    intake.setControl(new DutyCycleOut(intakeOutput));
   }
-
-  @Override
-  public void setPivotVoltage(double output) {
-    pivot.setVoltage(output);
-  }
-
-  @Override
-  public void setIndexerVoltage(double output) {
-    indexer.setVoltage(output);
-  }
-
-  @Override
-  public void setPivotPosition(double output) {
-    pivot.setPosition(output);
-  }
-
 }

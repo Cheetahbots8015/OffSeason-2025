@@ -4,7 +4,6 @@ import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.DutyCycleOut;
-import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.hardware.ParentDevice;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.InvertedValue;
@@ -18,60 +17,110 @@ import frc.robot.constants.ClimberConstants;
 
 public class ClimberIOTalonFX implements ClimberIO {
   // Hardware objects
-  private final TalonFX climber;
-  private TalonFXConfiguration climberConfigs = new TalonFXConfiguration();
+  private final TalonFX claw;
+  private final TalonFX pivot;
+  private TalonFXConfiguration clawConfigs = new TalonFXConfiguration();
+  private TalonFXConfiguration pivotConfigs = new TalonFXConfiguration();
   // Voltage control requests
-  private final VoltageOut voltageRequest = new VoltageOut(0);
-  // Inputs from climber
-  private final StatusSignal<Angle> Position;
-  private final StatusSignal<AngularVelocity> Velocity;
-  private final StatusSignal<Voltage> AppliedVolts;
-  private final StatusSignal<Current> Current;
+
+  // Inputs from claw
+  private final StatusSignal<Angle> ClawPosition;
+  private final StatusSignal<AngularVelocity> ClawVelocity;
+  private final StatusSignal<Voltage> ClawAppliedVolts;
+  private final StatusSignal<Current> ClawCurrent;
+  private final StatusSignal<Angle> PivotPosition;
+  private final StatusSignal<AngularVelocity> PivotVelocity;
+  private final StatusSignal<Voltage> PivotAppliedVolts;
+  private final StatusSignal<Current> PivotCurrent;
 
   public ClimberIOTalonFX() {
-    climber = new TalonFX(ClimberConstants.climberID, "rio");
-    climberConfigs.MotorOutput.withNeutralMode(
-        ClimberConstants.neutralmode_Coast ? NeutralModeValue.Coast : NeutralModeValue.Brake);
+    claw = new TalonFX(ClimberConstants.clawID, "rio");
+    pivot = new TalonFX(ClimberConstants.pivotID, "rio");
+    clawConfigs.MotorOutput.withNeutralMode(
+        ClimberConstants.claw_neutralmode_Coast ? NeutralModeValue.Coast : NeutralModeValue.Brake);
 
     // Set motor inversion based on desired rotation direction
-    climberConfigs.MotorOutput.withInverted(
-        ClimberConstants.inverted_CounterClockwisePositive
+    clawConfigs.MotorOutput.withInverted(
+        ClimberConstants.pivot_inverted_CounterClockwisePositive
             ? InvertedValue.CounterClockwise_Positive
             : InvertedValue.Clockwise_Positive);
 
+    pivotConfigs.MotorOutput.withNeutralMode(
+        ClimberConstants.pivot_neutralmode_Coast ? NeutralModeValue.Coast : NeutralModeValue.Brake);
+
+    // Set motor inversion based on desired rotation direction
+    pivotConfigs.MotorOutput.withInverted(
+        ClimberConstants.pivot_inverted_CounterClockwisePositive
+            ? InvertedValue.CounterClockwise_Positive
+            : InvertedValue.Clockwise_Positive);
     // Set PID and feedforward constants from constants file
-    climberConfigs.Slot0.kP = ClimberConstants.kP;
-    climberConfigs.Slot0.kI = ClimberConstants.kI;
-    climberConfigs.Slot0.kD = ClimberConstants.kD;
-    climberConfigs.Slot0.kA = ClimberConstants.kA;
-    climberConfigs.Slot0.kS = ClimberConstants.kS;
-    climberConfigs.Slot0.kV = ClimberConstants.kV;
+    clawConfigs.Slot0.kP = ClimberConstants.clawkP;
+    clawConfigs.Slot0.kI = ClimberConstants.clawkI;
+    clawConfigs.Slot0.kD = ClimberConstants.clawkD;
+    clawConfigs.Slot0.kA = ClimberConstants.clawkA;
+    clawConfigs.Slot0.kS = ClimberConstants.clawkS;
+    clawConfigs.Slot0.kV = ClimberConstants.clawkV;
+
+    pivotConfigs.Slot0.kP = ClimberConstants.pivotkP;
+    pivotConfigs.Slot0.kI = ClimberConstants.pivotkI;
+    pivotConfigs.Slot0.kD = ClimberConstants.pivotkD;
+    pivotConfigs.Slot0.kA = ClimberConstants.pivotkA;
+    pivotConfigs.Slot0.kS = ClimberConstants.pivotkS;
+    pivotConfigs.Slot0.kV = ClimberConstants.pivotkV;
 
     // Apply the configuration to the motor
-    climber.getConfigurator().apply(climberConfigs);
+    claw.getConfigurator().apply(clawConfigs);
+    pivot.getConfigurator().apply(pivotConfigs);
 
     // Create drive status signals
-    Position = climber.getPosition();
-    Velocity = climber.getVelocity();
-    AppliedVolts = climber.getMotorVoltage();
-    Current = climber.getStatorCurrent();
+    ClawPosition = claw.getPosition();
+    ClawVelocity = claw.getVelocity();
+    ClawAppliedVolts = claw.getMotorVoltage();
+    ClawCurrent = claw.getStatorCurrent();
+    PivotPosition = pivot.getPosition();
+    PivotVelocity = pivot.getVelocity();
+    PivotAppliedVolts = pivot.getMotorVoltage();
+    PivotCurrent = pivot.getStatorCurrent();
 
-    BaseStatusSignal.setUpdateFrequencyForAll(50.0, Velocity, AppliedVolts, Current, Position);
-    ParentDevice.optimizeBusUtilizationForAll(climber);
+    BaseStatusSignal.setUpdateFrequencyForAll(
+        50.0,
+        ClawPosition,
+        ClawVelocity,
+        ClawAppliedVolts,
+        ClawCurrent,
+        PivotPosition,
+        PivotVelocity,
+        PivotAppliedVolts,
+        PivotCurrent);
+    ParentDevice.optimizeBusUtilizationForAll(claw, pivot);
   }
 
   @Override
   public void updateInputs(ClimberIOInputs inputs) {
-    BaseStatusSignal.refreshAll(Position, Velocity, AppliedVolts, Current);
-    // Update climber inputs
-    inputs.PositionRad = Units.rotationsToRadians(Position.getValueAsDouble());
-    inputs.VelocityRadPerSec = Units.rotationsToRadians(Velocity.getValueAsDouble());
-    inputs.AppliedVolts = AppliedVolts.getValueAsDouble();
-    inputs.CurrentAmps = Current.getValueAsDouble();
+    BaseStatusSignal.refreshAll(
+        ClawPosition,
+        ClawVelocity,
+        ClawAppliedVolts,
+        ClawCurrent,
+        PivotPosition,
+        PivotVelocity,
+        PivotAppliedVolts,
+        PivotCurrent);
+    // Update claw inputs
+    inputs.ClawPositionRad = Units.rotationsToRadians(ClawPosition.getValueAsDouble());
+    inputs.ClawVelocityRadPerSec = Units.rotationsToRadians(ClawVelocity.getValueAsDouble());
+    inputs.ClawAppliedVolts = ClawAppliedVolts.getValueAsDouble();
+    inputs.ClawCurrentAmps = ClawCurrent.getValueAsDouble();
+
+    inputs.PivotPositionRad = Units.rotationsToRadians(PivotPosition.getValueAsDouble());
+    inputs.PivotVelocityRadPerSec = Units.rotationsToRadians(PivotVelocity.getValueAsDouble());
+    inputs.PivotAppliedVolts = PivotAppliedVolts.getValueAsDouble();
+    inputs.PivotCurrentAmps = PivotCurrent.getValueAsDouble();
   }
 
   @Override
-  public void setOpenLoop(double output) {
-    climber.setControl(new DutyCycleOut(output));
+  public void setOpenLoop(double clawOutput, double pivotOutput) {
+    claw.setControl(new DutyCycleOut(clawOutput));
+    pivot.setControl(new DutyCycleOut(pivotOutput));
   }
 }
