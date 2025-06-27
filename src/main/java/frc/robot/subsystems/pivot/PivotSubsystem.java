@@ -8,8 +8,6 @@ import com.ctre.phoenix6.controls.NeutralOut;
 import com.ctre.phoenix6.controls.VelocityTorqueCurrentFOC;
 import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.hardware.TalonFX;
-import com.ctre.phoenix6.signals.InvertedValue;
-import com.ctre.phoenix6.signals.NeutralModeValue;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.PivotConstants;
 import org.littletonrobotics.junction.Logger;
@@ -36,53 +34,8 @@ public class PivotSubsystem extends SubsystemBase {
   private PivotIO io;
   private final PivotIOInputsAutoLogged inputs = new PivotIOInputsAutoLogged();
 
-  //   // Constructor: Configure motor settings upon subsystem creation
-  //   public PivotSubsystem() {
-  //     // Set the neutral mode (Coast or Brake) based on constants
-  //     pivotConfigs.MotorOutput.withNeutralMode(
-  //         PivotConstants.neutralmode_Coast ? NeutralModeValue.Coast : NeutralModeValue.Brake);
-
-  //     // Set motor inversion based on desired rotation direction
-  //     pivotConfigs.MotorOutput.withInverted(
-  //         PivotConstants.inverted_CounterClockwisePositive
-  //             ? InvertedValue.CounterClockwise_Positive
-  //             : InvertedValue.Clockwise_Positive);
-
-  //     // Set PID and feedforward constants from constants file
-  //     pivotConfigs.Slot0.kP = PivotConstants.kP;
-  //     pivotConfigs.Slot0.kI = PivotConstants.kI;
-  //     pivotConfigs.Slot0.kD = PivotConstants.kD;
-  //     pivotConfigs.Slot0.kA = PivotConstants.kA;
-  //     pivotConfigs.Slot0.kS = PivotConstants.kS;
-  //     pivotConfigs.Slot0.kV = PivotConstants.kV;
-
-  //     // Apply the configuration to the motor
-  //     pivot.getConfigurator().apply(pivotConfigs);
-  //   }
-
   public PivotSubsystem(PivotIO io) {
     this.io = io;
-
-    // Set the neutral mode (Coast or Brake) based on constants
-    pivotConfigs.MotorOutput.withNeutralMode(
-        PivotConstants.neutralmode_Coast ? NeutralModeValue.Coast : NeutralModeValue.Brake);
-
-    // Set motor inversion based on desired rotation direction
-    pivotConfigs.MotorOutput.withInverted(
-        PivotConstants.inverted_CounterClockwisePositive
-            ? InvertedValue.CounterClockwise_Positive
-            : InvertedValue.Clockwise_Positive);
-
-    // Set PID and feedforward constants from constants file
-    pivotConfigs.Slot0.kP = PivotConstants.kP;
-    pivotConfigs.Slot0.kI = PivotConstants.kI;
-    pivotConfigs.Slot0.kD = PivotConstants.kD;
-    pivotConfigs.Slot0.kA = PivotConstants.kA;
-    pivotConfigs.Slot0.kS = PivotConstants.kS;
-    pivotConfigs.Slot0.kV = PivotConstants.kV;
-
-    // Apply the configuration to the motor
-    pivot.getConfigurator().apply(pivotConfigs);
   }
 
   public void periodic() {
