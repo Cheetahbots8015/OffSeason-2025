@@ -22,10 +22,10 @@ public class ClimberSubsystem extends SubsystemBase {
 
   public ClimberSubsystem(ClimberIO io) {
     this.io = io;
-    SmartDashboard.putNumber("Climber's roller Up Duty Cycle Out Value", pivotUpDutyCycleOutValue);
+    SmartDashboard.putNumber("Climber's pivot Up Duty Cycle Out Value", pivotUpDutyCycleOutValue);
     SmartDashboard.putNumber(
-        "Climber's roller Down Duty Cycle Out Value", pivotDownDutyCycleOutValue);
-    SmartDashboard.putNumber("Climber Duty Cycle Out Value", clawDutyCycleOutValue);
+        "Climber's pivot Down Duty Cycle Out Value", pivotDownDutyCycleOutValue);
+    SmartDashboard.putNumber("Climber's claw Duty Cycle Out Value", clawDutyCycleOutValue);
 
     clawsysId =
         new SysIdRoutine(
@@ -51,12 +51,12 @@ public class ClimberSubsystem extends SubsystemBase {
     Logger.processInputs("Climber", inputs);
     pivotUpDutyCycleOutValue =
         SmartDashboard.getNumber(
-            "Climber's roller Up Duty Cycle Out Value", pivotUpDutyCycleOutValue);
+            "Climber's pivot Up Duty Cycle Out Value", pivotUpDutyCycleOutValue);
     pivotDownDutyCycleOutValue =
         SmartDashboard.getNumber(
-            "Climber's roller Down Duty Cycle Out Value", pivotDownDutyCycleOutValue);
+            "Climber's pivot Down Duty Cycle Out Value", pivotDownDutyCycleOutValue);
     clawDutyCycleOutValue =
-        SmartDashboard.getNumber("Climber Duty Cycle Out Value", clawDutyCycleOutValue);
+        SmartDashboard.getNumber("Climber's claw Duty Cycle Out Value", clawDutyCycleOutValue);
   }
 
   public void runDutyCyleOutValue(double rollerOutput, double climberOutput) {
