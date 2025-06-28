@@ -3,10 +3,10 @@ package frc.robot.commands;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.elevator.ElevatorSubsystem;
 
-public class ElevatorCommand extends Command {
+public class ElevatorUpCommand extends Command {
   private final ElevatorSubsystem m_subsystem;
 
-  public ElevatorCommand(ElevatorSubsystem subsystem) {
+  public ElevatorUpCommand(ElevatorSubsystem subsystem) {
     m_subsystem = subsystem;
     addRequirements(subsystem);
   }
@@ -16,7 +16,7 @@ public class ElevatorCommand extends Command {
 
   @Override
   public void execute() {
-    m_subsystem.defaultIdleVelocity();
+    m_subsystem.runPercentOutput(-0.2);
   }
 
   @Override
