@@ -16,9 +16,9 @@ public class ClimberSubsystem extends SubsystemBase {
   private final ClimberIOInputsAutoLogged inputs = new ClimberIOInputsAutoLogged();
   private final SysIdRoutine clawsysId;
   private final SysIdRoutine pivotsysId;
-  public double pivotUpDutyCycleOutValue = ClimberConstants.pivotUpDutyCycleOutValue;
-  public double pivotDownDutyCycleOutValue = ClimberConstants.pivotDownDutyCycleOutValue;
-  public double clawDutyCycleOutValue = ClimberConstants.clawDutyCycleOutValue;
+  private double pivotUpDutyCycleOutValue = ClimberConstants.pivotUpDutyCycleOutValue;
+  private double pivotDownDutyCycleOutValue = ClimberConstants.pivotDownDutyCycleOutValue;
+  private double clawDutyCycleOutValue = ClimberConstants.clawDutyCycleOutValue;
 
   public ClimberSubsystem(ClimberIO io) {
     this.io = io;
@@ -57,6 +57,18 @@ public class ClimberSubsystem extends SubsystemBase {
             "Climber's pivot Down Duty Cycle Out Value", pivotDownDutyCycleOutValue);
     clawDutyCycleOutValue =
         SmartDashboard.getNumber("Climber's claw Duty Cycle Out Value", clawDutyCycleOutValue);
+  }
+
+  public double getPivotUpDutyCycleOutValue() {
+    return pivotUpDutyCycleOutValue;
+  }
+
+  public double getPivotDownDutyCycleOutValue() {
+    return pivotDownDutyCycleOutValue;
+  }
+
+  public double getClawDutyCycleOutValue() {
+    return clawDutyCycleOutValue;
   }
 
   public void runDutyCyleOutValue(double rollerOutput, double climberOutput) {

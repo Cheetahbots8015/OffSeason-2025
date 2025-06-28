@@ -19,7 +19,7 @@ public class ClimbePivotDownCommand extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    m_subsystem.runDutyCyleOutValue(m_subsystem.pivotDownDutyCycleOutValue, 0.0);
+    m_subsystem.runDutyCyleOutValue(m_subsystem.getPivotDownDutyCycleOutValue(), 0.0);
   }
 
   // Called once the command ends or is interrupted.

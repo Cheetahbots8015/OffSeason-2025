@@ -16,8 +16,8 @@ public class ElevatorSubsystem extends SubsystemBase {
   private final ElevatorIOInputsAutoLogged inputs = new ElevatorIOInputsAutoLogged();
   private final SysIdRoutine sysId;
 
-  public double UpdutyCycleValue = ElevatorConstants.UpValue;
-  public double DowndutyCycleValue = ElevatorConstants.DownValue;
+  private double UpdutyCycleValue = ElevatorConstants.UpValue;
+  private double DowndutyCycleValue = ElevatorConstants.DownValue;
 
   public ElevatorSubsystem(ElevatorIO io) {
     this.io = io;
@@ -54,7 +54,15 @@ public class ElevatorSubsystem extends SubsystemBase {
   }
 
   public void defaultIdleVelocity() {
-    runPercentOutput(0.2);
+    runPercentOutput(ElevatorConstants.IdleDutyCycle);
+  }
+
+  public double getUpDutyCycleValue() {
+    return UpdutyCycleValue;
+  }
+
+  public double getDownDutyCycleValue() {
+    return DowndutyCycleValue;
   }
 
   public ElevatorIO getIO() {

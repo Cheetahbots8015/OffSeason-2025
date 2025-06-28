@@ -15,8 +15,8 @@ public class PivotSubsystem extends SubsystemBase {
   private final PivotIOInputsAutoLogged inputs = new PivotIOInputsAutoLogged();
   private final SysIdRoutine sysId;
 
-  public double ClockWisedutyCycleOutValue = PivotConstants.ClockWiseValue;
-  public double AntiClockWisedutyCycleOutValue = PivotConstants.AntiClockWiseValue;
+  private double ClockWisedutyCycleOutValue = PivotConstants.ClockWiseValue;
+  private double AntiClockWisedutyCycleOutValue = PivotConstants.AntiClockWiseValue;
 
   public PivotSubsystem(PivotIO io) {
     this.io = io;
@@ -48,12 +48,16 @@ public class PivotSubsystem extends SubsystemBase {
     io.pivotDutyCycleOut(0.0);
   }
 
-  public void runPercentOuput(double percentOutput) {
+  public void runDutyCycleOuput(double percentOutput) {
     io.pivotDutyCycleOut(percentOutput);
   }
 
-  public void defaultIdleVelocity() {
-    runPercentOuput(0.2);
+  public double getClockWiseDutyCycleOutValue() {
+    return ClockWisedutyCycleOutValue;
+  }
+
+  public double getAntiClockWiseDutyCycleOutValue() {
+    return AntiClockWisedutyCycleOutValue;
   }
 
   public PivotIO getIO() {

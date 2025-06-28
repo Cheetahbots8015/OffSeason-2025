@@ -16,7 +16,7 @@ public class ElevatorDownCommand extends Command {
 
   @Override
   public void execute() {
-    m_subsystem.runPercentOutput(m_subsystem.DowndutyCycleValue);
+    m_subsystem.runPercentOutput(m_subsystem.getDownDutyCycleValue());
   }
 
   @Override

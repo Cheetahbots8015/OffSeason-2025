@@ -15,6 +15,7 @@ public class PivotConstants {
   public static final double setPositionUpVoltage = 2;
   public static final double setPositionDownvoltage = -2;
   public static final double dutyCycleDeadband = 0.05;
+  public static final double statusUpdateFrequency = 50.0;
 
   public static final double ClockWiseValue = 0.2;
   public static final double AntiClockWiseValue = -0.2;

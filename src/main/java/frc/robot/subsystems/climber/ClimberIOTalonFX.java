@@ -83,7 +83,7 @@ public class ClimberIOTalonFX implements ClimberIO {
     PivotCurrent = pivot.getStatorCurrent();
 
     BaseStatusSignal.setUpdateFrequencyForAll(
-        50.0,
+        ClimberConstants.statusUpdateFrequency,
         ClawPosition,
         ClawVelocity,
         ClawAppliedVolts,
