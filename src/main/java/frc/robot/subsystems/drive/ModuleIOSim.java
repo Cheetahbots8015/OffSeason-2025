@@ -24,21 +24,21 @@ import edu.wpi.first.math.system.plant.LinearSystemId;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.simulation.DCMotorSim;
+import frc.robot.constants.DriveConstants;
 
 /**
  * Physics sim implementation of module IO. The sim models are configured using a set of module
  * constants from Phoenix. Simulation is always based on voltage control.
  */
 public class ModuleIOSim implements ModuleIO {
-  // TunerConstants doesn't support separate sim constants, so they are declared locally
-  private static final double DRIVE_KP = 0.05;
-  private static final double DRIVE_KD = 0.0;
-  private static final double DRIVE_KS = 0.0;
-  private static final double DRIVE_KV_ROT =
-      0.91035; // Same units as TunerConstants: (volt * secs) / rotation
+  // TunerConstants doesn't support separate sim constants, so they are declared in constants
+  private static final double DRIVE_KP = DriveConstants.simDriveKp;
+  private static final double DRIVE_KD = DriveConstants.simDriveKd;
+  private static final double DRIVE_KS = DriveConstants.simDriveKs;
+  private static final double DRIVE_KV_ROT = DriveConstants.simDriveKvRot;
   private static final double DRIVE_KV = 1.0 / Units.rotationsToRadians(1.0 / DRIVE_KV_ROT);
-  private static final double TURN_KP = 8.0;
-  private static final double TURN_KD = 0.0;
+  private static final double TURN_KP = DriveConstants.simTurnKp;
+  private static final double TURN_KD = DriveConstants.simTurnKd;
   private static final DCMotor DRIVE_GEARBOX = DCMotor.getKrakenX60Foc(1);
   private static final DCMotor TURN_GEARBOX = DCMotor.getKrakenX60Foc(1);
 

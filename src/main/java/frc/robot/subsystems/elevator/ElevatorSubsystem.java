@@ -54,7 +54,7 @@ public class ElevatorSubsystem extends SubsystemBase {
   }
 
   public void defaultIdleVelocity() {
-    runPercentOutput(0.2);
+    runPercentOutput(ElevatorConstants.IdleDutyCycle);
   }
 
   public ElevatorIO getIO() {
