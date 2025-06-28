@@ -44,6 +44,14 @@ public class IntakeSubsystem extends SubsystemBase {
     io.setArmVoltage(volts);
   }
 
+  public void setIntakeVoltage(double volts) {
+    io.setIntakeVoltage(volts);
+  }
+
+  public void setIndexerVoltage(double volts) {
+    io.setIndexerVoltage(volts);
+  }
+
   public boolean getCanRange() {
     return io.getCanRange();
   }
