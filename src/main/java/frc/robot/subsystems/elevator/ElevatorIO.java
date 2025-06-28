@@ -15,5 +15,7 @@ public interface ElevatorIO {
   public default void updateInputs(ElevatorIOInputs inputs) {}
 
   /** Run the roller at the specified open loop value. */
-  public default void setOpenLoop(double output) {}
+  public default void elevatorDutyCycleOut(double output) {}
+
+  public default void setElevatorVoltage(double volts) {}
 }
