@@ -2,11 +2,11 @@
 
 package frc.robot.subsystems.climber;
 
+import static edu.wpi.first.units.Units.Volt;
+
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
-
 import org.littletonrobotics.junction.Logger;
-import static edu.wpi.first.units.Units.Volt;
 
 public class ClimberSubsystem extends SubsystemBase {
 
@@ -18,24 +18,22 @@ public class ClimberSubsystem extends SubsystemBase {
   public ClimberSubsystem(ClimberIO io) {
     this.io = io;
     clawsysId =
-    new SysIdRoutine(
-        new SysIdRoutine.Config(
-            null,
-            null,
-            null,
-            (state) -> Logger.recordOutput("Climber/Claw/SysIdState", state.toString())),
-        new SysIdRoutine.Mechanism(
-            (voltage) -> setClawVoltage(voltage.in(Volt)), null, this));
+        new SysIdRoutine(
+            new SysIdRoutine.Config(
+                null,
+                null,
+                null,
+                (state) -> Logger.recordOutput("Climber/Claw/SysIdState", state.toString())),
+            new SysIdRoutine.Mechanism((voltage) -> setClawVoltage(voltage.in(Volt)), null, this));
 
     pivotsysId =
-    new SysIdRoutine(
-        new SysIdRoutine.Config(
-            null,
-            null,
-            null,
-            (state) -> Logger.recordOutput("Climber/Pivot/SysIdState", state.toString())),
-        new SysIdRoutine.Mechanism(
-            (voltage) -> setPivotVoltage(voltage.in(Volt)), null, this));
+        new SysIdRoutine(
+            new SysIdRoutine.Config(
+                null,
+                null,
+                null,
+                (state) -> Logger.recordOutput("Climber/Pivot/SysIdState", state.toString())),
+            new SysIdRoutine.Mechanism((voltage) -> setPivotVoltage(voltage.in(Volt)), null, this));
   }
 
   public void periodic() {
@@ -51,11 +49,11 @@ public class ClimberSubsystem extends SubsystemBase {
     io.setOpenLoop(0.0, 0.0);
   }
 
-  public void setClawVoltage(double volts){
+  public void setClawVoltage(double volts) {
     io.setClawVoltage(volts);
   }
-  
-  public void setPivotVoltage(double volts){
+
+  public void setPivotVoltage(double volts) {
     io.setPivotVoltage(volts);
   }
 }
