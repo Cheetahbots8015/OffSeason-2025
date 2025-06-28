@@ -22,7 +22,7 @@ public class IntakeSubsystem extends SubsystemBase {
                 null,
                 null,
                 null,
-                (state) -> Logger.recordOutput("Arm/SysIdState", state.toString())),
+                (state) -> Logger.recordOutput("Intake/Arm/SysIdState", state.toString())),
             new SysIdRoutine.Mechanism((voltage) -> setArmVoltage(voltage.in(Volt)), null, this));
   }
 
@@ -42,6 +42,10 @@ public class IntakeSubsystem extends SubsystemBase {
 
   public void setArmVoltage(double volts) {
     io.setArmVoltage(volts);
+  }
+
+  public boolean getCanRange() {
+    return io.getCanRange();
   }
 
   public Command sysIdQuasistatic(SysIdRoutine.Direction direction) {

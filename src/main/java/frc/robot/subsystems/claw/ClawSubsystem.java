@@ -2,27 +2,29 @@
 
 package frc.robot.subsystems.claw;
 
+import static edu.wpi.first.units.Units.Volt;
+
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import org.littletonrobotics.junction.Logger;
 
 public class ClawSubsystem extends SubsystemBase {
-  public enum clawIdleState {
-    in,
-    out,
-    stop
-  }
-
-  public enum climberIdleState {
-    in,
-    out,
-    stop
-  }
-
   private final ClawIO io;
   private final ClawIOInputsAutoLogged inputs = new ClawIOInputsAutoLogged();
+  private final SysIdRoutine sysId;
 
   public ClawSubsystem(ClawIO io) {
     this.io = io;
+    sysId =
+        new SysIdRoutine(
+            new SysIdRoutine.Config(
+                null,
+                null,
+                null,
+                (state) -> Logger.recordOutput("Claw/Intake/SysIdState", state.toString())),
+            new SysIdRoutine.Mechanism(
+                (voltage) -> setIntakeVoltage(voltage.in(Volt)), null, this));
   }
 
   public void periodic() {
@@ -30,8 +32,8 @@ public class ClawSubsystem extends SubsystemBase {
     Logger.processInputs("Claw", inputs);
   }
 
-  public void runVelocity(double clawOutput, double climberOutput) {
-    io.setOpenLoop(clawOutput, climberOutput);
+  public void runVelocity(double intakeOutput, double shooterOutput) {
+    io.setOpenLoop(intakeOutput, shooterOutput);
   }
 
   public void shutdown() {
@@ -48,5 +50,13 @@ public class ClawSubsystem extends SubsystemBase {
 
   public void setShooterVoltage(double volts) {
     io.setShooterVoltage(volts);
+  }
+
+  public Command sysIdQuasistatic(SysIdRoutine.Direction direction) {
+    return sysId.quasistatic(direction);
+  }
+
+  public Command sysIdDynamic(SysIdRoutine.Direction direction) {
+    return sysId.dynamic(direction);
   }
 }
