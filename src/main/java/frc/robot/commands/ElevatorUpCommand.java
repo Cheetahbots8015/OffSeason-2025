@@ -1,6 +1,7 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.ElevatorConstants;
 import frc.robot.subsystems.elevator.ElevatorSubsystem;
 
 public class ElevatorUpCommand extends Command {
@@ -16,7 +17,7 @@ public class ElevatorUpCommand extends Command {
 
   @Override
   public void execute() {
-    m_subsystem.runPercentOutput(-0.2);
+    m_subsystem.runPercentOutput(ElevatorConstants.UpValue);
   }
 
   @Override
