@@ -22,8 +22,6 @@ public interface ClawIO {
   public default void setOpenLoop(double intakeOutput, double shooterOutput) {}
 
   public default void setIntakeVoltage(double volts) {}
-  ;
 
   public default void setShooterVoltage(double volts) {}
-  ;
 }

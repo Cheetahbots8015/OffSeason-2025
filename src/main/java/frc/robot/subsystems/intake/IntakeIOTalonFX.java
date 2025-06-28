@@ -46,11 +46,12 @@ public class IntakeIOTalonFX implements IntakeIO {
 
   // Inputs from canrange
   private final StatusSignal<Boolean> Canrange;
+
   public IntakeIOTalonFX() {
     indexer = new TalonFX(IntakeConstants.indexerID, IntakeConstants.canName);
     intake = new TalonFX(IntakeConstants.intakeID, IntakeConstants.canName);
-    arm = new TalonFX(IntakeConstants.intakeID, IntakeConstants.canName);
-    canrange = new CANrange(IntakeConstants.canRangeID,IntakeConstants.canName);
+    arm = new TalonFX(IntakeConstants.armID, IntakeConstants.canName);
+    canrange = new CANrange(IntakeConstants.canRangeID, IntakeConstants.canName);
     indexerConfigs.MotorOutput.withNeutralMode(
         IntakeConstants.indexer_neutralmode_Coast
             ? NeutralModeValue.Coast
@@ -192,9 +193,11 @@ public class IntakeIOTalonFX implements IntakeIO {
   @Override
   public void setArmVoltage(double volts) {
     arm.setVoltage(volts);
-  };
+  }
+  ;
+
   @Override
-  public boolean getCanRange(){
+  public boolean getCanRange() {
     return Canrange.getValue();
   }
 }
