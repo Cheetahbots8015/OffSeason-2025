@@ -3,10 +3,10 @@ package frc.robot.commands;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.pivot.PivotSubsystem;
 
-public class PivotCommand extends Command {
+public class PivotClockWiseCommand extends Command {
   private final PivotSubsystem m_subsystem;
 
-  public PivotCommand(PivotSubsystem subsystem) {
+  public PivotClockWiseCommand(PivotSubsystem subsystem) {
     m_subsystem = subsystem;
     addRequirements(subsystem);
   }
@@ -29,3 +29,4 @@ public class PivotCommand extends Command {
     return false;
   }
 }
+
