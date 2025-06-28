@@ -15,7 +15,8 @@ import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Current;
 import edu.wpi.first.units.measure.Voltage;
-import frc.robot.IntakeConstants;
+import frc.robot.constants.IntakeConstants;
+import frc.robot.subsystems.intake.IntakeIO.IntakeIOInputs;
 
 public class IntakeIOTalonFX implements IntakeIO {
   // Hardware objects
@@ -52,9 +53,8 @@ public class IntakeIOTalonFX implements IntakeIO {
   public IntakeIOTalonFX() {
     indexer = new TalonFX(IntakeConstants.indexerID, IntakeConstants.canName);
     intake = new TalonFX(IntakeConstants.intakeID, IntakeConstants.canName);
-    arm = new TalonFX(IntakeConstants.intakeID, IntakeConstants.canName);
+    arm = new TalonFX(IntakeConstants.armID, IntakeConstants.canName);
     canrange = new CANrange(IntakeConstants.canRangeID, IntakeConstants.canName);
-
     indexerConfigs.MotorOutput.withNeutralMode(
         IntakeConstants.indexer_neutralmode_Coast
             ? NeutralModeValue.Coast
@@ -225,7 +225,16 @@ public class IntakeIOTalonFX implements IntakeIO {
   public void setArmVoltage(double volts) {
     arm.setVoltage(volts);
   }
-  ;
+
+  @Override
+  public void setIntakeVoltage(double volts) {
+    intake.setVoltage(volts);
+  }
+
+  @Override
+  public void setIndexerVoltage(double volts) {
+    indexer.setVoltage(volts);
+  }
 
   @Override
   public boolean getCanRange() {

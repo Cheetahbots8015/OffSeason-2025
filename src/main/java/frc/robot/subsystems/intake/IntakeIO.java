@@ -25,22 +25,17 @@ public interface IntakeIO {
 
   /** Updates the set of loggable inputs. */
   public default void updateInputs(IntakeIOInputs inputs) {}
-  ;
 
   /** Run the roller at the specified open loop value. */
   public default void setOpenLoop(double indexerOutput, double intakeOutput, double armOutput) {}
-  ;
 
   public default void setArmVoltage(double volts) {}
-  ;
+
+  public default void setIntakeVoltage(double volts) {}
+
+  public default void setIndexerVoltage(double volts) {}
 
   public default boolean getCanRange() {
     return false;
   }
-  ;
-
-  public default void setRollersOpenLoop(double indexerOutput, double intakeOutput){}
-
-  public default void setArmPositon(double position) {}
-  ;
 }

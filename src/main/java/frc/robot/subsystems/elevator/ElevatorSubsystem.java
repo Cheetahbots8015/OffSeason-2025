@@ -1,38 +1,75 @@
 package frc.robot.subsystems.elevator;
 
-import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.subsystems.elevator.ElevatorIO.ElevatorIOInputs;
+import static edu.wpi.first.units.Units.Volt;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
+import frc.robot.constants.ElevatorConstants;
 import org.littletonrobotics.junction.Logger;
 
 public class ElevatorSubsystem extends SubsystemBase {
 
   private final ElevatorIO io;
+
   private final ElevatorIOInputsAutoLogged inputs = new ElevatorIOInputsAutoLogged();
+  private final SysIdRoutine sysId;
+
+  public double UpdutyCycleValue = ElevatorConstants.UpValue;
+  public double DowndutyCycleValue = ElevatorConstants.DownValue;
 
   public ElevatorSubsystem(ElevatorIO io) {
     this.io = io;
+    SmartDashboard.putNumber("Elevator Up dutyCycle Value", UpdutyCycleValue);
+    SmartDashboard.putNumber("Elevator Down dutyCycle Value", DowndutyCycleValue);
+    sysId =
+        new SysIdRoutine(
+            new SysIdRoutine.Config(
+                null,
+                null,
+                null,
+                (state) -> Logger.recordOutput("Elevator/SysIdState", state.toString())),
+            new SysIdRoutine.Mechanism(
+                (voltage) -> setElevatorVoltage(voltage.in(Volt)), null, this));
   }
 
-  @Override
   public void periodic() {
     io.updateInputs(inputs);
     Logger.processInputs("Elevator", inputs);
+    UpdutyCycleValue = SmartDashboard.getNumber("Elevator Up dutyCycle Value", UpdutyCycleValue);
+    DowndutyCycleValue =
+        SmartDashboard.getNumber("Elevator Down dutyCycle Value", DowndutyCycleValue);
   }
 
-  public void runVelocity(double velocity) {
-    io.setOpenLoop(velocity);
+  /**
+   * @param percentOutput Output percentage, from -1.0 to 1.0
+   */
+  public void runPercentOutput(double percentOutput) {
+    io.elevatorDutyCycleOut(percentOutput);
   }
 
   public void shutdown() {
-    io.setOpenLoop(0.0);
+    io.elevatorDutyCycleOut(0.0);
   }
 
   public void defaultIdleVelocity() {
-    runVelocity(0.2);
+    runPercentOutput(0.2);
   }
 
-  public ElevatorIOInputs getElevatorIOInputs(){
-    return inputs;
+  public ElevatorIO getIO() {
+    return io;
+  }
+
+  public void setElevatorVoltage(double volts) {
+    io.setElevatorVoltage(volts);
+  }
+
+  public Command sysIdQuasistatic(SysIdRoutine.Direction direction) {
+    return sysId.quasistatic(direction);
+  }
+
+  public Command sysIdDynamic(SysIdRoutine.Direction direction) {
+    return sysId.dynamic(direction);
   }
 }
