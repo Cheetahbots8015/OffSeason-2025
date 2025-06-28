@@ -20,4 +20,8 @@ public interface ClawIO {
 
   /** Run the roller at the specified open loop value. */
   public default void setOpenLoop(double intakeOutput, double shooterOutput) {}
+
+  public default void setIntakeVoltage(double volts) {}
+
+  public default void setShooterVoltage(double volts) {}
 }
