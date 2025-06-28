@@ -3,10 +3,10 @@ package frc.robot.commands;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.pivot.PivotSubsystem;
 
-public class PivotOpenLoopCommand extends Command {
+public class PivotCommand extends Command {
   private final PivotSubsystem m_subsystem;
 
-  public PivotOpenLoopCommand(PivotSubsystem subsystem) {
+  public PivotCommand(PivotSubsystem subsystem) {
     m_subsystem = subsystem;
     addRequirements(subsystem);
   }
