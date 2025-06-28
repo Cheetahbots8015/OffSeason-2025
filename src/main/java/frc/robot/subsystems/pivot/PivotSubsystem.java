@@ -36,8 +36,7 @@ public class PivotSubsystem extends SubsystemBase {
   public void shutDown() {
     io.pivotDutyCycleOut(0.0);
   }
-  
-  
+
   public void runPercentOuput(double percentOutput) {
     io.pivotDutyCycleOut(percentOutput);
   }
