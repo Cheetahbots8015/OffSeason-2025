@@ -32,8 +32,8 @@ public class ClawSubsystem extends SubsystemBase {
     Logger.processInputs("Claw", inputs);
   }
 
-  public void runVelocity(double clawOutput, double climberOutput) {
-    io.setOpenLoop(clawOutput, climberOutput);
+  public void runVelocity(double intakeOutput, double shooterOutput) {
+    io.setOpenLoop(intakeOutput, shooterOutput);
   }
 
   public void shutdown() {
