@@ -21,7 +21,9 @@ public interface ClimberIO {
   /** Run the climber at the specified open loop value. */
   public default void setOpenLoop(double rollerOutput, double climberOutput) {}
 
-  public default void setClawVoltage(double volts){};
+  public default void setClawVoltage(double volts) {}
+  ;
 
-  public default void setPivotVoltage(double volts){};
+  public default void setPivotVoltage(double volts) {}
+  ;
 }
