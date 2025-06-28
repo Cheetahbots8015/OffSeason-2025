@@ -178,7 +178,8 @@ public class IntakeIOTalonFX implements IntakeIO {
   }
 
   @Override
-  public void setArmVoltage(double volts){
+  public void setArmVoltage(double volts) {
     arm.setVoltage(volts);
-  };
+  }
+  ;
 }

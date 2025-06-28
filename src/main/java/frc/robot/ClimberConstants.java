@@ -23,4 +23,8 @@ public class ClimberConstants {
   public static final double holdVoltage = 0.2;
   public static final double setPositionUpVoltage = 2;
   public static final double setPositionDownvoltage = -2;
+
+  public static final double rollerUpDutyCycleOutValue = -0.2;
+  public static final double rollerDownDutyCycleOutValue = 0.2;
+  public static final double climberDutyCycleOutValue = 0.2;
 }
