@@ -52,13 +52,6 @@ public class RobotContainer {
   // Dashboard inputs
   private final LoggedDashboardChooser<Command> autoChooser;
 
-
-  // Commands
-  private final Command ClawIntakeIn;
-  private final Command ClawIntakeOut;
-  private final Command ClawShooterIn;
-  private final Command ClawShooterOut;
-
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
     switch (Constants.currentMode) {
@@ -118,11 +111,6 @@ public class RobotContainer {
     autoChooser.addOption(
         "Drive SysId (Dynamic Reverse)", drive.sysIdDynamic(SysIdRoutine.Direction.kReverse));
 
-    // Commands
-    ClawIntakeIn = new ClawIntakeInCommand(clawSubsystem, 3);
-    ClawIntakeOut = new ClawIntakeInCommand(clawSubsystem, -3);
-    ClawShooterIn = new ClawShooterInCommand(clawSubsystem, 3);
-    ClawShooterOut = new ClawIntakeInCommand(clawSubsystem, -3);
     // Configure the button bindings
     configureButtonBindings();
   }
