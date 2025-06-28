@@ -22,8 +22,8 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
-import frc.robot.commands.ClawCommands.ClawIntakeOpenloopCommand;
-import frc.robot.commands.ClawCommands.ClawShooterOpenloopCommand;
+import frc.robot.commands.ClawCommands.ClawIntakeInCommand;
+import frc.robot.commands.ClawCommands.ClawShooterInCommand;
 import frc.robot.commands.DriveCommands;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.claw.ClawIOSim;
@@ -119,10 +119,10 @@ public class RobotContainer {
         "Drive SysId (Dynamic Reverse)", drive.sysIdDynamic(SysIdRoutine.Direction.kReverse));
 
     // Commands
-    ClawIntakeIn = new ClawIntakeOpenloopCommand(clawSubsystem, 3);
-    ClawIntakeOut = new ClawIntakeOpenloopCommand(clawSubsystem, -3);
-    ClawShooterIn = new ClawShooterOpenloopCommand(clawSubsystem, 3);
-    ClawShooterOut = new ClawIntakeOpenloopCommand(clawSubsystem, -3);
+    ClawIntakeIn = new ClawIntakeInCommand(clawSubsystem, 3);
+    ClawIntakeOut = new ClawIntakeInCommand(clawSubsystem, -3);
+    ClawShooterIn = new ClawShooterInCommand(clawSubsystem, 3);
+    ClawShooterOut = new ClawIntakeInCommand(clawSubsystem, -3);
     // Configure the button bindings
     configureButtonBindings();
   }
