@@ -17,14 +17,18 @@ import com.pathplanner.lib.auto.AutoBuilder;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.GenericHID;
-import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
+import frc.robot.commands.ClawCommands.ClawIntakeOpenloopCommand;
+import frc.robot.commands.ClawCommands.ClawShooterOpenloopCommand;
 import frc.robot.commands.DriveCommands;
 import frc.robot.generated.TunerConstants;
+import frc.robot.subsystems.claw.ClawIOSim;
+import frc.robot.subsystems.claw.ClawIOTalonFX;
+import frc.robot.subsystems.claw.ClawSubsystem;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.drive.GyroIO;
 import frc.robot.subsystems.drive.ModuleIO;
@@ -40,14 +44,19 @@ import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 public class RobotContainer {
   // Subsystems
   private final Drive drive;
-
-  final Joystick joystick = new Joystick(0);
+  private final ClawSubsystem clawSubsystem;
 
   // Controller
   private final CommandXboxController controller = new CommandXboxController(0);
 
   // Dashboard inputs
   private final LoggedDashboardChooser<Command> autoChooser;
+
+  // Commands
+  private final Command ClawIntakeIn;
+  private final Command ClawIntakeOut;
+  private final Command ClawShooterIn;
+  private final Command ClawShooterOut;
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
@@ -61,6 +70,7 @@ public class RobotContainer {
                 new ModuleIOSim(TunerConstants.FrontRight),
                 new ModuleIOSim(TunerConstants.BackLeft),
                 new ModuleIOSim(TunerConstants.BackRight));
+        clawSubsystem = new ClawSubsystem(new ClawIOTalonFX());
         break;
 
       case SIM:
@@ -72,6 +82,7 @@ public class RobotContainer {
                 new ModuleIOSim(TunerConstants.FrontRight),
                 new ModuleIOSim(TunerConstants.BackLeft),
                 new ModuleIOSim(TunerConstants.BackRight));
+        clawSubsystem = new ClawSubsystem(new ClawIOSim());
         break;
 
       default:
@@ -83,6 +94,7 @@ public class RobotContainer {
                 new ModuleIO() {},
                 new ModuleIO() {},
                 new ModuleIO() {});
+        clawSubsystem = new ClawSubsystem(new ClawIOTalonFX());
         break;
     }
 
@@ -104,6 +116,12 @@ public class RobotContainer {
         "Drive SysId (Dynamic Forward)", drive.sysIdDynamic(SysIdRoutine.Direction.kForward));
     autoChooser.addOption(
         "Drive SysId (Dynamic Reverse)", drive.sysIdDynamic(SysIdRoutine.Direction.kReverse));
+
+    // Commands
+    ClawIntakeIn = new ClawIntakeOpenloopCommand(clawSubsystem, 3);
+    ClawIntakeOut = new ClawIntakeOpenloopCommand(clawSubsystem, -3);
+    ClawShooterIn = new ClawShooterOpenloopCommand(clawSubsystem, 3);
+    ClawShooterOut = new ClawIntakeOpenloopCommand(clawSubsystem, -3);
     // Configure the button bindings
     configureButtonBindings();
   }

@@ -31,7 +31,11 @@ public interface IntakeIO {
   public default void setOpenLoop(double indexerOutput, double intakeOutput, double armOutput) {}
   ;
 
-  public default void setArmVoltage(double volts){};
+  public default void setArmVoltage(double volts) {}
+  ;
 
-  public default boolean getCanRange(){return false;};
+  public default boolean getCanRange() {
+    return false;
+  }
+  ;
 }

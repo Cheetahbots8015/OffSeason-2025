@@ -125,12 +125,12 @@ public class ClimberIOTalonFX implements ClimberIO {
   }
 
   @Override
-  public void setClawVoltage(double volts){
+  public void setClawVoltage(double volts) {
     claw.setVoltage(volts);
   }
 
   @Override
-  public void setPivotVoltage(double volts){
+  public void setPivotVoltage(double volts) {
     pivot.setVoltage(volts);
   }
 }
