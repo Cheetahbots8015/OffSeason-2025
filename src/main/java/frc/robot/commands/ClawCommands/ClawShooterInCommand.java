@@ -3,11 +3,11 @@ package frc.robot.commands.ClawCommands;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.claw.ClawSubsystem;
 
-public class ClawShooterOpenloopCommand extends Command {
+public class ClawShooterInCommand extends Command {
   private final ClawSubsystem m_subsystem;
   private double m_volts;
 
-  public ClawShooterOpenloopCommand(ClawSubsystem subsystem, double volts) {
+  public ClawShooterInCommand(ClawSubsystem subsystem, double volts) {
     m_subsystem = subsystem;
     m_volts = volts;
     addRequirements(subsystem);
@@ -23,7 +23,7 @@ public class ClawShooterOpenloopCommand extends Command {
 
   @Override
   public void end(boolean interrupted) {
-    m_subsystem.setIntakeVoltage(0.0);
+    m_subsystem.setShooterVoltage(0.0);
   }
 
   @Override

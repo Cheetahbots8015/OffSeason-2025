@@ -1,13 +1,13 @@
-package frc.robot.commands.ClawCommands;
+package frc.robot.commands.IntakeCommands;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.subsystems.claw.ClawSubsystem;
+import frc.robot.subsystems.intake.IntakeSubsystem;
 
-public class ClawIntakeOpenloopCommand extends Command {
-  private final ClawSubsystem m_subsystem;
+public class IntakeArmOutCommand extends Command {
+  private final IntakeSubsystem m_subsystem;
   private double m_volts;
 
-  public ClawIntakeOpenloopCommand(ClawSubsystem subsystem, double volts) {
+  public IntakeArmOutCommand(IntakeSubsystem subsystem, double volts) {
     m_subsystem = subsystem;
     m_volts = volts;
     addRequirements(subsystem);
@@ -18,12 +18,12 @@ public class ClawIntakeOpenloopCommand extends Command {
 
   @Override
   public void execute() {
-    m_subsystem.setIntakeVoltage(m_volts);
+    m_subsystem.setArmVoltage(-m_volts);
   }
 
   @Override
   public void end(boolean interrupted) {
-    m_subsystem.setIntakeVoltage(0.0);
+    m_subsystem.setArmVoltage(0.0);
   }
 
   @Override

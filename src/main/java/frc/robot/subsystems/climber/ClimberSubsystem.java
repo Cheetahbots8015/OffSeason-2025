@@ -4,8 +4,10 @@ package frc.robot.subsystems.climber;
 
 import static edu.wpi.first.units.Units.Volt;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
+import frc.robot.ClimberConstants;
 import org.littletonrobotics.junction.Logger;
 
 public class ClimberSubsystem extends SubsystemBase {
@@ -14,9 +16,17 @@ public class ClimberSubsystem extends SubsystemBase {
   private final ClimberIOInputsAutoLogged inputs = new ClimberIOInputsAutoLogged();
   private final SysIdRoutine clawsysId;
   private final SysIdRoutine pivotsysId;
+  public double pivotUpDutyCycleOutValue = ClimberConstants.pivotUpDutyCycleOutValue;
+  public double pivotDownDutyCycleOutValue = ClimberConstants.pivotDownDutyCycleOutValue;
+  public double clawDutyCycleOutValue = ClimberConstants.clawDutyCycleOutValue;
 
   public ClimberSubsystem(ClimberIO io) {
     this.io = io;
+    SmartDashboard.putNumber("Climber's pivot Up Duty Cycle Out Value", pivotUpDutyCycleOutValue);
+    SmartDashboard.putNumber(
+        "Climber's pivot Down Duty Cycle Out Value", pivotDownDutyCycleOutValue);
+    SmartDashboard.putNumber("Climber's claw Duty Cycle Out Value", clawDutyCycleOutValue);
+
     clawsysId =
         new SysIdRoutine(
             new SysIdRoutine.Config(
@@ -39,9 +49,17 @@ public class ClimberSubsystem extends SubsystemBase {
   public void periodic() {
     io.updateInputs(inputs);
     Logger.processInputs("Climber", inputs);
+    pivotUpDutyCycleOutValue =
+        SmartDashboard.getNumber(
+            "Climber's pivot Up Duty Cycle Out Value", pivotUpDutyCycleOutValue);
+    pivotDownDutyCycleOutValue =
+        SmartDashboard.getNumber(
+            "Climber's pivot Down Duty Cycle Out Value", pivotDownDutyCycleOutValue);
+    clawDutyCycleOutValue =
+        SmartDashboard.getNumber("Climber's claw Duty Cycle Out Value", clawDutyCycleOutValue);
   }
 
-  public void runVelocity(double rollerOutput, double climberOutput) {
+  public void runDutyCyleOutValue(double rollerOutput, double climberOutput) {
     io.setOpenLoop(rollerOutput, climberOutput);
   }
 

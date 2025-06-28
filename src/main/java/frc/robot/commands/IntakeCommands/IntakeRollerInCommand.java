@@ -1,0 +1,33 @@
+package frc.robot.commands.IntakeCommands;
+
+import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.subsystems.intake.IntakeSubsystem;
+
+public class IntakeRollerInCommand extends Command {
+  private final IntakeSubsystem m_subsystem;
+  private double m_volts;
+
+  public IntakeRollerInCommand(IntakeSubsystem subsystem, double volts) {
+    m_subsystem = subsystem;
+    m_volts = volts;
+    addRequirements(subsystem);
+  }
+
+  @Override
+  public void initialize() {}
+
+  @Override
+  public void execute() {
+    m_subsystem.setIntakeVoltage(m_volts);
+  }
+
+  @Override
+  public void end(boolean interrupted) {
+    m_subsystem.setIntakeVoltage(0.0);
+  }
+
+  @Override
+  public boolean isFinished() {
+    return false;
+  }
+}

@@ -72,7 +72,7 @@ public class ElevatorIOTalonFX implements ElevatorIO {
   }
 
   @Override
-  public void setOpenLoop(double output) {
+  public void elevatorDutyCycleOut(double output) {
     elevator.setControl(new DutyCycleOut(output));
   }
 }
