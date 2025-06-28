@@ -1,4 +1,4 @@
-package frc.robot;
+package frc.robot.constants;
 
 public class PivotConstants {
   public static final int pivotID = 7;

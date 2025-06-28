@@ -14,7 +14,7 @@ import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Current;
 import edu.wpi.first.units.measure.Voltage;
-import frc.robot.PivotConstants;
+import frc.robot.constants.PivotConstants;
 import frc.robot.subsystems.pivot.PivotIO.PivotIOInputs;
 
 public class PivotIOTalonFX implements PivotIO {

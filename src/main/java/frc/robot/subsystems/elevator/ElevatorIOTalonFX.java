@@ -14,7 +14,7 @@ import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Current;
 import edu.wpi.first.units.measure.Voltage;
-import frc.robot.ElevatorConstants;
+import frc.robot.constants.ElevatorConstants;
 import frc.robot.subsystems.elevator.ElevatorIO.ElevatorIOInputs;
 
 public class ElevatorIOTalonFX implements ElevatorIO {

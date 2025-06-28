@@ -13,7 +13,7 @@ import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Current;
 import edu.wpi.first.units.measure.Voltage;
-import frc.robot.IntakeConstants;
+import frc.robot.constants.IntakeConstants;
 import frc.robot.subsystems.intake.IntakeIO.IntakeIOInputs;
 
 public class IntakeIOTalonFX implements IntakeIO {

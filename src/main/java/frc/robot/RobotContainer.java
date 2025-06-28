@@ -25,6 +25,7 @@ import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.commands.ClawCommands.ClawIntakeOpenloopCommand;
 import frc.robot.commands.ClawCommands.ClawShooterOpenloopCommand;
 import frc.robot.commands.DriveCommands;
+import frc.robot.constants.ContainerConstants;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.claw.ClawIOSim;
 import frc.robot.subsystems.claw.ClawIOTalonFX;
@@ -60,7 +61,7 @@ public class RobotContainer {
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
-    switch (Constants.currentMode) {
+    switch (ContainerConstants.currentMode) {
       case REAL:
         // Real robot, instantiate hardware IO implementations
         drive =
