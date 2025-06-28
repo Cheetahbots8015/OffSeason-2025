@@ -48,12 +48,8 @@ public class PivotSubsystem extends SubsystemBase {
     io.pivotDutyCycleOut(0.0);
   }
 
-  public void runPercentOuput(double percentOutput) {
+  public void runDutyCycleOuput(double percentOutput) {
     io.pivotDutyCycleOut(percentOutput);
-  }
-
-  public void defaultIdleVelocity() {
-    runPercentOuput(PivotConstants.ClockWiseValue);
   }
 
   public PivotIO getIO() {

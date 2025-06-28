@@ -16,7 +16,7 @@ public class PivotClockWiseCommand extends Command {
 
   @Override
   public void execute() {
-    m_subsystem.runPercentOuput(m_subsystem.AntiClockWisedutyCycleOutValue);
+    m_subsystem.runDutyCycleOuput(m_subsystem.AntiClockWisedutyCycleOutValue);
   }
 
   @Override
