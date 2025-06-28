@@ -50,7 +50,7 @@ public class IntakeIOTalonFX implements IntakeIO {
   public IntakeIOTalonFX() {
     indexer = new TalonFX(IntakeConstants.indexerID, IntakeConstants.canName);
     intake = new TalonFX(IntakeConstants.intakeID, IntakeConstants.canName);
-    arm = new TalonFX(IntakeConstants.intakeID, IntakeConstants.canName);
+    arm = new TalonFX(IntakeConstants.armID, IntakeConstants.canName);
     canrange = new CANrange(IntakeConstants.canRangeID, IntakeConstants.canName);
     indexerConfigs.MotorOutput.withNeutralMode(
         IntakeConstants.indexer_neutralmode_Coast
