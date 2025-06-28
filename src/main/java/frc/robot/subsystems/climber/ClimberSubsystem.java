@@ -16,9 +16,9 @@ public class ClimberSubsystem extends SubsystemBase {
   private final ClimberIOInputsAutoLogged inputs = new ClimberIOInputsAutoLogged();
   private final SysIdRoutine clawsysId;
   private final SysIdRoutine pivotsysId;
-  public double pivotUpDutyCycleOutValue = ClimberConstants.rollerUpDutyCycleOutValue;
-  public double pivotDownDutyCycleOutValue = ClimberConstants.rollerDownDutyCycleOutValue;
-  public double clawDutyCycleOutValue = ClimberConstants.climberDutyCycleOutValue;
+  public double pivotUpDutyCycleOutValue = ClimberConstants.pivotUpDutyCycleOutValue;
+  public double pivotDownDutyCycleOutValue = ClimberConstants.pivotDownDutyCycleOutValue;
+  public double clawDutyCycleOutValue = ClimberConstants.clawDutyCycleOutValue;
 
   public ClimberSubsystem(ClimberIO io) {
     this.io = io;
