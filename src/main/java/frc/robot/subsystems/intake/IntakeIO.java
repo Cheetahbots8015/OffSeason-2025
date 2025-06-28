@@ -35,6 +35,8 @@ public interface IntakeIO {
 
   public default void setIndexerVoltage(double volts) {}
 
+  public default void setArmPosition(double position) {}
+
   public default boolean getCanRange() {
     return false;
   }

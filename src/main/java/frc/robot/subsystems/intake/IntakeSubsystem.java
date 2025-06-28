@@ -7,8 +7,7 @@ import static edu.wpi.first.units.Units.Volt;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
-import frc.robot.IntakeConstants;
-
+import frc.robot.constants.IntakeConstants;
 import org.littletonrobotics.junction.Logger;
 
 public class IntakeSubsystem extends SubsystemBase {
@@ -32,7 +31,6 @@ public class IntakeSubsystem extends SubsystemBase {
   public void periodic() {
     io.updateInputs(inputs);
     Logger.processInputs("Intake", inputs);
-    
   }
 
   // Stop the indexer motor by setting it to neutral
@@ -69,22 +67,25 @@ public class IntakeSubsystem extends SubsystemBase {
   }
 
   public void armDown() {
-    io.setArmPositon(IntakeConstants.armDownPosition);
+    io.setArmPosition(IntakeConstants.armDownPosition);
   }
 
   public void armHome() {
-    io.setArmPositon(IntakeConstants.armHomePosition);
+    io.setArmPosition(IntakeConstants.armHomePosition);
   }
 
   public void rollerIntake() {
-    io.setRollersOpenLoop(IntakeConstants.intakingDutyCycleOut, IntakeConstants.indexerDutyCycleOut);
+    io.setIntakeVoltage(IntakeConstants.intakingVoltage);
+    io.setIndexerVoltage(IntakeConstants.indexerVoltage);
   }
 
   public void rollerVomit() {
-    io.setRollersOpenLoop(-IntakeConstants.intakingDutyCycleOut, -IntakeConstants.indexerDutyCycleOut);
+    io.setIntakeVoltage(-IntakeConstants.intakingVoltage);
+    io.setIndexerVoltage(-IntakeConstants.indexerVoltage);
   }
 
   public void rollerStop() {
-    io.setRollersOpenLoop(0, 0);
+    io.setIntakeVoltage(0.0);
+    io.setIndexerVoltage(0.0);
   }
 }

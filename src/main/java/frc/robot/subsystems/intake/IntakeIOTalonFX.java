@@ -216,12 +216,6 @@ public class IntakeIOTalonFX implements IntakeIO {
   }
 
   @Override
-  public void setRollersOpenLoop(double indexerOutput, double intakeOutput){
-    indexer.setControl(new DutyCycleOut(indexerOutput));
-    intake.setControl(new DutyCycleOut(intakeOutput));
-  }
-
-  @Override
   public void setArmVoltage(double volts) {
     arm.setVoltage(volts);
   }
