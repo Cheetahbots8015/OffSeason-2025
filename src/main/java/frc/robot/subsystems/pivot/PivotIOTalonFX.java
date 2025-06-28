@@ -57,7 +57,8 @@ public class PivotIOTalonFX implements PivotIO {
     AppliedVolts = pivot.getMotorVoltage();
     Current = pivot.getStatorCurrent();
 
-    BaseStatusSignal.setUpdateFrequencyForAll(50.0, Velocity, AppliedVolts, Current, Position);
+    BaseStatusSignal.setUpdateFrequencyForAll(
+        PivotConstants.statusUpdateFrequency, Velocity, AppliedVolts, Current, Position);
     ParentDevice.optimizeBusUtilizationForAll(pivot);
   }
 

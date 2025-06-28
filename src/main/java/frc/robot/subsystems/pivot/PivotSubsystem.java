@@ -53,7 +53,7 @@ public class PivotSubsystem extends SubsystemBase {
   }
 
   public void defaultIdleVelocity() {
-    runPercentOuput(0.2);
+    runPercentOuput(PivotConstants.ClockWiseValue);
   }
 
   public PivotIO getIO() {

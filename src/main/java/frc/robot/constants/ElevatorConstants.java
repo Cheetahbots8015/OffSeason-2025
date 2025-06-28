@@ -15,4 +15,6 @@ public class ElevatorConstants {
 
   public static final double UpValue = 2.0;
   public static final double DownValue = -2.0;
+  public static final double IdleDutyCycle = 0.2;
+  public static final double statusUpdateFrequency = 50.0;
 }

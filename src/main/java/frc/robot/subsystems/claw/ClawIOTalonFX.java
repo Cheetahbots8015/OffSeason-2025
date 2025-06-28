@@ -76,7 +76,7 @@ public class ClawIOTalonFX implements ClawIO {
     ShooterCurrent = shooter.getStatorCurrent();
 
     BaseStatusSignal.setUpdateFrequencyForAll(
-        50.0,
+        ClawConstants.statusUpdateFrequency,
         IntakePosition,
         IntakeVelocity,
         IntakeAppliedVolts,

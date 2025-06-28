@@ -23,6 +23,7 @@ public class ClimberConstants {
   public static final double holdVoltage = 0.2;
   public static final double setPositionUpVoltage = 2;
   public static final double setPositionDownvoltage = -2;
+  public static final double statusUpdateFrequency = 50.0;
 
   public static final double pivotUpDutyCycleOutValue = -0.2;
   public static final double pivotDownDutyCycleOutValue = 0.2;

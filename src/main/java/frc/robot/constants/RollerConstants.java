@@ -19,4 +19,5 @@ public class RollerConstants {
   public static final double climberkA = 0.0;
   public static final double climberkS = 0.0;
   public static final double climberkV = 0.0;
+  public static final double statusUpdateFrequency = 50.0;
 }
