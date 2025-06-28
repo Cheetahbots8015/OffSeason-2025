@@ -15,7 +15,6 @@ import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Current;
 import edu.wpi.first.units.measure.Voltage;
 import frc.robot.ClawConstants;
-import frc.robot.ClawConstants;
 
 public class ClawIOTalonFX implements ClawIO {
   // Hardware objects
@@ -116,5 +115,16 @@ public class ClawIOTalonFX implements ClawIO {
   public void setOpenLoop(double output, double shooterOutput) {
 
     intake.setControl(new DutyCycleOut(output));
+  }
+
+  // SysId methods
+  @Override
+  public void setIntakeVoltage(double volts) {
+    intake.setControl(voltageRequest.withOutput(volts));
+  }
+
+  @Override
+  public void setShooterVoltage(double volts) {
+    shooter.setControl(voltageRequest.withOutput(volts));
   }
 }

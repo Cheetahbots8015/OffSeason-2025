@@ -1,31 +1,41 @@
-// RollerSubsystem - Subsystem to control a single TalonFX motor for a roller
+// ClimberSubsystem - Subsystem to control a single TalonFX motor for a roller
 
 package frc.robot.subsystems.climber;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
+
 import org.littletonrobotics.junction.Logger;
+import static edu.wpi.first.units.Units.Volt;
 
 public class ClimberSubsystem extends SubsystemBase {
-  public enum rollerIdleState {
-    in,
-    out,
-    stop
-  }
-
-  public enum climberIdleState {
-    in,
-    out,
-    stop
-  }
 
   private final ClimberIO io;
   private final ClimberIOInputsAutoLogged inputs = new ClimberIOInputsAutoLogged();
-  private rollerIdleState rollersystemIdleState = rollerIdleState.stop;
-  private climberIdleState climbersystemIdleState = climberIdleState.stop;
-  private double rol = 0.0, cli = 0.0;
+  private final SysIdRoutine clawsysId;
+  private final SysIdRoutine pivotsysId;
 
   public ClimberSubsystem(ClimberIO io) {
     this.io = io;
+    clawsysId =
+    new SysIdRoutine(
+        new SysIdRoutine.Config(
+            null,
+            null,
+            null,
+            (state) -> Logger.recordOutput("Climber/Claw/SysIdState", state.toString())),
+        new SysIdRoutine.Mechanism(
+            (voltage) -> setClawVoltage(voltage.in(Volt)), null, this));
+
+    pivotsysId =
+    new SysIdRoutine(
+        new SysIdRoutine.Config(
+            null,
+            null,
+            null,
+            (state) -> Logger.recordOutput("Climber/Pivot/SysIdState", state.toString())),
+        new SysIdRoutine.Mechanism(
+            (voltage) -> setPivotVoltage(voltage.in(Volt)), null, this));
   }
 
   public void periodic() {
@@ -37,38 +47,15 @@ public class ClimberSubsystem extends SubsystemBase {
     io.setOpenLoop(rollerOutput, climberOutput);
   }
 
-  public void defaultIdelVelocity() {
-    if (rollersystemIdleState == rollerIdleState.in) {
-      rol = 0.1;
-    } else if (rollersystemIdleState == rollerIdleState.out) {
-      rol = -0.1;
-    } else {
-      rol = 0;
-    }
-    if (climbersystemIdleState == climberIdleState.in) {
-      cli = 0.1;
-    } else if (climbersystemIdleState == climberIdleState.out) {
-      cli = -0.1;
-    } else {
-      cli = 0;
-    }
-    io.setOpenLoop(rol, cli);
-  }
-
-  public void setSystemIdleState(rollerIdleState state, climberIdleState state2) {
-    rollersystemIdleState = state;
-    climbersystemIdleState = state2;
-  }
-
-  public rollerIdleState getrollerSystemIdleState() {
-    return rollersystemIdleState;
-  }
-
-  public climberIdleState getclimberSystemIdleState() {
-    return climbersystemIdleState;
-  }
-
   public void shutdown() {
     io.setOpenLoop(0.0, 0.0);
+  }
+
+  public void setClawVoltage(double volts){
+    io.setClawVoltage(volts);
+  }
+  
+  public void setPivotVoltage(double volts){
+    io.setPivotVoltage(volts);
   }
 }
