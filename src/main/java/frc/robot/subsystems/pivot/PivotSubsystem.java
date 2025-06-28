@@ -34,15 +34,16 @@ public class PivotSubsystem extends SubsystemBase {
 
   // Stop the indexer motor by setting it to neutral
   public void shutDown() {
-    io.setOpenLoop(0.0);
+    io.pivotDutyCycleOut(0.0);
   }
-
-  public void runVelocity(double velocity) {
-    io.setOpenLoop(velocity);
+  
+  
+  public void runPercentOuput(double percentOutput) {
+    io.pivotDutyCycleOut(percentOutput);
   }
 
   public void defaultIdleVelocity() {
-    runVelocity(0.2);
+    runPercentOuput(0.2);
   }
 
   public PivotIO getIO() {

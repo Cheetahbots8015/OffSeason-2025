@@ -15,7 +15,7 @@ public interface PivotIO {
   public default void updateInputs(PivotIOInputs inputs) {}
 
   /** Run the roller at the specified open loop value. */
-  public default void setOpenLoop(double output) {}
+  public default void pivotDutyCycleOut(double output) {}
 
   public default void setPivotVoltage(double volts) {}
 }

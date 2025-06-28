@@ -72,7 +72,7 @@ public class PivotIOTalonFX implements PivotIO {
   }
 
   @Override
-  public void setOpenLoop(double output) {
+  public void pivotDutyCycleOut(double output) {
     pivot.setControl(new DutyCycleOut(output));
   }
 }
