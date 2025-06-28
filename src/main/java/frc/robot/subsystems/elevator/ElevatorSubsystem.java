@@ -32,16 +32,19 @@ public class ElevatorSubsystem extends SubsystemBase {
     Logger.processInputs("Elevator", inputs);
   }
 
-  public void runVelocity(double velocity) {
-    io.setOpenLoop(velocity);
+  /**
+   * @param percentOutput Output percentage, from -1.0 to 1.0
+   */
+  public void runPercentOutput(double percentOutput) {
+    io.elevatorDutyCycleOut(percentOutput);
   }
 
   public void shutdown() {
-    io.setOpenLoop(0.0);
+    io.elevatorDutyCycleOut(0.0);
   }
 
   public void defaultIdleVelocity() {
-    runVelocity(0.2);
+    runPercentOutput(0.2);
   }
 
   public ElevatorIO getIO() {
