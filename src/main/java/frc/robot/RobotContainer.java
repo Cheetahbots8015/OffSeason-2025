@@ -52,6 +52,7 @@ public class RobotContainer {
   // Dashboard inputs
   private final LoggedDashboardChooser<Command> autoChooser;
 
+
   // Commands
   private final Command ClawIntakeIn;
   private final Command ClawIntakeOut;
