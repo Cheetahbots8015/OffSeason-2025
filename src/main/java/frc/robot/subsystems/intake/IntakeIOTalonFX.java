@@ -194,6 +194,7 @@ public class IntakeIOTalonFX implements IntakeIO {
   public void setArmVoltage(double volts) {
     arm.setVoltage(volts);
   }
+  ;
 
   @Override
   public boolean getCanRange() {
