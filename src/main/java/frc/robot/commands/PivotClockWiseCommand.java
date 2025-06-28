@@ -1,6 +1,7 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.PivotConstants;
 import frc.robot.subsystems.pivot.PivotSubsystem;
 
 public class PivotClockWiseCommand extends Command {
@@ -16,7 +17,7 @@ public class PivotClockWiseCommand extends Command {
 
   @Override
   public void execute() {
-    m_subsystem.defaultIdleVelocity();
+    m_subsystem.runPercentOuput(PivotConstants.ClockWiseValue);
   }
 
   @Override
@@ -29,4 +30,3 @@ public class PivotClockWiseCommand extends Command {
     return false;
   }
 }
-
