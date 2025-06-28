@@ -23,7 +23,7 @@ public class PivotSubsystem extends SubsystemBase {
                 null,
                 null,
                 null,
-                (state) -> Logger.recordOutput("Elevator/SysIdState", state.toString())),
+                (state) -> Logger.recordOutput("Pivot/SysIdState", state.toString())),
             new SysIdRoutine.Mechanism((voltage) -> setPivotVoltage(voltage.in(Volt)), null, this));
   }
 
