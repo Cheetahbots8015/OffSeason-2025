@@ -19,7 +19,7 @@ public class ClimberClawCommand extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    m_subsystem.runDutyCyleOutValue(0.0, m_subsystem.clawDutyCycleOutValue);
+    m_subsystem.runDutyCyleOutValue(0.0, m_subsystem.getClawDutyCycleOutValue());
   }
 
   // Called once the command ends or is interrupted.
