@@ -18,4 +18,6 @@ public interface ElevatorIO {
   public default void elevatorDutyCycleOut(double output) {}
 
   public default void setElevatorVoltage(double volts) {}
+
+  public default void setPosition(double position) {}
 }
