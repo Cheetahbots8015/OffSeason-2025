@@ -4,9 +4,11 @@ import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.DutyCycleOut;
-import com.ctre.phoenix6.controls.VoltageOut;
+import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.hardware.ParentDevice;
 import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.signals.FeedbackSensorSourceValue;
+import com.ctre.phoenix6.signals.GravityTypeValue;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import edu.wpi.first.math.util.Units;
@@ -22,7 +24,7 @@ public class PivotIOTalonFX implements PivotIO {
   private final TalonFX pivot;
   private TalonFXConfiguration pivotConfigs = new TalonFXConfiguration();
   // Voltage control requests
-  private final VoltageOut voltageRequest = new VoltageOut(0);
+  final PositionVoltage m_request = new PositionVoltage(0).withSlot(0);
   // Inputs from pivot
   private final StatusSignal<Angle> Position;
   private final StatusSignal<AngularVelocity> Velocity;
@@ -44,9 +46,10 @@ public class PivotIOTalonFX implements PivotIO {
     pivotConfigs.Slot0.kP = PivotConstants.kP;
     pivotConfigs.Slot0.kI = PivotConstants.kI;
     pivotConfigs.Slot0.kD = PivotConstants.kD;
-    pivotConfigs.Slot0.kA = PivotConstants.kA;
-    pivotConfigs.Slot0.kS = PivotConstants.kS;
-    pivotConfigs.Slot0.kV = PivotConstants.kV;
+    pivotConfigs.Slot0.kG = PivotConstants.kG;
+
+    pivotConfigs.Slot0.GravityType = GravityTypeValue.Arm_Cosine;
+    pivotConfigs.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.RemoteCANcoder;
 
     // Apply the configuration to the motor
     pivot.getConfigurator().apply(pivotConfigs);
