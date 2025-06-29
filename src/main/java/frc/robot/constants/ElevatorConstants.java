@@ -5,6 +5,11 @@ public class ElevatorConstants {
 
   public static final boolean neutralmode_Coast = false;
   public static final boolean inverted_CounterClockwisePositive = true;
+  
+  public static final double L1Position = 0.0;
+  public static final double L2Position = 0.0;
+  public static final double L3Position = 0.0;
+  public static final double L4Position = 0.0;
   public static final double dutyCycleDeadband = 0.05;
   public static final double kP = 0.0;
   public static final double kI = 0.0;

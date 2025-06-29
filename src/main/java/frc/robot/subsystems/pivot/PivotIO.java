@@ -18,4 +18,6 @@ public interface PivotIO {
   public default void pivotDutyCycleOut(double output) {}
 
   public default void setPivotVoltage(double volts) {}
+
+  public default void setPosition(double position) {}
 }
