@@ -34,8 +34,8 @@ public class ClimberIOTalonFX implements ClimberIO {
   private final StatusSignal<Current> PivotCurrent;
 
   public ClimberIOTalonFX() {
-    claw = new TalonFX(ClimberConstants.clawID, "rio");
-    pivot = new TalonFX(ClimberConstants.pivotID, "rio");
+    claw = new TalonFX(ClimberConstants.clawID, "canivore");
+    pivot = new TalonFX(ClimberConstants.pivotID, "canivore");
     clawConfigs.MotorOutput.withNeutralMode(
         ClimberConstants.claw_neutralmode_Coast ? NeutralModeValue.Coast : NeutralModeValue.Brake);
 

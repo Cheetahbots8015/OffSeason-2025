@@ -35,14 +35,23 @@ public class ClawIOTalonFX implements ClawIO {
   private final StatusSignal<Current> ShooterCurrent;
 
   public ClawIOTalonFX() {
-    intake = new TalonFX(ClawConstants.intakeID, "rio");
-    shooter = new TalonFX(ClawConstants.shooterID, "rio");
+    intake = new TalonFX(ClawConstants.intakeID, "canivore");
+    shooter = new TalonFX(ClawConstants.shooterID, "canivore");
     intakeConfigs.MotorOutput.withNeutralMode(
-        ClawConstants.neutralmode_Coast ? NeutralModeValue.Coast : NeutralModeValue.Brake);
+        ClawConstants.intake_neutralmode_Coast ? NeutralModeValue.Coast : NeutralModeValue.Brake);
 
     // Set motor inversion based on desired rotation direction
     intakeConfigs.MotorOutput.withInverted(
-        ClawConstants.inverted_CounterClockwisePositive
+        ClawConstants.intake_inverted_CounterClockwisePositive
+            ? InvertedValue.CounterClockwise_Positive
+            : InvertedValue.Clockwise_Positive);
+
+    shooterConfigs.MotorOutput.withNeutralMode(
+        ClawConstants.shooter_neutralmode_Coast ? NeutralModeValue.Coast : NeutralModeValue.Brake);
+
+    // Set motor inversion based on desired rotation direction
+    shooterConfigs.MotorOutput.withInverted(
+        ClawConstants.shooter_inverted_CounterClockwisePositive
             ? InvertedValue.CounterClockwise_Positive
             : InvertedValue.Clockwise_Positive);
 

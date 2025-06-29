@@ -30,7 +30,7 @@ public class PivotIOTalonFX implements PivotIO {
   private final StatusSignal<Current> Current;
 
   public PivotIOTalonFX() {
-    pivot = new TalonFX(PivotConstants.pivotID, "rio");
+    pivot = new TalonFX(PivotConstants.pivotID, "canivore");
     pivotConfigs.MotorOutput.withNeutralMode(
         PivotConstants.neutralmode_Coast ? NeutralModeValue.Coast : NeutralModeValue.Brake);
 

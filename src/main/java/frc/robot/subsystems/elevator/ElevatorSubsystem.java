@@ -80,4 +80,12 @@ public class ElevatorSubsystem extends SubsystemBase {
   public Command sysIdDynamic(SysIdRoutine.Direction direction) {
     return sysId.dynamic(direction);
   }
+
+  public double getElevatorVelocity() {
+    return io.getElevatorVelocity();
+  }
+
+  public void VelocityVoltage(){
+    io.VelocityVoltage();
+  }
 }

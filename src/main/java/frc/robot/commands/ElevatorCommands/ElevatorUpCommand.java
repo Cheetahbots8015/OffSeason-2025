@@ -1,5 +1,6 @@
 package frc.robot.commands.ElevatorCommands;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.elevator.ElevatorSubsystem;
 
@@ -16,12 +17,12 @@ public class ElevatorUpCommand extends Command {
 
   @Override
   public void execute() {
-    m_subsystem.runPercentOutput(m_subsystem.getDownDutyCycleValue());
+    m_subsystem.setElevatorVoltage(SmartDashboard.getNumber("ElevatorVolts", 0));
   }
 
   @Override
   public void end(boolean interrupted) {
-    m_subsystem.shutdown();
+    m_subsystem.setElevatorVoltage(0.0);
   }
 
   @Override

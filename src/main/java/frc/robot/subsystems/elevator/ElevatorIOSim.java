@@ -26,10 +26,21 @@ public class ElevatorIOSim implements ElevatorIO {
     inputs.VelocityRadPerSec = elevatorIOSim.getAngularVelocityRadPerSec();
     inputs.AppliedVolts = AppliedVolts;
     inputs.CurrentAmps = Math.abs(elevatorIOSim.getCurrentDrawAmps());
+    inputs.AccelerationRad = elevatorIOSim.getAngularAccelerationRadPerSecSq();
   }
 
   @Override
   public void elevatorDutyCycleOut(double output) {
     AppliedVolts = output * 12.0;
+  }
+
+  @Override
+  public void setElevatorVoltage(double volts) {
+    AppliedVolts = volts;
+  }
+
+  @Override
+  public double getElevatorVelocity() {
+    return elevatorIOSim.getAngularVelocityRadPerSec();
   }
 }
