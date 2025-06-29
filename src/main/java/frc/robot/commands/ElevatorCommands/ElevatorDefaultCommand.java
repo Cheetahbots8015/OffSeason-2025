@@ -1,13 +1,12 @@
 package frc.robot.commands.ElevatorCommands;
 
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.elevator.ElevatorSubsystem;
 
-public class ElevatorDownCommand extends Command {
+public class ElevatorDefaultCommand extends Command {
   private final ElevatorSubsystem m_subsystem;
 
-  public ElevatorDownCommand(ElevatorSubsystem subsystem) {
+  public ElevatorDefaultCommand(ElevatorSubsystem subsystem) {
     m_subsystem = subsystem;
     addRequirements(subsystem);
   }
@@ -17,7 +16,7 @@ public class ElevatorDownCommand extends Command {
 
   @Override
   public void execute() {
-    m_subsystem.setElevatorVoltage(-SmartDashboard.getNumber("ElevatorVolts", 0));
+    m_subsystem.VelocityVoltage();
   }
 
   @Override
