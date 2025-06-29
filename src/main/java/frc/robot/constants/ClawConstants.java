@@ -7,10 +7,10 @@ public class ClawConstants {
   public static final boolean intake_inverted_CounterClockwisePositive = true;
   public static final boolean shooter_neutralmode_Coast = true;
   public static final boolean shooter_inverted_CounterClockwisePositive = false;
-  
+
   public static final double intakeVolts = 0.0;
   public static final double vomitVolts = 0.0;
-  
+
   public static final double dutyCycleDeadband = 0.05;
   public static final double statusUpdateFrequency = 50.0;
   public static final double intakekP = 5.0;
