@@ -20,7 +20,7 @@ public class StateManager {
   private ClimberSubsystem climber;
   private IntakeSubsystem intake;
 
-  private boolean intakingRequest = false;
+  private boolean readyToCook = false;
   private boolean clawRequest = false;
   private boolean reefRequest = false;
   private boolean shootingRequest = false;
@@ -43,32 +43,32 @@ public class StateManager {
 
   public void checkStates() {
     // Command Scheduler will automatically set the requests to false when needed.
-    switch (inputs.currentMachineState) {
-      case FinishedIntaking:
-        break;
+    if (readyToCook) {
+      switch (inputs.currentMachineState) {
+        case FinishedIntaking:
+          break;
 
-      case InClaw:
-        break;
+        case InClaw:
+          break;
 
-      case ReefPosition:
-        break;
+        case ReefPosition:
+          break;
 
-      case Shooting:
-        break;
+        case Shooting:
+          break;
 
-      case IDLE:
-        updateStateWithRequest(
-            intakingRequest, MachineState.FinishedIntaking, intake.getCanRange());
-        updateStateWithRequest(clawRequest, MachineState.InClaw, !intake.getCanRange());
+        case IDLE:
+          updateStateWithRequest(clawRequest, MachineState.InClaw, !intake.getCanRange());
 
-        // TODO: to be cooked
-        // updateStateWithRequest(reefRequest, MachineState.ReefPosition, );
-        // updateStateWithRequest(shootingRequest, MachineState.Shooting, );
+          // TODO: to be cooked
+          // updateStateWithRequest(reefRequest, MachineState.ReefPosition, );
+          // updateStateWithRequest(shootingRequest, MachineState.Shooting, );
 
-        break;
+          break;
 
-      default:
-        break;
+        default:
+          break;
+      }
     }
   }
 
