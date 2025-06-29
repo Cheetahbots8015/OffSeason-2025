@@ -5,15 +5,18 @@ import org.littletonrobotics.junction.AutoLog;
 public class StateManagerIO {
   @AutoLog
   public static class StateManagerIOInputs {
-    public enum MachineState {
+    public enum CoralState {
       FinishedIntaking,
       InClaw,
-      ReefPosition,
+      L1,
+      L2,
+      L3,
+      L4,
       Shooting,
       IDLE
     }
 
-    public MachineState currentMachineState = MachineState.IDLE;
-    public MachineState targetMachineState = null;
+    public CoralState currentCoralState = CoralState.IDLE;
+    public CoralState targetCoralState = null;
   }
 }

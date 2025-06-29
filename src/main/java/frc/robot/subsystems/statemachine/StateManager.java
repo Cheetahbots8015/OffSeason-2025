@@ -6,7 +6,7 @@ import frc.robot.subsystems.elevator.ElevatorSubsystem;
 import frc.robot.subsystems.intake.IntakeSubsystem;
 import frc.robot.subsystems.pivot.PivotSubsystem;
 import frc.robot.subsystems.statemachine.StateManagerIO.StateManagerIOInputs;
-import frc.robot.subsystems.statemachine.StateManagerIO.StateManagerIOInputs.MachineState;
+import frc.robot.subsystems.statemachine.StateManagerIO.StateManagerIOInputs.CoralState;
 
 public class StateManager {
   private StateManagerIO io;
@@ -22,8 +22,14 @@ public class StateManager {
 
   private boolean readyToCook = false;
   private boolean clawRequest = false;
-  private boolean reefRequest = false;
+
+  private boolean L1Request = false;
+  private boolean L2Request = false;
+  private boolean L3Request = false;
+  private boolean L4Request = false;
+
   private boolean shootingRequest = false;
+
   private boolean idleRequest = false;
 
   public StateManager(
@@ -44,25 +50,35 @@ public class StateManager {
   public void checkStates() {
     // Command Scheduler will automatically set the requests to false when needed.
     if (readyToCook) {
-      switch (inputs.currentMachineState) {
+      switch (inputs.currentCoralState) {
         case FinishedIntaking:
           break;
 
         case InClaw:
           break;
 
-        case ReefPosition:
+        case L1:
+          break;
+
+        case L2:
+          break;
+
+        case L3:
+          break;
+
+        case L4:
           break;
 
         case Shooting:
           break;
 
         case IDLE:
-          updateStateWithRequest(clawRequest, MachineState.InClaw, !intake.getCanRange());
+          updateStateWithRequest(clawRequest, CoralState.InClaw, !intake.getCanRange());
+          // updateStateWithRequest(L1Request, CoralState.L1, );
 
           // TODO: to be cooked
-          // updateStateWithRequest(reefRequest, MachineState.ReefPosition, );
-          // updateStateWithRequest(shootingRequest, MachineState.Shooting, );
+          // updateStateWithRequest(reefRequest, CoralState.ReefPosition, );
+          // updateStateWithRequest(shootingRequest, CoralState.Shooting, );
 
           break;
 
@@ -73,10 +89,10 @@ public class StateManager {
   }
 
   private void updateStateWithRequest(
-      boolean triggeredCondition, MachineState target, boolean... successfulCondition) {
+      boolean triggeredCondition, CoralState target, boolean... successfulCondition) {
     if (triggeredCondition) {
       isUpdating = true;
-      inputs.targetMachineState = target;
+      inputs.targetCoralState = target;
 
       boolean allTrue = true;
       for (boolean b : successfulCondition) {
@@ -87,14 +103,14 @@ public class StateManager {
       }
 
       if (allTrue) {
-        inputs.currentMachineState = inputs.targetMachineState;
-        inputs.targetMachineState = null;
+        inputs.currentCoralState = inputs.targetCoralState;
+        inputs.targetCoralState = null;
         isUpdating = false;
       }
     }
   }
 
-  private void setCurrentMachineState(MachineState state) {
-    inputs.currentMachineState = state;
+  private void setCurrentCoralState(CoralState state) {
+    inputs.currentCoralState = state;
   }
 }
