@@ -16,6 +16,10 @@ public class StateManagerIO {
       IDLE
     }
 
+    public enum AlgaeState {
+      
+    }
+
     public CoralState currentCoralState = CoralState.IDLE;
     public CoralState targetCoralState = null;
   }

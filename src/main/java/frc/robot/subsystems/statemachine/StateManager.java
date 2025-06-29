@@ -2,6 +2,7 @@ package frc.robot.subsystems.statemachine;
 
 import frc.robot.subsystems.claw.ClawSubsystem;
 import frc.robot.subsystems.climber.ClimberSubsystem;
+import frc.robot.subsystems.elevator.ElevatorIO;
 import frc.robot.subsystems.elevator.ElevatorSubsystem;
 import frc.robot.subsystems.intake.IntakeSubsystem;
 import frc.robot.subsystems.pivot.PivotSubsystem;
@@ -55,6 +56,10 @@ public class StateManager {
           break;
 
         case InClaw:
+          updateStateWithRequest(L1Request, CoralState.L1, pivot.getIO().);
+          updateStateWithRequest(L2Request, CoralState.L2, );
+          updateStateWithRequest(L3Request, CoralState.L3, );
+          updateStateWithRequest(L4Request, CoralState.L4, );
           break;
 
         case L1:
@@ -74,7 +79,7 @@ public class StateManager {
 
         case IDLE:
           updateStateWithRequest(clawRequest, CoralState.InClaw, !intake.getCanRange());
-          // updateStateWithRequest(L1Request, CoralState.L1, );
+          
 
           // TODO: to be cooked
           // updateStateWithRequest(reefRequest, CoralState.ReefPosition, );
