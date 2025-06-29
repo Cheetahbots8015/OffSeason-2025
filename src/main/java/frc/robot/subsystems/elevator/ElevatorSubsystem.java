@@ -82,6 +82,14 @@ public class ElevatorSubsystem extends SubsystemBase {
     return sysId.dynamic(direction);
   }
 
+  public double getElevatorVelocity() {
+    return io.getElevatorVelocity();
+  }
+
+  public void VelocityVoltage() {
+    io.VelocityVoltage();
+  }
+
   public ElevatorIOInputs getInput() {
     return inputs;
   }

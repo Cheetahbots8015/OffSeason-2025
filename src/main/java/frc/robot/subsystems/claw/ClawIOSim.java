@@ -29,11 +29,11 @@ public class ClawIOSim implements ClawIO {
     // Update intake inputs
     inputs.IntakePositionRad = intakeSim.getAngularPositionRad();
     inputs.IntakeVelocityRadPerSec = intakeSim.getAngularVelocityRadPerSec();
-    inputs.IntakeAppliedVolts = IntakeAppliedVolts;
+    inputs.IntakeAppliedVolts = intakeSim.getInputVoltage();
     inputs.IntakeCurrentAmps = Math.abs(intakeSim.getCurrentDrawAmps());
     inputs.ShooterPositionRad = shooterSim.getAngularPositionRad();
     inputs.ShooterVelocityRadPerSec = shooterSim.getAngularVelocityRadPerSec();
-    inputs.ShooterAppliedVolts = ShooterAppliedVolts;
+    inputs.ShooterAppliedVolts = shooterSim.getInputVoltage();
     inputs.ShooterCurrentAmps = Math.abs(shooterSim.getCurrentDrawAmps());
   }
 
@@ -41,5 +41,15 @@ public class ClawIOSim implements ClawIO {
   public void setOpenLoop(double intakeOutput, double shooterOutput) {
     IntakeAppliedVolts = intakeOutput * 12.0;
     ShooterAppliedVolts = shooterOutput * 12.0;
+  }
+
+  @Override
+  public void setIntakeVoltage(double volts) {
+    IntakeAppliedVolts = volts;
+  }
+
+  @Override
+  public void setShooterVoltage(double volts) {
+    ShooterAppliedVolts = volts;
   }
 }

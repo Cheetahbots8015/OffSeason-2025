@@ -48,7 +48,7 @@ public class TunerConstants {
   private static final CANcoderConfiguration encoderInitialConfigs = new CANcoderConfiguration();
   private static final Pigeon2Configuration pigeonConfigs = null;
 
-  public static final CANBus kCANBus = new CANBus("rio", "./logs/example.hoot");
+  public static final CANBus kCANBus = new CANBus("canivore", "./logs/example.hoot");
 
   public static final LinearVelocity kSpeedAt12Volts = MetersPerSecond.of(4.69);
 
