@@ -156,7 +156,7 @@ public class IntakeIOTalonFX implements IntakeIO {
     Canrange = canrange.getIsDetected();
 
     BaseStatusSignal.setUpdateFrequencyForAll(
-        50.0,
+        IntakeConstants.statusUpdateFrequency,
         IndexerVelocity,
         IndexerAppliedVolts,
         IndexerCurrent,

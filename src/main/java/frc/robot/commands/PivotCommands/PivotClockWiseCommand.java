@@ -1,4 +1,4 @@
-package frc.robot.commands;
+package frc.robot.commands.PivotCommands;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.pivot.PivotSubsystem;
@@ -16,7 +16,7 @@ public class PivotClockWiseCommand extends Command {
 
   @Override
   public void execute() {
-    m_subsystem.runPercentOuput(m_subsystem.AntiClockWisedutyCycleOutValue);
+    m_subsystem.runDutyCycleOuput(m_subsystem.getAntiClockWiseDutyCycleOutValue());
   }
 
   @Override

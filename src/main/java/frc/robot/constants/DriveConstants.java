@@ -1,0 +1,22 @@
+package frc.robot.constants;
+
+public class DriveConstants {
+  public static final double robotMassKg = 74.088;
+  public static final double robotMOI = 6.883;
+  public static final double wheelCOF = 1.2;
+  // PID constants for path following
+  public static final double autoTranslationkP = 5.0;
+  public static final double autoTranslationkI = 0.0;
+  public static final double autoTranslationkD = 0.0;
+  public static final double autoRotationkP = 5.0;
+  public static final double autoRotationkI = 0.0;
+  public static final double autoRotationkD = 0.0;
+  public static final double statusUpdateFrequency = 50.0;
+  // Simulation PID constants
+  public static final double simDriveKp = 0.05;
+  public static final double simDriveKd = 0.0;
+  public static final double simDriveKs = 0.0;
+  public static final double simDriveKvRot = 0.91035;
+  public static final double simTurnKp = 8.0;
+  public static final double simTurnKd = 0.0;
+}
