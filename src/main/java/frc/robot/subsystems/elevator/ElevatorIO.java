@@ -2,10 +2,6 @@ package frc.robot.subsystems.elevator;
 
 import org.littletonrobotics.junction.AutoLog;
 
-import com.ctre.phoenix6.controls.VelocityVoltage;
-
-import edu.wpi.first.units.measure.Velocity;
-
 public interface ElevatorIO {
   @AutoLog
   public static class ElevatorIOInputs {
@@ -28,5 +24,5 @@ public interface ElevatorIO {
     return 0.0;
   }
 
-  public default void VelocityVoltage(){}
+  public default void VelocityVoltage() {}
 }

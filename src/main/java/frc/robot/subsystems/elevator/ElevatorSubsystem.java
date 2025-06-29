@@ -85,7 +85,7 @@ public class ElevatorSubsystem extends SubsystemBase {
     return io.getElevatorVelocity();
   }
 
-  public void VelocityVoltage(){
+  public void VelocityVoltage() {
     io.VelocityVoltage();
   }
 }

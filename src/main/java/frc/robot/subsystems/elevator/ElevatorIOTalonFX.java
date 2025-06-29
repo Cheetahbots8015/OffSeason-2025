@@ -2,13 +2,12 @@ package frc.robot.subsystems.elevator;
 
 import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.StatusSignal;
-import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.DutyCycleOut;
 import com.ctre.phoenix6.controls.VelocityVoltage;
-import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.hardware.ParentDevice;
 import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.signals.GravityTypeValue;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import edu.wpi.first.math.util.Units;
@@ -51,7 +50,8 @@ public class ElevatorIOTalonFX implements ElevatorIO {
     elevatorConfigs.Slot0.kP = ElevatorConstants.kP;
     elevatorConfigs.Slot0.kI = ElevatorConstants.kI;
     elevatorConfigs.Slot0.kD = ElevatorConstants.kD;
-    elevatorConfigs.Slot0.kV = ElevatorConstants.kV;
+    elevatorConfigs.Slot0.kG = ElevatorConstants.kG;
+    elevatorConfigs.Slot0.GravityType = GravityTypeValue.Elevator_Static;
 
     // Apply the configuration to the motor
     elevator.getConfigurator().apply(elevatorConfigs);
@@ -101,7 +101,7 @@ public class ElevatorIOTalonFX implements ElevatorIO {
   }
 
   @Override
-  public void VelocityVoltage(){
+  public void VelocityVoltage() {
     elevator.setControl(m_velocity.withVelocity(0));
   }
 }

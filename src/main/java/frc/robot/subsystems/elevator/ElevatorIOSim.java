@@ -6,12 +6,13 @@ import edu.wpi.first.math.system.plant.LinearSystemId;
 import edu.wpi.first.wpilibj.simulation.DCMotorSim;
 
 public class ElevatorIOSim implements ElevatorIO {
-  private static final DCMotor GEARBOX = DCMotor.getKrakenX60Foc(1);
+  private static final DCMotor GEARBOX = DCMotor.getKrakenX60(1);
   private final DCMotorSim elevatorIOSim;
   private double AppliedVolts = 0.0;
 
   public ElevatorIOSim() {
-    elevatorIOSim = new DCMotorSim(LinearSystemId.createDCMotorSystem(GEARBOX, 0.001, 1), GEARBOX);
+    elevatorIOSim =
+        new DCMotorSim(LinearSystemId.createElevatorSystem(GEARBOX, 8.0, 0.03, 6.12), GEARBOX);
   }
 
   @Override
@@ -42,5 +43,10 @@ public class ElevatorIOSim implements ElevatorIO {
   @Override
   public double getElevatorVelocity() {
     return elevatorIOSim.getAngularVelocityRadPerSec();
+  }
+
+  @Override
+  public void VelocityVoltage() {
+    AppliedVolts = 0.05;
   }
 }
