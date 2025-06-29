@@ -18,11 +18,15 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.commands.DriveCommands;
+import frc.robot.commands.ElevatorCommands.ElevatorDefaultCommand;
+import frc.robot.commands.ElevatorCommands.ElevatorDownCommand;
+import frc.robot.commands.ElevatorCommands.ElevatorUpCommand;
 import frc.robot.constants.ContainerConstants;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.claw.ClawIOSim;
@@ -32,6 +36,9 @@ import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.drive.GyroIO;
 import frc.robot.subsystems.drive.ModuleIO;
 import frc.robot.subsystems.drive.ModuleIOSim;
+import frc.robot.subsystems.elevator.ElevatorIOSim;
+import frc.robot.subsystems.elevator.ElevatorIOTalonFX;
+import frc.robot.subsystems.elevator.ElevatorSubsystem;
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 
 /**
@@ -44,6 +51,7 @@ public class RobotContainer {
   // Subsystems
   private final Drive drive;
   private final ClawSubsystem clawSubsystem;
+  private final ElevatorSubsystem elevatorSubsystem;
 
   // Controller
   private final CommandXboxController controller = new CommandXboxController(0);
@@ -64,6 +72,7 @@ public class RobotContainer {
                 new ModuleIOSim(TunerConstants.BackLeft),
                 new ModuleIOSim(TunerConstants.BackRight));
         clawSubsystem = new ClawSubsystem(new ClawIOTalonFX());
+        elevatorSubsystem = new ElevatorSubsystem(new ElevatorIOTalonFX());
         break;
 
       case SIM:
@@ -76,6 +85,7 @@ public class RobotContainer {
                 new ModuleIOSim(TunerConstants.BackLeft),
                 new ModuleIOSim(TunerConstants.BackRight));
         clawSubsystem = new ClawSubsystem(new ClawIOSim());
+        elevatorSubsystem = new ElevatorSubsystem(new ElevatorIOSim());
         break;
 
       default:
@@ -88,6 +98,7 @@ public class RobotContainer {
                 new ModuleIO() {},
                 new ModuleIO() {});
         clawSubsystem = new ClawSubsystem(new ClawIOTalonFX());
+        elevatorSubsystem = new ElevatorSubsystem(new ElevatorIOTalonFX());
         break;
     }
 
@@ -109,6 +120,12 @@ public class RobotContainer {
         "Drive SysId (Dynamic Forward)", drive.sysIdDynamic(SysIdRoutine.Direction.kForward));
     autoChooser.addOption(
         "Drive SysId (Dynamic Reverse)", drive.sysIdDynamic(SysIdRoutine.Direction.kReverse));
+
+    SmartDashboard.putNumber("ClawIntakeVolts", 0.0);
+    SmartDashboard.putNumber("ClawShooterVolts", 0.0);
+    SmartDashboard.putNumber("ClimberPivotVolts", 0.0);
+    SmartDashboard.putNumber("ClimberClawVolts", 0.0);
+    SmartDashboard.putNumber("ElevatorVolts", 0.0);
 
     // Configure the button bindings
     configureButtonBindings();
@@ -142,6 +159,19 @@ public class RobotContainer {
                             new Pose2d(drive.getPose().getTranslation(), new Rotation2d())),
                     drive)
                 .ignoringDisable(true));
+
+    /**
+     * Claw Subsystem test controller.leftTrigger().whileTrue(new
+     * ClawIntakeInCommand(clawSubsystem)); controller.leftBumper().whileTrue(new
+     * ClawIntakeOutCommand(clawSubsystem)); controller.rightTrigger().whileTrue(new
+     * ClawShooterInCommand(clawSubsystem)); controller.rightBumper().whileTrue(new
+     * ClawShooterOutCommand(clawSubsystem));
+     */
+
+    // Elevator Subsystem test
+    controller.a().whileTrue(new ElevatorDefaultCommand(elevatorSubsystem));
+    controller.leftTrigger().whileTrue(new ElevatorUpCommand(elevatorSubsystem));
+    controller.leftBumper().whileTrue(new ElevatorDownCommand(elevatorSubsystem));
   }
 
   /**

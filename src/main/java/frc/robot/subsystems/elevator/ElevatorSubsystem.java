@@ -7,6 +7,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.constants.ElevatorConstants;
+import frc.robot.subsystems.elevator.ElevatorIO.ElevatorIOInputs;
 import org.littletonrobotics.junction.Logger;
 
 public class ElevatorSubsystem extends SubsystemBase {
@@ -79,5 +80,17 @@ public class ElevatorSubsystem extends SubsystemBase {
 
   public Command sysIdDynamic(SysIdRoutine.Direction direction) {
     return sysId.dynamic(direction);
+  }
+
+  public double getElevatorVelocity() {
+    return io.getElevatorVelocity();
+  }
+
+  public void VelocityVoltage() {
+    io.VelocityVoltage();
+  }
+
+  public ElevatorIOInputs getInput() {
+    return inputs;
   }
 }

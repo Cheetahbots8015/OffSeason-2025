@@ -8,6 +8,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.constants.ClimberConstants;
+import frc.robot.subsystems.climber.ClimberIO.ClimberIOInputs;
 import org.littletonrobotics.junction.Logger;
 
 public class ClimberSubsystem extends SubsystemBase {
@@ -86,5 +87,9 @@ public class ClimberSubsystem extends SubsystemBase {
 
   public void setPivotVoltage(double volts) {
     io.setPivotVoltage(volts);
+  }
+
+  public ClimberIOInputs getInput() {
+    return inputs;
   }
 }
