@@ -69,6 +69,10 @@ public class PivotSubsystem extends SubsystemBase {
     io.setPivotVoltage(volts);
   }
 
+  public void setPosition(double position) {
+    io.setPosition(position);
+  }
+
   public Command sysIdQuasistatic(SysIdRoutine.Direction direction) {
     return sysId.quasistatic(direction);
   }
