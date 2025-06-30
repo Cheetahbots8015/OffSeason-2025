@@ -1,5 +1,6 @@
 package frc.robot.commands.PivotCommands;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.pivot.PivotSubsystem;
 
@@ -16,12 +17,13 @@ public class PivotAntiClockWiseCommand extends Command {
 
   @Override
   public void execute() {
-    m_subsystem.runDutyCycleOuput(m_subsystem.getClockWiseDutyCycleOutValue());
+    m_subsystem.setPivotVoltage(SmartDashboard.getNumber("PivotVolts", 0));
+    ;
   }
 
   @Override
   public void end(boolean interrupted) {
-    m_subsystem.shutDown();
+    m_subsystem.setPivotVoltage(0);
   }
 
   @Override

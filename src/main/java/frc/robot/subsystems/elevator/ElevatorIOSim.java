@@ -46,7 +46,12 @@ public class ElevatorIOSim implements ElevatorIO {
   }
 
   @Override
-  public void VelocityVoltage() {
+  public void VelocityVoltage(double velocity) {
     AppliedVolts = 0.05;
+  }
+
+  @Override
+  public void setPosition(double position) {
+    elevatorIOSim.setAngle(position);
   }
 }

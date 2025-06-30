@@ -2,8 +2,10 @@ package frc.robot.subsystems.elevator;
 
 import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.StatusSignal;
+import com.ctre.phoenix6.configs.MotionMagicConfigs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.DutyCycleOut;
+import com.ctre.phoenix6.controls.MotionMagicExpoVoltage;
 import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.hardware.ParentDevice;
 import com.ctre.phoenix6.hardware.TalonFX;
@@ -26,8 +28,8 @@ public class ElevatorIOTalonFX implements ElevatorIO {
   private TalonFXConfiguration elevatorConfigs = new TalonFXConfiguration();
 
   // class member variable
-  final VelocityVoltage m_velocity = new VelocityVoltage(0);
-
+  final VelocityVoltage m_velocity = new VelocityVoltage(0).withSlot(0);
+  final MotionMagicExpoVoltage m_ExpoVoltage = new MotionMagicExpoVoltage(0).withSlot(1);
   // Inputs from roller
   private final StatusSignal<Angle> Position;
   private final StatusSignal<AngularVelocity> Velocity;
@@ -52,6 +54,20 @@ public class ElevatorIOTalonFX implements ElevatorIO {
     elevatorConfigs.Slot0.kD = ElevatorConstants.kD;
     elevatorConfigs.Slot0.kG = ElevatorConstants.kG;
     elevatorConfigs.Slot0.GravityType = GravityTypeValue.Elevator_Static;
+    elevatorConfigs.SoftwareLimitSwitch.ReverseSoftLimitThreshold = 0;
+    elevatorConfigs.SoftwareLimitSwitch.ReverseSoftLimitEnable = true;
+
+    // Set PID and feedforward constants from constants file
+    elevatorConfigs.Slot1.kP = ElevatorConstants.kPMM;
+    elevatorConfigs.Slot1.kI = ElevatorConstants.kIMM;
+    elevatorConfigs.Slot1.kD = ElevatorConstants.kDMM;
+    elevatorConfigs.Slot1.kG = ElevatorConstants.kGMM;
+    elevatorConfigs.Slot1.GravityType = GravityTypeValue.Elevator_Static;
+
+    MotionMagicConfigs motionMagicConfigs = elevatorConfigs.MotionMagic;
+    motionMagicConfigs.MotionMagicCruiseVelocity = 0; // Unlimited cruise velocity
+    motionMagicConfigs.MotionMagicExpo_kV = 0.06;
+    motionMagicConfigs.MotionMagicExpo_kA = 0.03; // Use a slower kA of 0.1 V/(rps/s)
 
     // Apply the configuration to the motor
     elevator.getConfigurator().apply(elevatorConfigs);
@@ -86,6 +102,7 @@ public class ElevatorIOTalonFX implements ElevatorIO {
 
   @Override
   public void elevatorDutyCycleOut(double output) {
+
     elevator.setControl(new DutyCycleOut(output));
   }
 
@@ -101,7 +118,13 @@ public class ElevatorIOTalonFX implements ElevatorIO {
   }
 
   @Override
-  public void VelocityVoltage() {
-    elevator.setControl(m_velocity.withVelocity(0));
+  public void VelocityVoltage(double velocity) {
+    elevator.setControl(m_velocity.withVelocity(velocity));
+  }
+
+  @Override
+  public void setPosition(double position) {
+    double rotation = position / 6.28;
+    elevator.setControl(m_ExpoVoltage.withPosition(rotation));
   }
 }

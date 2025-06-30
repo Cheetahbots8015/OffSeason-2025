@@ -29,7 +29,7 @@ public class PivotIOSim implements PivotIO {
   }
 
   @Override
-  public void pivotDutyCycleOut(double output) {
-    AppliedVolts = output * 12.0;
+  public void setPivotVoltage(double output) {
+    AppliedVolts = output;
   }
 }

@@ -86,8 +86,12 @@ public class ElevatorSubsystem extends SubsystemBase {
     return io.getElevatorVelocity();
   }
 
-  public void VelocityVoltage() {
-    io.VelocityVoltage();
+  public void VelocityVoltage(double velocity) {
+    io.VelocityVoltage(velocity);
+  }
+
+  public void setPosition(double position) {
+    io.setPosition(position);
   }
 
   public ElevatorIOInputs getInput() {
