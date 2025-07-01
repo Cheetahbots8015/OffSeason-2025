@@ -23,6 +23,9 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
+import frc.robot.commands.ClawCommands.ClawShooterOutCommand;
+import frc.robot.commands.ClawCommands.ClawTimedIntakeCommand;
+import frc.robot.commands.ClawCommands.ClawTimedShootCommand;
 import frc.robot.commands.DriveCommands;
 import frc.robot.commands.ElevatorCommands.*;
 import frc.robot.commands.IntakeCommands.*;
@@ -205,6 +208,24 @@ public class RobotContainer {
     controller.leftBumper().whileTrue(new IntakeIndexerOutCommand(intakeSubsystem));
     controller.rightBumper().whileTrue(new IntakeRollerOutCommand(intakeSubsystem));
     */
+
+    // L2 test
+    controller.povUp().whileTrue(new ElevatorSetPositionCommand(elevatorSubsystem, 160));
+    controller.povDown().whileTrue(new ElevatorDefaultCommand(elevatorSubsystem));
+    controller.povLeft().whileTrue(new PivotSetPositionCommand(pivotSubsystem, 0));
+    controller
+        .y()
+        .whileTrue(
+            new ElevatorSetPositionCommand(elevatorSubsystem, 160)
+                .andThen(
+                    new PivotSetPositionCommand(pivotSubsystem, 335)
+                        .andThen(
+                            new ElevatorLittleCommand(elevatorSubsystem, 122)
+                                .alongWith(new ClawTimedIntakeCommand(clawSubsystem)))
+                        .andThen(new ElevatorLittleCommand(elevatorSubsystem, 160))
+                        .andThen(new PivotSetPositionCommand(pivotSubsystem, 100))
+                        .andThen(new ClawTimedShootCommand(clawSubsystem))));
+    controller.leftTrigger().whileTrue(new ClawShooterOutCommand(clawSubsystem));
   }
 
   /**

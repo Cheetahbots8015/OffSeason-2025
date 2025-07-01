@@ -4,11 +4,11 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.constants.ElevatorConstants;
 import frc.robot.subsystems.elevator.ElevatorSubsystem;
 
-public class ElevatorSetPositionCommand extends Command {
+public class ElevatorLittleCommand extends Command {
   private final ElevatorSubsystem m_subsystem;
   private final double m_position;
 
-  public ElevatorSetPositionCommand(ElevatorSubsystem subsystem, double position) {
+  public ElevatorLittleCommand(ElevatorSubsystem subsystem, double position) {
     m_subsystem = subsystem;
     m_position = position;
     addRequirements(subsystem);
@@ -19,7 +19,9 @@ public class ElevatorSetPositionCommand extends Command {
 
   @Override
   public void execute() {
-    m_subsystem.setPosition(m_position);
+    m_subsystem.setElevatorVoltage(
+        (m_position - m_subsystem.getInput().PositionRad) > 0 ? 1 : -0.5);
+    ;
   }
 
   @Override

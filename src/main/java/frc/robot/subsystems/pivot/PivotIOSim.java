@@ -32,4 +32,9 @@ public class PivotIOSim implements PivotIO {
   public void setPivotVoltage(double output) {
     AppliedVolts = output;
   }
+
+  @Override
+  public void setPosition(double position) {
+    pivotIOSim.setAngle(position);
+  }
 }
