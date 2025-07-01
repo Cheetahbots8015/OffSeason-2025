@@ -29,16 +29,19 @@ import frc.robot.commands.ElevatorCommands.ElevatorDownCommand;
 import frc.robot.commands.ElevatorCommands.ElevatorUpCommand;
 import frc.robot.constants.ContainerConstants;
 import frc.robot.generated.TunerConstants;
-import frc.robot.subsystems.claw.ClawIOSim;
-import frc.robot.subsystems.claw.ClawIOTalonFX;
-import frc.robot.subsystems.claw.ClawSubsystem;
+import frc.robot.subsystems.claw.*;
+import frc.robot.subsystems.climber.*;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.drive.GyroIO;
 import frc.robot.subsystems.drive.ModuleIO;
 import frc.robot.subsystems.drive.ModuleIOSim;
-import frc.robot.subsystems.elevator.ElevatorIOSim;
-import frc.robot.subsystems.elevator.ElevatorIOTalonFX;
-import frc.robot.subsystems.elevator.ElevatorSubsystem;
+import frc.robot.subsystems.elevator.*;
+import frc.robot.subsystems.intake.*;
+import frc.robot.subsystems.pivot.*;
+import frc.robot.subsystems.statemachine.StateManager;
+import frc.robot.subsystems.statemachine.StateManagerIO;
+import frc.robot.subsystems.statemachine.StateManagerIO.StateManagerIOInputs;
+
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 
 /**
@@ -52,6 +55,12 @@ public class RobotContainer {
   private final Drive drive;
   private final ClawSubsystem clawSubsystem;
   private final ElevatorSubsystem elevatorSubsystem;
+  private final IntakeSubsystem intakeSubsystem;
+  private final ClimberSubsystem climberSubsystem;
+  private final PivotSubsystem pivotSubsystem;
+
+  private final StateManager stateManager;
+  private final StateManagerIOInputs stateIO;
 
   // Controller
   private final CommandXboxController controller = new CommandXboxController(0);
@@ -61,6 +70,8 @@ public class RobotContainer {
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
+    stateIO = new StateManagerIOInputs();
+
     switch (ContainerConstants.currentMode) {
       case REAL:
         // Real robot, instantiate hardware IO implementations
@@ -71,8 +82,11 @@ public class RobotContainer {
                 new ModuleIOSim(TunerConstants.FrontRight),
                 new ModuleIOSim(TunerConstants.BackLeft),
                 new ModuleIOSim(TunerConstants.BackRight));
-        clawSubsystem = new ClawSubsystem(new ClawIOTalonFX());
-        elevatorSubsystem = new ElevatorSubsystem(new ElevatorIOTalonFX());
+        clawSubsystem = new ClawSubsystem(new ClawIOTalonFX(), stateIO);
+        elevatorSubsystem = new ElevatorSubsystem(new ElevatorIOTalonFX(), stateIO);
+        intakeSubsystem = new IntakeSubsystem(new IntakeIOTalonFX());
+        climberSubsystem = new ClimberSubsystem(new ClimberIOTalonFX());
+        pivotSubsystem = new PivotSubsystem(new PivotIOTalonFX(), stateIO);
         break;
 
       case SIM:
@@ -84,8 +98,11 @@ public class RobotContainer {
                 new ModuleIOSim(TunerConstants.FrontRight),
                 new ModuleIOSim(TunerConstants.BackLeft),
                 new ModuleIOSim(TunerConstants.BackRight));
-        clawSubsystem = new ClawSubsystem(new ClawIOSim());
-        elevatorSubsystem = new ElevatorSubsystem(new ElevatorIOSim());
+        clawSubsystem = new ClawSubsystem(new ClawIOSim(), stateIO);
+        elevatorSubsystem = new ElevatorSubsystem(new ElevatorIOSim(), stateIO);
+        intakeSubsystem = new IntakeSubsystem(new IntakeIOSim());
+        climberSubsystem = new ClimberSubsystem(new ClimberIOSim());
+        pivotSubsystem = new PivotSubsystem(new PivotIOSim(), stateIO);
         break;
 
       default:
@@ -97,10 +114,15 @@ public class RobotContainer {
                 new ModuleIO() {},
                 new ModuleIO() {},
                 new ModuleIO() {});
-        clawSubsystem = new ClawSubsystem(new ClawIOTalonFX());
-        elevatorSubsystem = new ElevatorSubsystem(new ElevatorIOTalonFX());
+        clawSubsystem = new ClawSubsystem(new ClawIOTalonFX(), stateIO);
+        elevatorSubsystem = new ElevatorSubsystem(new ElevatorIOTalonFX(), stateIO);
+        intakeSubsystem = new IntakeSubsystem(new IntakeIOSim());
+        climberSubsystem = new ClimberSubsystem(new ClimberIOSim());
+        pivotSubsystem = new PivotSubsystem(new PivotIOSim(), stateIO);
         break;
     }
+
+    stateManager = new StateManager(new StateManagerIO(), pivotSubsystem, clawSubsystem, elevatorSubsystem, climberSubsystem, intakeSubsystem);
 
     // Set up auto routines
     autoChooser = new LoggedDashboardChooser<>("Auto Choices", AutoBuilder.buildAutoChooser());

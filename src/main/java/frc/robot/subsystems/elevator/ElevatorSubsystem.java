@@ -8,11 +8,14 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.constants.ElevatorConstants;
 import frc.robot.subsystems.elevator.ElevatorIO.ElevatorIOInputs;
+import frc.robot.subsystems.statemachine.StateManagerIO.StateManagerIOInputs;
 import org.littletonrobotics.junction.Logger;
 
 public class ElevatorSubsystem extends SubsystemBase {
 
   private final ElevatorIO io;
+
+  private final StateManagerIOInputs stateIO;
 
   private final ElevatorIOInputsAutoLogged inputs = new ElevatorIOInputsAutoLogged();
   private final SysIdRoutine sysId;
@@ -20,8 +23,10 @@ public class ElevatorSubsystem extends SubsystemBase {
   private double UpdutyCycleValue = ElevatorConstants.UpValue;
   private double DowndutyCycleValue = ElevatorConstants.DownValue;
 
-  public ElevatorSubsystem(ElevatorIO io) {
+  public ElevatorSubsystem(ElevatorIO io, StateManagerIOInputs stateIO) {
     this.io = io;
+    this.stateIO = stateIO;
+
     SmartDashboard.putNumber("Elevator Up dutyCycle Value", UpdutyCycleValue);
     SmartDashboard.putNumber("Elevator Down dutyCycle Value", DowndutyCycleValue);
     sysId =
@@ -41,6 +46,97 @@ public class ElevatorSubsystem extends SubsystemBase {
     UpdutyCycleValue = SmartDashboard.getNumber("Elevator Up dutyCycle Value", UpdutyCycleValue);
     DowndutyCycleValue =
         SmartDashboard.getNumber("Elevator Down dutyCycle Value", DowndutyCycleValue);
+    if (stateIO.isUpdating) {
+      switch (stateIO.targetCoralState) {
+        case IDLE:
+          io.setPosition(ElevatorConstants.homedPosition);
+          break;
+
+        case ElevatorUp:
+          io.setPosition(ElevatorConstants.finishedIntakePosition);
+          break;
+
+        case ReadyToIntake:
+          io.setPosition(ElevatorConstants.finishedIntakePosition);
+          break;
+
+        case ClawIntaking:
+          io.setPosition(ElevatorConstants.intakePosition);
+          break;
+
+        case FinishedIntaking:
+          io.setPosition(ElevatorConstants.finishedIntakePosition);
+          break;
+
+        case L1:
+          io.setPosition(ElevatorConstants.L1Position);
+          break;
+
+        case L2:
+          io.setPosition(ElevatorConstants.L2Position);
+          break;
+
+        case L3:
+          io.setPosition(ElevatorConstants.L3Position);
+          break;
+
+        case L4:
+          io.setPosition(ElevatorConstants.L4Position);
+          break;
+
+        case Shooting:
+          io.setPosition(inputs.PositionRad);
+          break;
+
+        default:
+          break;
+      }
+    } else {
+      switch (stateIO.currentCoralState) {
+        case IDLE:
+          io.setPosition(ElevatorConstants.homedPosition);
+          break;
+
+        case ElevatorUp:
+          io.setPosition(ElevatorConstants.finishedIntakePosition);
+          break;
+
+        case ReadyToIntake:
+          io.setPosition(ElevatorConstants.finishedIntakePosition);
+          break;
+
+        case ClawIntaking:
+          io.setPosition(ElevatorConstants.intakePosition);
+          break;
+
+        case FinishedIntaking:
+          io.setPosition(ElevatorConstants.finishedIntakePosition);
+          break;
+
+        case L1:
+          io.setPosition(ElevatorConstants.L1Position);
+          break;
+
+        case L2:
+          io.setPosition(ElevatorConstants.L2Position);
+          break;
+
+        case L3:
+          io.setPosition(ElevatorConstants.L3Position);
+          break;
+
+        case L4:
+          io.setPosition(ElevatorConstants.L4Position);
+          break;
+
+        case Shooting:
+          io.setPosition(inputs.PositionRad);
+          break;
+
+        default:
+          break;
+      }
+    }
   }
 
   /**

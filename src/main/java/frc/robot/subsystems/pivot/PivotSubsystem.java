@@ -8,6 +8,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.constants.PivotConstants;
 import frc.robot.subsystems.pivot.PivotIO.PivotIOInputs;
+import frc.robot.subsystems.statemachine.StateManagerIO.StateManagerIOInputs;
 import org.littletonrobotics.junction.Logger;
 
 public class PivotSubsystem extends SubsystemBase {
@@ -16,10 +17,13 @@ public class PivotSubsystem extends SubsystemBase {
   private final PivotIOInputsAutoLogged inputs = new PivotIOInputsAutoLogged();
   private final SysIdRoutine sysId;
 
+  private StateManagerIOInputs stateIO;
+
   private double ClockWisedutyCycleOutValue = PivotConstants.ClockWiseValue;
   private double AntiClockWisedutyCycleOutValue = PivotConstants.AntiClockWiseValue;
 
-  public PivotSubsystem(PivotIO io) {
+  public PivotSubsystem(PivotIO io, StateManagerIOInputs stateIO) {
+    this.stateIO = stateIO;
     this.io = io;
     SmartDashboard.putNumber("ClockWise dutyCycleOut Value", ClockWisedutyCycleOutValue);
     SmartDashboard.putNumber("AntiClockWise dutyCycleOut Value", AntiClockWisedutyCycleOutValue);
@@ -42,6 +46,97 @@ public class PivotSubsystem extends SubsystemBase {
     AntiClockWisedutyCycleOutValue =
         SmartDashboard.getNumber(
             "AntiClockWise dutyCycleOut Value", AntiClockWisedutyCycleOutValue);
+    if (stateIO.isUpdating) {
+      switch (stateIO.targetCoralState) {
+        case IDLE:
+          io.setPosition(PivotConstants.homedPosition);
+          break;
+
+        case ElevatorUp:
+          io.setPosition(PivotConstants.homedPosition);
+          break;
+
+        case ReadyToIntake:
+          io.setPosition(PivotConstants.intakePosition);
+          break;
+
+        case ClawIntaking:
+          io.setPosition(PivotConstants.intakePosition);
+          break;
+
+        case FinishedIntaking:
+          io.setPosition(PivotConstants.intakePosition);
+          break;
+
+        case L1:
+          io.setPosition(PivotConstants.L1Position);
+          break;
+
+        case L2:
+          io.setPosition(PivotConstants.L2Position);
+          break;
+
+        case L3:
+          io.setPosition(PivotConstants.L3Position);
+          break;
+
+        case L4:
+          io.setPosition(PivotConstants.L4Position);
+          break;
+
+        case Shooting:
+          io.setPosition(inputs.PositionRad);
+          break;
+
+        default:
+          break;
+      }
+    } else {
+      switch (stateIO.currentCoralState) {
+        case IDLE:
+          io.setPosition(PivotConstants.homedPosition);
+          break;
+
+        case ElevatorUp:
+          io.setPosition(PivotConstants.homedPosition);
+          break;
+
+        case ReadyToIntake:
+          io.setPosition(PivotConstants.intakePosition);
+          break;
+
+        case ClawIntaking:
+          io.setPosition(PivotConstants.intakePosition);
+          break;
+
+        case FinishedIntaking:
+          io.setPosition(PivotConstants.intakePosition);
+          break;
+
+        case L1:
+          io.setPosition(PivotConstants.L1Position);
+          break;
+
+        case L2:
+          io.setPosition(PivotConstants.L2Position);
+          break;
+
+        case L3:
+          io.setPosition(PivotConstants.L3Position);
+          break;
+
+        case L4:
+          io.setPosition(PivotConstants.L4Position);
+          break;
+
+        case Shooting:
+          io.setPosition(inputs.PositionRad);
+          break;
+
+        default:
+          break;
+      }
+    }
   }
 
   // Stop the indexer motor by setting it to neutral
