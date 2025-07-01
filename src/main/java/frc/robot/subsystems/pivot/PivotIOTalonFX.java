@@ -3,10 +3,11 @@ package frc.robot.subsystems.pivot;
 import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
-import com.ctre.phoenix6.controls.DutyCycleOut;
-import com.ctre.phoenix6.controls.VoltageOut;
+import com.ctre.phoenix6.controls.MotionMagicVoltage;
+import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.hardware.ParentDevice;
 import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.signals.GravityTypeValue;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import edu.wpi.first.math.util.Units;
@@ -22,7 +23,8 @@ public class PivotIOTalonFX implements PivotIO {
   private final TalonFX pivot;
   private TalonFXConfiguration pivotConfigs = new TalonFXConfiguration();
   // Voltage control requests
-  private final VoltageOut voltageRequest = new VoltageOut(0);
+  final PositionVoltage m_request = new PositionVoltage(0).withSlot(0);
+  final MotionMagicVoltage m_motion = new MotionMagicVoltage(0).withSlot(1);
   // Inputs from pivot
   private final StatusSignal<Angle> Position;
   private final StatusSignal<AngularVelocity> Velocity;
@@ -39,15 +41,26 @@ public class PivotIOTalonFX implements PivotIO {
         PivotConstants.inverted_CounterClockwisePositive
             ? InvertedValue.CounterClockwise_Positive
             : InvertedValue.Clockwise_Positive);
-
     // Set PID and feedforward constants from constants file
     pivotConfigs.Slot0.kP = PivotConstants.kP;
     pivotConfigs.Slot0.kI = PivotConstants.kI;
     pivotConfigs.Slot0.kD = PivotConstants.kD;
-    pivotConfigs.Slot0.kA = PivotConstants.kA;
-    pivotConfigs.Slot0.kS = PivotConstants.kS;
-    pivotConfigs.Slot0.kV = PivotConstants.kV;
+    pivotConfigs.Slot0.kG = PivotConstants.kG;
 
+    pivotConfigs.Slot1.kP = PivotConstants.kPMM;
+    pivotConfigs.Slot1.kI = PivotConstants.kIMM;
+    pivotConfigs.Slot1.kD = PivotConstants.kDMM;
+    pivotConfigs.Slot1.kG = PivotConstants.kGMM;
+    pivotConfigs.Slot1.kV = PivotConstants.kVMM;
+
+    pivotConfigs.SoftwareLimitSwitch.ReverseSoftLimitThreshold = 0;
+    pivotConfigs.SoftwareLimitSwitch.ForwardSoftLimitThreshold = 335.0 / (2 * Math.PI);
+    pivotConfigs.SoftwareLimitSwitch.ReverseSoftLimitEnable = true;
+    pivotConfigs.SoftwareLimitSwitch.ForwardSoftLimitEnable = true;
+
+    pivotConfigs.Slot0.GravityType = GravityTypeValue.Arm_Cosine;
+    pivotConfigs.MotionMagic.MotionMagicCruiseVelocity = 38.4;
+    pivotConfigs.MotionMagic.MotionMagicAcceleration = 76.8;
     // Apply the configuration to the motor
     pivot.getConfigurator().apply(pivotConfigs);
 
@@ -73,7 +86,13 @@ public class PivotIOTalonFX implements PivotIO {
   }
 
   @Override
-  public void pivotDutyCycleOut(double output) {
-    pivot.setControl(new DutyCycleOut(output));
+  public void setPivotVoltage(double output) {
+    pivot.setVoltage(output);
+  }
+
+  @Override
+  public void setPosition(double position) {
+    double rotation = position / (2 * Math.PI);
+    pivot.setControl(m_motion.withPosition(rotation));
   }
 }

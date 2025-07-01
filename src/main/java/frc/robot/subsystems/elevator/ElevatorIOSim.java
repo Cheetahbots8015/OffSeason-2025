@@ -12,7 +12,7 @@ public class ElevatorIOSim implements ElevatorIO {
 
   public ElevatorIOSim() {
     elevatorIOSim =
-        new DCMotorSim(LinearSystemId.createElevatorSystem(GEARBOX, 8.0, 0.03, 6.12), GEARBOX);
+        new DCMotorSim(LinearSystemId.createElevatorSystem(GEARBOX, 800.0, 0.03, 6.12), GEARBOX);
   }
 
   @Override
@@ -46,7 +46,12 @@ public class ElevatorIOSim implements ElevatorIO {
   }
 
   @Override
-  public void VelocityVoltage() {
+  public void VelocityVoltage(double velocity) {
     AppliedVolts = 0.05;
+  }
+
+  @Override
+  public void setPosition(double position) {
+    elevatorIOSim.setAngle(position);
   }
 }

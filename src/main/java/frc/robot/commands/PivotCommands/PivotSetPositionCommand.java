@@ -4,10 +4,10 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.pivot.PivotSubsystem;
 
-public class PivotClockWiseCommand extends Command {
+public class PivotSetPositionCommand extends Command {
   private final PivotSubsystem m_subsystem;
 
-  public PivotClockWiseCommand(PivotSubsystem subsystem) {
+  public PivotSetPositionCommand(PivotSubsystem subsystem) {
     m_subsystem = subsystem;
     addRequirements(subsystem);
   }
@@ -17,13 +17,11 @@ public class PivotClockWiseCommand extends Command {
 
   @Override
   public void execute() {
-    m_subsystem.setPivotVoltage(-SmartDashboard.getNumber("PivotVolts", 0));
+    m_subsystem.setPosition(SmartDashboard.getNumber("PivotMotionMagicPositionRads", 0.0));
   }
 
   @Override
-  public void end(boolean interrupted) {
-    m_subsystem.setPivotVoltage(0);
-  }
+  public void end(boolean interrupted) {}
 
   @Override
   public boolean isFinished() {
