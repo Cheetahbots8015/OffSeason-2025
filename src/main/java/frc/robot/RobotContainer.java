@@ -25,6 +25,7 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.commands.DriveCommands;
 import frc.robot.commands.ElevatorCommands.*;
+import frc.robot.commands.IntakeCommands.*;
 import frc.robot.commands.PivotCommands.*;
 import frc.robot.constants.ContainerConstants;
 import frc.robot.generated.TunerConstants;
@@ -38,6 +39,9 @@ import frc.robot.subsystems.drive.ModuleIOSim;
 import frc.robot.subsystems.elevator.ElevatorIOSim;
 import frc.robot.subsystems.elevator.ElevatorIOTalonFX;
 import frc.robot.subsystems.elevator.ElevatorSubsystem;
+import frc.robot.subsystems.intake.IntakeIOSim;
+import frc.robot.subsystems.intake.IntakeIOTalonFX;
+import frc.robot.subsystems.intake.IntakeSubsystem;
 import frc.robot.subsystems.pivot.PivotIOSim;
 import frc.robot.subsystems.pivot.PivotIOTalonFX;
 import frc.robot.subsystems.pivot.PivotSubsystem;
@@ -55,6 +59,7 @@ public class RobotContainer {
   private final ClawSubsystem clawSubsystem;
   private final ElevatorSubsystem elevatorSubsystem;
   private final PivotSubsystem pivotSubsystem;
+  private final IntakeSubsystem intakeSubsystem;
 
   // Controller
   private final CommandXboxController controller = new CommandXboxController(0);
@@ -77,6 +82,7 @@ public class RobotContainer {
         clawSubsystem = new ClawSubsystem(new ClawIOTalonFX());
         elevatorSubsystem = new ElevatorSubsystem(new ElevatorIOTalonFX());
         pivotSubsystem = new PivotSubsystem(new PivotIOTalonFX());
+        intakeSubsystem = new IntakeSubsystem(new IntakeIOTalonFX());
         break;
 
       case SIM:
@@ -91,6 +97,7 @@ public class RobotContainer {
         clawSubsystem = new ClawSubsystem(new ClawIOSim());
         elevatorSubsystem = new ElevatorSubsystem(new ElevatorIOSim());
         pivotSubsystem = new PivotSubsystem(new PivotIOSim());
+        intakeSubsystem = new IntakeSubsystem(new IntakeIOSim());
         break;
 
       default:
@@ -105,6 +112,7 @@ public class RobotContainer {
         clawSubsystem = new ClawSubsystem(new ClawIOTalonFX());
         elevatorSubsystem = new ElevatorSubsystem(new ElevatorIOTalonFX());
         pivotSubsystem = new PivotSubsystem(new PivotIOTalonFX());
+        intakeSubsystem = new IntakeSubsystem(new IntakeIOTalonFX());
         break;
     }
 
@@ -133,6 +141,8 @@ public class RobotContainer {
     SmartDashboard.putNumber("ClimberClawVolts", 0.0);
     SmartDashboard.putNumber("ElevatorVolts", 0.0);
     SmartDashboard.putNumber("PivotVolts", 0.5);
+    SmartDashboard.putNumber("IntakeIndexerVolts", 0.3);
+    SmartDashboard.putNumber("IntakeRollerVolts", 0.3);
     SmartDashboard.putNumber("SetMotionMagicPositionRads", 160.0);
     SmartDashboard.putNumber("PivotMotionMagicPositionRads", 100.0);
 
@@ -169,24 +179,32 @@ public class RobotContainer {
                     drive)
                 .ignoringDisable(true));
 
-    /*
-     * Claw Subsystem test controller.leftTrigger().whileTrue(new
-     * ClawIntakeInCommand(clawSubsystem)); controller.leftBumper().whileTrue(new
-     * ClawIntakeOutCommand(clawSubsystem)); controller.rightTrigger().whileTrue(new
-     * ClawShooterInCommand(clawSubsystem)); controller.rightBumper().whileTrue(new
-     * ClawShooterOutCommand(clawSubsystem));
-     */
+    /* Claw Subsystem test
+    controller.leftTrigger().whileTrue(new
+    ClawIntakeInCommand(clawSubsystem)); controller.leftBumper().whileTrue(new
+    ClawIntakeOutCommand(clawSubsystem)); controller.rightTrigger().whileTrue(new
+    ClawShooterInCommand(clawSubsystem)); controller.rightBumper().whileTrue(new
+    ClawShooterOutCommand(clawSubsystem));
+    */
 
-    // Elevator Subsystem test
+    /* Elevator Subsystem test
     controller.a().whileTrue(new ElevatorDefaultCommand(elevatorSubsystem));
     controller.y().whileTrue(new ElevatorSetPositionCommand(elevatorSubsystem));
     controller.leftTrigger().whileTrue(new ElevatorUpCommand(elevatorSubsystem));
     controller.leftBumper().whileTrue(new ElevatorDownCommand(elevatorSubsystem));
+    */
 
-    // Pivot Subsystem test
+    /* Pivot Subsystem test
     controller.rightTrigger().whileTrue(new PivotClockWiseCommand(pivotSubsystem));
     controller.rightBumper().whileTrue(new PivotAntiClockWiseCommand(pivotSubsystem));
     controller.x().whileTrue(new PivotSetPositionCommand(pivotSubsystem));
+    */
+
+    /* Intake Subsystem test
+    controller.leftTrigger().whileTrue(new IntakeRollerIndexerInCommand(intakeSubsystem));
+    controller.leftBumper().whileTrue(new IntakeIndexerOutCommand(intakeSubsystem));
+    controller.rightBumper().whileTrue(new IntakeRollerOutCommand(intakeSubsystem));
+    */
   }
 
   /**
