@@ -37,13 +37,12 @@ import frc.robot.subsystems.drive.ModuleIOSim;
 import frc.robot.subsystems.elevator.*;
 import frc.robot.subsystems.intake.*;
 import frc.robot.subsystems.pivot.*;
-import frc.robot.subsystems.statemachine.StateManager;
-import frc.robot.subsystems.statemachine.StateManagerIO;
-import frc.robot.subsystems.statemachine.StateManagerIO.StateManagerIOInputs;
-
 import frc.robot.subsystems.pivot.PivotIOSim;
 import frc.robot.subsystems.pivot.PivotIOTalonFX;
 import frc.robot.subsystems.pivot.PivotSubsystem;
+import frc.robot.subsystems.statemachine.StateManager;
+import frc.robot.subsystems.statemachine.StateManagerIO;
+import frc.robot.subsystems.statemachine.StateManagerIO.StateManagerIOInputs;
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 
 /**
@@ -124,7 +123,14 @@ public class RobotContainer {
         break;
     }
 
-    stateManager = new StateManager(new StateManagerIO(), pivotSubsystem, clawSubsystem, elevatorSubsystem, climberSubsystem, intakeSubsystem);
+    stateManager =
+        new StateManager(
+            new StateManagerIO(),
+            pivotSubsystem,
+            clawSubsystem,
+            elevatorSubsystem,
+            climberSubsystem,
+            intakeSubsystem);
 
     // Set up auto routines
     autoChooser = new LoggedDashboardChooser<>("Auto Choices", AutoBuilder.buildAutoChooser());

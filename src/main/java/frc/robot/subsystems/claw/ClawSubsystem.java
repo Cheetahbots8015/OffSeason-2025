@@ -4,8 +4,6 @@ package frc.robot.subsystems.claw;
 
 import static edu.wpi.first.units.Units.Volt;
 
-import java.lang.annotation.ElementType;
-
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;

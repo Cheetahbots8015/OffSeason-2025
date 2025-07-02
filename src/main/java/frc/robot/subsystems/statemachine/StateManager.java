@@ -84,20 +84,17 @@ public class StateManager {
 
         case ElevatorUp:
           updateStateWithRequest(
-            inputs.previousCoralState == CoralState.ReadyToIntake, 
-            CoralState.IDLE, 
-            pivot.getInput().PositionRad == PivotConstants.homedPosition
-          );
+              inputs.previousCoralState == CoralState.ReadyToIntake,
+              CoralState.IDLE,
+              pivot.getInput().PositionRad == PivotConstants.homedPosition);
           updateStateWithRequest(
-            inputs.previousCoralState == CoralState.FinishedIntaking, 
-            CoralState.IDLE, 
-            pivot.getInput().PositionRad == PivotConstants.homedPosition
-          );
+              inputs.previousCoralState == CoralState.FinishedIntaking,
+              CoralState.IDLE,
+              pivot.getInput().PositionRad == PivotConstants.homedPosition);
           updateStateWithRequest(
-            inputs.previousCoralState == CoralState.IDLE, 
-            CoralState.ReadyToIntake, 
-            pivot.getInput().PositionRad == PivotConstants.intakePosition
-          );
+              inputs.previousCoralState == CoralState.IDLE,
+              CoralState.ReadyToIntake,
+              pivot.getInput().PositionRad == PivotConstants.intakePosition);
           break;
 
         case ReadyToIntake: // Elevator Up to top, Pivot Down
