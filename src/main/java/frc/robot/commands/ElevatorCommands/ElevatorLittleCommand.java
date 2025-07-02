@@ -20,7 +20,7 @@ public class ElevatorLittleCommand extends Command {
   @Override
   public void execute() {
     m_subsystem.setElevatorVoltage(
-        (m_position - m_subsystem.getInput().PositionRad) > 0 ? 1.5 : -0.5);
+        (m_position - m_subsystem.getInput().PositionRad) > 0 ? 2.5 : -1.5);
     ;
   }
 

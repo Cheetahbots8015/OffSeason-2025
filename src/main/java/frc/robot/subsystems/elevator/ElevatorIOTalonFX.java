@@ -56,8 +56,6 @@ public class ElevatorIOTalonFX implements ElevatorIO {
     elevatorConfigs.Slot0.GravityType = GravityTypeValue.Elevator_Static;
     elevatorConfigs.SoftwareLimitSwitch.ReverseSoftLimitThreshold = 0;
     elevatorConfigs.SoftwareLimitSwitch.ReverseSoftLimitEnable = true;
-    elevatorConfigs.SoftwareLimitSwitch.ForwardSoftLimitThreshold = 320 / (2 * Math.PI);
-    elevatorConfigs.SoftwareLimitSwitch.ForwardSoftLimitEnable = true;
 
     // Set PID and feedforward constants from constants file
     elevatorConfigs.Slot1.kP = ElevatorConstants.kPMM;

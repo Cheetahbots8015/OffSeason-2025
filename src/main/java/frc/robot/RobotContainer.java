@@ -84,7 +84,7 @@ public class RobotContainer {
         clawSubsystem = new ClawSubsystem(new ClawIOTalonFX());
         elevatorSubsystem = new ElevatorSubsystem(new ElevatorIOTalonFX());
         pivotSubsystem = new PivotSubsystem(new PivotIOTalonFX());
-        intakeSubsystem = new IntakeSubsystem(new IntakeIOSim());
+        intakeSubsystem = new IntakeSubsystem(new IntakeIOTalonFX());
         break;
 
       case SIM:
