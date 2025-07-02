@@ -21,8 +21,8 @@ public class ClawTimedShootCommand extends Command {
 
   @Override
   public void execute() {
-    m_subsystem.setIntakeVoltage(0.5);
-    m_subsystem.setShooterVoltage(1);
+    m_subsystem.setIntakeVoltage(2);
+    m_subsystem.setShooterVoltage(12);
   }
 
   @Override

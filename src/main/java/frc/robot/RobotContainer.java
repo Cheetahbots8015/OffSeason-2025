@@ -23,7 +23,6 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
-import frc.robot.commands.ClawCommands.ClawShooterOutCommand;
 import frc.robot.commands.ClawCommands.ClawTimedIntakeCommand;
 import frc.robot.commands.ClawCommands.ClawTimedShootCommand;
 import frc.robot.commands.DriveCommands;
@@ -85,7 +84,7 @@ public class RobotContainer {
         clawSubsystem = new ClawSubsystem(new ClawIOTalonFX());
         elevatorSubsystem = new ElevatorSubsystem(new ElevatorIOTalonFX());
         pivotSubsystem = new PivotSubsystem(new PivotIOTalonFX());
-        intakeSubsystem = new IntakeSubsystem(new IntakeIOTalonFX());
+        intakeSubsystem = new IntakeSubsystem(new IntakeIOSim());
         break;
 
       case SIM:
@@ -144,8 +143,8 @@ public class RobotContainer {
     SmartDashboard.putNumber("ClimberClawVolts", 0.0);
     SmartDashboard.putNumber("ElevatorVolts", 0.0);
     SmartDashboard.putNumber("PivotVolts", 0.5);
-    SmartDashboard.putNumber("IntakeIndexerVolts", 0.3);
-    SmartDashboard.putNumber("IntakeRollerVolts", 0.3);
+    SmartDashboard.putNumber("IntakeIndexerVolts", 3);
+    SmartDashboard.putNumber("IntakeRollerVolts", 3);
     SmartDashboard.putNumber("SetMotionMagicPositionRads", 160.0);
     SmartDashboard.putNumber("PivotMotionMagicPositionRads", 100.0);
 
@@ -203,29 +202,52 @@ public class RobotContainer {
     controller.x().whileTrue(new PivotSetPositionCommand(pivotSubsystem));
     */
 
-    /* Intake Subsystem test
+    // Intake Subsystem test
     controller.leftTrigger().whileTrue(new IntakeRollerIndexerInCommand(intakeSubsystem));
     controller.leftBumper().whileTrue(new IntakeIndexerOutCommand(intakeSubsystem));
     controller.rightBumper().whileTrue(new IntakeRollerOutCommand(intakeSubsystem));
-    */
 
-    // L2 test
-    controller.povUp().whileTrue(new ElevatorSetPositionCommand(elevatorSubsystem, 160));
-    controller.povDown().whileTrue(new ElevatorDefaultCommand(elevatorSubsystem));
+    controller.povUp().whileTrue(new ElevatorSetPositionCommand(elevatorSubsystem, 40));
+    controller.povDown().whileTrue(new ElevatorReleaseCommand(elevatorSubsystem));
     controller.povLeft().whileTrue(new PivotSetPositionCommand(pivotSubsystem, 0));
+    // Claw Intake Command
     controller
         .y()
         .whileTrue(
-            new ElevatorSetPositionCommand(elevatorSubsystem, 160)
+            new ElevatorSetPositionCommand(elevatorSubsystem, 140)
                 .andThen(
-                    new PivotSetPositionCommand(pivotSubsystem, 335)
+                    new PivotSetPositionCommand(pivotSubsystem, 330)
                         .andThen(
-                            new ElevatorLittleCommand(elevatorSubsystem, 122)
+                            new ElevatorLittleCommand(elevatorSubsystem, 120)
                                 .alongWith(new ClawTimedIntakeCommand(clawSubsystem)))
-                        .andThen(new ElevatorLittleCommand(elevatorSubsystem, 160))
-                        .andThen(new PivotSetPositionCommand(pivotSubsystem, 100))
-                        .andThen(new ClawTimedShootCommand(clawSubsystem))));
-    controller.leftTrigger().whileTrue(new ClawShooterOutCommand(clawSubsystem));
+                        .andThen(new ElevatorLittleCommand(elevatorSubsystem, 140))
+                        .andThen(new PivotSetPositionCommand(pivotSubsystem, 0))
+                        .andThen(new ElevatorSetPositionCommand(elevatorSubsystem, 5))
+                        .andThen(new ElevatorReleaseCommand(elevatorSubsystem))));
+    // L3 Command
+    controller
+        .x()
+        .whileTrue(
+            new ElevatorSetPositionCommand(elevatorSubsystem, 130)
+                .alongWith(new PivotSetPositionCommand(pivotSubsystem, 80))
+                .andThen(new ClawTimedShootCommand(clawSubsystem)));
+
+    /* L4 Command
+    controller
+        .b()
+        .whileTrue(
+            new ElevatorSetPositionCommand(elevatorSubsystem, 300)
+                .alongWith(new PivotSetPositionCommand(pivotSubsystem, 60))
+                .andThen(new ClawTimedShootCommand(clawSubsystem)));
+    */
+
+    // L2 Command
+    controller
+        .a()
+        .whileTrue(
+            new ElevatorSetPositionCommand(elevatorSubsystem, 5)
+                .alongWith(new PivotSetPositionCommand(pivotSubsystem, 50))
+                .andThen(new ClawTimedShootCommand(clawSubsystem)));
   }
 
   /**

@@ -59,8 +59,8 @@ public class PivotIOTalonFX implements PivotIO {
     pivotConfigs.SoftwareLimitSwitch.ForwardSoftLimitEnable = true;
 
     pivotConfigs.Slot0.GravityType = GravityTypeValue.Arm_Cosine;
-    pivotConfigs.MotionMagic.MotionMagicCruiseVelocity = 38.4;
-    pivotConfigs.MotionMagic.MotionMagicAcceleration = 76.8;
+    pivotConfigs.MotionMagic.MotionMagicCruiseVelocity = 76.8;
+    pivotConfigs.MotionMagic.MotionMagicAcceleration = 230.4;
     // Apply the configuration to the motor
     pivot.getConfigurator().apply(pivotConfigs);
 
