@@ -24,7 +24,6 @@ public class ClimberConstants {
   public static final double holdVoltage = 0.2;
 
   public static final double canrangeDistance = 0.1;
-  public static final double canrangeDistanceFinal = 0.01;
 
   public static final double setPositionUpVoltage = 2;
   public static final double setPositionDownvoltage = -2;

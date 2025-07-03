@@ -142,8 +142,4 @@ public class ClimberIOTalonFX implements ClimberIO {
   public boolean returnCanrange() {
     return canrange.getDistance().getValueAsDouble() < ClimberConstants.canrangeDistance;
   }
-
-  public boolean returnCanrangeFinal() {
-    return canrange.getDistance().getValueAsDouble() < ClimberConstants.canrangeDistanceFinal;
-  }
 }

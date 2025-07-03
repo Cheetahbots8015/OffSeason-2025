@@ -19,20 +19,18 @@ public class ClimberClawCommand extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if (m_subsystem.returnCanrange()) {
-      m_subsystem.setClawVoltage(0.5);
-    } else {
-      m_subsystem.setClawVoltage(3.0);
-    }
+    m_subsystem.setClawVoltage(3.0);
   }
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {}
+  public void end(boolean interrupted) {
+    m_subsystem.setClawVoltage(0.5);
+  }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return m_subsystem.returnCanrangeFinal();
+    return m_subsystem.returnCanrange();
   }
 }
