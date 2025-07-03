@@ -13,6 +13,7 @@
 
 package frc.robot;
 
+import com.ctre.phoenix6.signals.RGBWColor;
 import com.pathplanner.lib.auto.AutoBuilder;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -28,8 +29,12 @@ import frc.robot.commands.ClawCommands.ClawTimedShootCommand;
 import frc.robot.commands.DriveCommands;
 import frc.robot.commands.ElevatorCommands.*;
 import frc.robot.commands.IntakeCommands.*;
+import frc.robot.commands.LedCommand.LedTurnOffCommand;
+import frc.robot.commands.LedCommand.LedTurnOnCommand;
+import frc.robot.commands.LedCommand.LedTurnSomeOnCommand;
 import frc.robot.commands.PivotCommands.*;
 import frc.robot.constants.ContainerConstants;
+import frc.robot.constants.LedConstants;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.claw.ClawIOSim;
 import frc.robot.subsystems.claw.ClawIOTalonFX;
@@ -44,6 +49,9 @@ import frc.robot.subsystems.elevator.ElevatorSubsystem;
 import frc.robot.subsystems.intake.IntakeIOSim;
 import frc.robot.subsystems.intake.IntakeIOTalonFX;
 import frc.robot.subsystems.intake.IntakeSubsystem;
+import frc.robot.subsystems.led.LedIOCANdle;
+import frc.robot.subsystems.led.LedIOSim;
+import frc.robot.subsystems.led.LedSubsystem;
 import frc.robot.subsystems.pivot.PivotIOSim;
 import frc.robot.subsystems.pivot.PivotIOTalonFX;
 import frc.robot.subsystems.pivot.PivotSubsystem;
@@ -63,8 +71,12 @@ public class RobotContainer {
   private final PivotSubsystem pivotSubsystem;
   private final IntakeSubsystem intakeSubsystem;
 
+  private final LedSubsystem ledSubsystem;
+
   // Controller
   private final CommandXboxController controller = new CommandXboxController(0);
+
+  private final CommandXboxController ledController = new CommandXboxController(3);
 
   // Dashboard inputs
   private final LoggedDashboardChooser<Command> autoChooser;
@@ -85,6 +97,7 @@ public class RobotContainer {
         elevatorSubsystem = new ElevatorSubsystem(new ElevatorIOTalonFX());
         pivotSubsystem = new PivotSubsystem(new PivotIOTalonFX());
         intakeSubsystem = new IntakeSubsystem(new IntakeIOTalonFX());
+        ledSubsystem = new LedSubsystem(new LedIOCANdle());
         break;
 
       case SIM:
@@ -100,6 +113,8 @@ public class RobotContainer {
         elevatorSubsystem = new ElevatorSubsystem(new ElevatorIOSim());
         pivotSubsystem = new PivotSubsystem(new PivotIOSim());
         intakeSubsystem = new IntakeSubsystem(new IntakeIOSim());
+        ledSubsystem = new LedSubsystem(new LedIOSim());
+
         break;
 
       default:
@@ -115,6 +130,8 @@ public class RobotContainer {
         elevatorSubsystem = new ElevatorSubsystem(new ElevatorIOTalonFX());
         pivotSubsystem = new PivotSubsystem(new PivotIOTalonFX());
         intakeSubsystem = new IntakeSubsystem(new IntakeIOTalonFX());
+        ledSubsystem = new LedSubsystem(new LedIOCANdle());
+
         break;
     }
 
@@ -248,6 +265,94 @@ public class RobotContainer {
             new ElevatorSetPositionCommand(elevatorSubsystem, 5)
                 .alongWith(new PivotSetPositionCommand(pivotSubsystem, 50))
                 .andThen(new ClawTimedShootCommand(clawSubsystem)));
+    ledController
+        .a()
+        .whileTrue(
+            (new LedTurnOnCommand(
+                    ledSubsystem,
+                    new RGBWColor(255, 255, 255),
+                    LedConstants.AnimationType.AllOn,
+                    true))
+                .andThen(new LedTurnOffCommand(ledSubsystem)));
+
+    ledController
+        .b()
+        .whileTrue(
+            (new LedTurnOnCommand(
+                    ledSubsystem,
+                    new RGBWColor(0, 0, 255),
+                    LedConstants.AnimationType.ColorFlow,
+                    true))
+                .andThen(new LedTurnOffCommand(ledSubsystem)));
+
+    ledController
+        .x()
+        .whileTrue(
+            (new LedTurnOnCommand(
+                    ledSubsystem,
+                    new RGBWColor(0, 255, 0),
+                    LedConstants.AnimationType.RgbFade,
+                    true))
+                .andThen(new LedTurnOffCommand(ledSubsystem)));
+
+    RGBWColor[] colors = {
+      new RGBWColor(255, 0, 0),
+      new RGBWColor(0, 0, 0),
+      new RGBWColor(255, 0, 0),
+      new RGBWColor(0, 0, 0),
+      new RGBWColor(255, 0, 0),
+      new RGBWColor(0, 0, 0),
+      new RGBWColor(255, 0, 0),
+      new RGBWColor(0, 0, 0),
+      new RGBWColor(255, 0, 0),
+      new RGBWColor(0, 0, 0),
+      new RGBWColor(255, 0, 0),
+      new RGBWColor(0, 0, 0),
+      new RGBWColor(255, 0, 0),
+      new RGBWColor(0, 0, 0),
+      new RGBWColor(255, 0, 0),
+      new RGBWColor(0, 0, 0),
+      new RGBWColor(255, 0, 0),
+      new RGBWColor(0, 0, 0),
+      new RGBWColor(255, 0, 0),
+      new RGBWColor(0, 0, 0),
+      new RGBWColor(255, 0, 0),
+      new RGBWColor(0, 0, 0),
+      new RGBWColor(255, 0, 0),
+      new RGBWColor(0, 0, 0),
+      new RGBWColor(255, 0, 0),
+      new RGBWColor(0, 0, 0),
+      new RGBWColor(255, 0, 0),
+      new RGBWColor(0, 0, 0),
+      new RGBWColor(255, 0, 0),
+      new RGBWColor(0, 0, 0),
+      new RGBWColor(255, 0, 0),
+      new RGBWColor(0, 0, 0),
+      new RGBWColor(255, 0, 0),
+      new RGBWColor(0, 0, 0),
+      new RGBWColor(255, 0, 0),
+      new RGBWColor(0, 0, 0),
+      new RGBWColor(255, 0, 0),
+      new RGBWColor(0, 0, 0),
+      new RGBWColor(255, 0, 0),
+      new RGBWColor(0, 0, 0),
+      new RGBWColor(255, 0, 0),
+      new RGBWColor(0, 0, 0),
+      new RGBWColor(255, 0, 0),
+      new RGBWColor(0, 0, 0),
+      new RGBWColor(255, 0, 0),
+      new RGBWColor(0, 0, 0),
+      new RGBWColor(255, 0, 0),
+      new RGBWColor(0, 0, 0),
+      new RGBWColor(255, 0, 0),
+      new RGBWColor(0, 0, 0),
+    };
+
+    ledController
+        .y()
+        .whileTrue(
+            new LedTurnSomeOnCommand(ledSubsystem, colors, true)
+                .andThen(new LedTurnOffCommand(ledSubsystem)));
   }
 
   /**
