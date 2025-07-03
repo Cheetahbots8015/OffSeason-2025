@@ -88,6 +88,14 @@ public class ClimberSubsystem extends SubsystemBase {
     io.setPivotVoltage(volts);
   }
 
+  public boolean returnCanrange() {
+    return returnCanrange();
+  }
+
+  public boolean returnCanrangeFinal() {
+    return returnCanrangeFinal();
+  }
+
   public ClimberIOInputs getInput() {
     return inputs;
   }

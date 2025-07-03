@@ -3,6 +3,7 @@ package frc.robot.constants;
 public class ClimberConstants {
   public static final int clawID = 5;
   public static final int pivotID = 5;
+  public static final int canrangID = 6;
   public static final boolean claw_neutralmode_Coast = false;
   public static final boolean claw_inverted_CounterClockwisePositive = true;
   public static final boolean pivot_neutralmode_Coast = false;
@@ -21,6 +22,10 @@ public class ClimberConstants {
   public static final double pivotkS = 0.0;
   public static final double pivotkV = 0.0;
   public static final double holdVoltage = 0.2;
+
+  public static final double canrangeDistance = 0.1;
+  public static final double canrangeDistanceFinal = 0.01;
+
   public static final double setPositionUpVoltage = 2;
   public static final double setPositionDownvoltage = -2;
   public static final double statusUpdateFrequency = 50.0;
