@@ -14,7 +14,7 @@ import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.units.measure.*;
 
 public class TunerConstants {
-  private static final Slot0Configs steerGains =
+  private static final Slot0Configs steerGains4i =
       new Slot0Configs()
           .withKP(0)
           .withKI(0)
@@ -23,6 +23,17 @@ public class TunerConstants {
           .withKV(0)
           .withKA(0)
           .withStaticFeedforwardSign(StaticFeedforwardSignValue.UseClosedLoopSign);
+
+  private static final Slot0Configs steerGains4n =
+      new Slot0Configs()
+          .withKP(0)
+          .withKI(0)
+          .withKD(0)
+          .withKS(0)
+          .withKV(0)
+          .withKA(0)
+          .withStaticFeedforwardSign(StaticFeedforwardSignValue.UseClosedLoopSign);
+
   private static final Slot0Configs driveGains =
       new Slot0Configs().withKP(0).withKI(0).withKD(0).withKS(0).withKV(0);
 
@@ -83,7 +94,7 @@ public class TunerConstants {
               .withSteerMotorGearRatio(kSteerGearRatio4i)
               .withCouplingGearRatio(kCoupleRatio)
               .withWheelRadius(kWheelRadius)
-              .withSteerMotorGains(steerGains)
+              .withSteerMotorGains(steerGains4i)
               .withDriveMotorGains(driveGains)
               .withSteerMotorClosedLoopOutput(kSteerClosedLoopOutput)
               .withDriveMotorClosedLoopOutput(kDriveClosedLoopOutput)
@@ -109,7 +120,7 @@ public class TunerConstants {
               .withSteerMotorGearRatio(kSteerGearRatio4n)
               .withCouplingGearRatio(kCoupleRatio)
               .withWheelRadius(kWheelRadius)
-              .withSteerMotorGains(steerGains)
+              .withSteerMotorGains(steerGains4n)
               .withDriveMotorGains(driveGains)
               .withSteerMotorClosedLoopOutput(kSteerClosedLoopOutput)
               .withDriveMotorClosedLoopOutput(kDriveClosedLoopOutput)
