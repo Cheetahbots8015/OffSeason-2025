@@ -20,7 +20,7 @@ public class TunerConstants {
           .withKI(0)
           .withKD(0)
           .withKS(0)
-          .withKV(0)
+          .withKV(1)
           .withKA(0)
           .withStaticFeedforwardSign(StaticFeedforwardSignValue.UseClosedLoopSign);
 
@@ -30,12 +30,12 @@ public class TunerConstants {
           .withKI(0)
           .withKD(0)
           .withKS(0)
-          .withKV(0)
+          .withKV(1)
           .withKA(0)
           .withStaticFeedforwardSign(StaticFeedforwardSignValue.UseClosedLoopSign);
 
   private static final Slot0Configs driveGains =
-      new Slot0Configs().withKP(0).withKI(0).withKD(0).withKS(0).withKV(0);
+      new Slot0Configs().withKP(0).withKI(0).withKD(0).withKS(0).withKV(0.5);
 
   private static final ClosedLoopOutputType kSteerClosedLoopOutput = ClosedLoopOutputType.Voltage;
   private static final ClosedLoopOutputType kDriveClosedLoopOutput = ClosedLoopOutputType.Voltage;
