@@ -65,6 +65,10 @@ public class IntakeSubsystem extends SubsystemBase {
     return sysId.dynamic(direction);
   }
 
+  public void VelocityVoltage(double velocity) {
+    io.VelocityVoltage(velocity);
+  }
+
   public IntakeIOInputs getInput() {
     return inputs;
   }

@@ -4,6 +4,7 @@ import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.DutyCycleOut;
+import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.hardware.CANrange;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.InvertedValue;
@@ -25,6 +26,7 @@ public class IntakeIOTalonFX implements IntakeIO {
   private TalonFXConfiguration indexerConfigs = new TalonFXConfiguration();
   private TalonFXConfiguration intakeConfigs = new TalonFXConfiguration();
   private TalonFXConfiguration armConfigs = new TalonFXConfiguration();
+  private final VelocityVoltage m_velocity = new VelocityVoltage(0).withSlot(0);
 
   // Inputs from indexer
   private final StatusSignal<Angle> IndexerPosition;
@@ -208,5 +210,10 @@ public class IntakeIOTalonFX implements IntakeIO {
   @Override
   public boolean getCanRange() {
     return Canrange.getValue();
+  }
+
+  @Override
+  public void VelocityVoltage(double velocity) {
+    arm.setControl(m_velocity.withVelocity(velocity));
   }
 }
