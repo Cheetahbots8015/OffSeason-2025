@@ -89,7 +89,7 @@ public class ClimberSubsystem extends SubsystemBase {
   }
 
   public boolean returnCanrange() {
-    return returnCanrange();
+    return io.returnCanrange();
   }
 
   public ClimberIOInputs getInput() {

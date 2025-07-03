@@ -139,6 +139,7 @@ public class ClimberIOTalonFX implements ClimberIO {
     pivot.setVoltage(volts);
   }
 
+  @Override
   public boolean returnCanrange() {
     return canrange.getDistance().getValueAsDouble() < ClimberConstants.canrangeDistance;
   }
