@@ -4,7 +4,6 @@ import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.configs.MotionMagicConfigs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
-import com.ctre.phoenix6.controls.DutyCycleOut;
 import com.ctre.phoenix6.controls.MotionMagicExpoVoltage;
 import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.hardware.ParentDevice;
@@ -13,14 +12,12 @@ import com.ctre.phoenix6.signals.GravityTypeValue;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import edu.wpi.first.math.util.Units;
-import edu.wpi.first.units.measure.Acceleration;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularAcceleration;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Current;
 import edu.wpi.first.units.measure.Voltage;
 import frc.robot.constants.ElevatorConstants;
-import frc.robot.subsystems.elevator.ElevatorIO.ElevatorIOInputs;
 
 public class ElevatorIOTalonFX implements ElevatorIO {
   // Hardware objects
@@ -62,12 +59,13 @@ public class ElevatorIOTalonFX implements ElevatorIO {
     elevatorConfigs.Slot1.kI = ElevatorConstants.kIMM;
     elevatorConfigs.Slot1.kD = ElevatorConstants.kDMM;
     elevatorConfigs.Slot1.kG = ElevatorConstants.kGMM;
+    elevatorConfigs.Slot1.kV = ElevatorConstants.kVMM;
     elevatorConfigs.Slot1.GravityType = GravityTypeValue.Elevator_Static;
 
     MotionMagicConfigs motionMagicConfigs = elevatorConfigs.MotionMagic;
     motionMagicConfigs.MotionMagicCruiseVelocity = 0; // Unlimited cruise velocity
     motionMagicConfigs.MotionMagicExpo_kV = 0.06;
-    motionMagicConfigs.MotionMagicExpo_kA = 0.03; // Use a slower kA of 0.1 V/(rps/s)
+    motionMagicConfigs.MotionMagicExpo_kA = 0.02; // Use a slower kA of 0.1 V/(rps/s)
 
     // Apply the configuration to the motor
     elevator.getConfigurator().apply(elevatorConfigs);
@@ -101,12 +99,6 @@ public class ElevatorIOTalonFX implements ElevatorIO {
   }
 
   @Override
-  public void elevatorDutyCycleOut(double output) {
-
-    elevator.setControl(new DutyCycleOut(output));
-  }
-
-  @Override
   public void setElevatorVoltage(double volts) {
     elevator.setVoltage(volts);
   }
@@ -124,7 +116,7 @@ public class ElevatorIOTalonFX implements ElevatorIO {
 
   @Override
   public void setPosition(double position) {
-    double rotation = position / 6.28;
+    double rotation = Units.radiansToRotations(position);
     elevator.setControl(m_ExpoVoltage.withPosition(rotation));
   }
 }

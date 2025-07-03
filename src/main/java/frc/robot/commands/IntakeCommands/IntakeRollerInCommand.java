@@ -1,15 +1,14 @@
 package frc.robot.commands.IntakeCommands;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.intake.IntakeSubsystem;
 
 public class IntakeRollerInCommand extends Command {
   private final IntakeSubsystem m_subsystem;
-  private double m_volts;
 
-  public IntakeRollerInCommand(IntakeSubsystem subsystem, double volts) {
+  public IntakeRollerInCommand(IntakeSubsystem subsystem) {
     m_subsystem = subsystem;
-    m_volts = volts;
     addRequirements(subsystem);
   }
 
@@ -18,7 +17,7 @@ public class IntakeRollerInCommand extends Command {
 
   @Override
   public void execute() {
-    m_subsystem.setIntakeVoltage(m_volts);
+    m_subsystem.setIntakeVoltage(SmartDashboard.getNumber("IntakeRollerVolts", 0.0));
   }
 
   @Override

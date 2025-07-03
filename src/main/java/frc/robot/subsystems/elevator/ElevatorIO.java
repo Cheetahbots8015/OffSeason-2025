@@ -15,9 +15,6 @@ public interface ElevatorIO {
   /** Updates the set of loggable inputs. */
   public default void updateInputs(ElevatorIOInputs inputs) {}
 
-  /** Run the roller at the specified open loop value. */
-  public default void elevatorDutyCycleOut(double output) {}
-
   public default void setElevatorVoltage(double volts) {}
 
   public default double getElevatorVelocity() {
