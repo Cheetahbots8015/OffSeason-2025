@@ -63,6 +63,7 @@ public class RobotContainer {
   private final ClimberSubsystem climberSubsystem;
   private final PivotSubsystem pivotSubsystem;
   private final IntakeSubsystem intakeSubsystem;
+  private final Superstructure superstructure;
 
   private final StateManager stateManager;
   private final StateManagerIOInputs stateIO;
@@ -90,8 +91,7 @@ public class RobotContainer {
         clawSubsystem = new ClawSubsystem(new ClawIOTalonFX(), stateIO);
         elevatorSubsystem = new ElevatorSubsystem(new ElevatorIOTalonFX(), stateIO);
         intakeSubsystem = new IntakeSubsystem(new IntakeIOTalonFX());
-        climberSubsystem = new ClimberSubsystem(new ClimberIOTalonFX());
-        pivotSubsystem = new PivotSubsystem(new PivotIOTalonFX(), stateIO);
+        superstructure = new Superstructure(clawSubsystem, elevatorSubsystem, pivotSubsystem);
         break;
 
       case SIM:
@@ -106,8 +106,7 @@ public class RobotContainer {
         clawSubsystem = new ClawSubsystem(new ClawIOSim(), stateIO);
         elevatorSubsystem = new ElevatorSubsystem(new ElevatorIOSim(), stateIO);
         intakeSubsystem = new IntakeSubsystem(new IntakeIOSim());
-        climberSubsystem = new ClimberSubsystem(new ClimberIOSim());
-        pivotSubsystem = new PivotSubsystem(new PivotIOSim(), stateIO);
+        superstructure = new Superstructure(clawSubsystem, elevatorSubsystem, pivotSubsystem);
         break;
 
       default:
@@ -124,6 +123,7 @@ public class RobotContainer {
         intakeSubsystem = new IntakeSubsystem(new IntakeIOSim());
         climberSubsystem = new ClimberSubsystem(new ClimberIOSim());
         pivotSubsystem = new PivotSubsystem(new PivotIOSim(), stateIO);
+        superstructure = new Superstructure(clawSubsystem, elevatorSubsystem, pivotSubsystem);
         break;
     }
 
