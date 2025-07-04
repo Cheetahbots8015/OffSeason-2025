@@ -20,7 +20,7 @@ public interface IntakeIO {
     public double ArmAppliedVolts = 0.0;
     public double ArmCurrentAmps = 0.0;
 
-    public boolean Canrange = false;
+    public boolean CanrangeDetected = false;
   }
 
   /** Updates the set of loggable inputs. */
@@ -34,6 +34,8 @@ public interface IntakeIO {
   public default void setIntakeVoltage(double volts) {}
 
   public default void setIndexerVoltage(double volts) {}
+
+  public default void setArmPosition(double position) {}
 
   public default boolean getCanRange() {
     return false;

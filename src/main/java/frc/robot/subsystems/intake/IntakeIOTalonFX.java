@@ -2,8 +2,10 @@ package frc.robot.subsystems.intake;
 
 import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.StatusSignal;
+import com.ctre.phoenix6.configs.CANrangeConfiguration;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.DutyCycleOut;
+import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.hardware.CANrange;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.InvertedValue;
@@ -25,6 +27,7 @@ public class IntakeIOTalonFX implements IntakeIO {
   private TalonFXConfiguration indexerConfigs = new TalonFXConfiguration();
   private TalonFXConfiguration intakeConfigs = new TalonFXConfiguration();
   private TalonFXConfiguration armConfigs = new TalonFXConfiguration();
+  private CANrangeConfiguration canrangeConfig = new CANrangeConfiguration();
 
   // Inputs from indexer
   private final StatusSignal<Angle> IndexerPosition;
@@ -105,10 +108,31 @@ public class IntakeIOTalonFX implements IntakeIO {
     armConfigs.Slot0.kS = IntakeConstants.arm_kS;
     armConfigs.Slot0.kV = IntakeConstants.arm_kV;
 
+    armConfigs.MotionMagic.MotionMagicCruiseVelocity = IntakeConstants.armCruiseVelocity;
+    armConfigs.MotionMagic.MotionMagicAcceleration = IntakeConstants.armCruiseAcceleration;
+    // config duty cycle limit
+    armConfigs.MotorOutput.withPeakForwardDutyCycle(IntakeConstants.armForwardDutyCycleLimit);
+    armConfigs.MotorOutput.withPeakReverseDutyCycle(IntakeConstants.armReverseDutyCycleLimit);
+    // config softlimit
+    armConfigs.SoftwareLimitSwitch.ForwardSoftLimitEnable =
+        IntakeConstants.armForwardSoftLimitEnable;
+    armConfigs.SoftwareLimitSwitch.ReverseSoftLimitEnable =
+        IntakeConstants.armReverseSoftLimitEnable;
+    armConfigs.SoftwareLimitSwitch.ForwardSoftLimitThreshold =
+        IntakeConstants.armForwardSoftLimitThreshold;
+    armConfigs.SoftwareLimitSwitch.ReverseSoftLimitThreshold =
+        IntakeConstants.armReverseSoftLimitThreshold;
+
+    canrangeConfig.ProximityParams.ProximityThreshold = IntakeConstants.canRangeThreshold;
+    canrangeConfig.ProximityParams.MinSignalStrengthForValidMeasurement =
+        IntakeConstants.minSignalStrength;
+    canrangeConfig.ProximityParams.ProximityHysteresis = IntakeConstants.canRangeHysteresis;
+
     // Apply the configuration to the motor
     indexer.getConfigurator().apply(indexerConfigs);
     intake.getConfigurator().apply(intakeConfigs);
     arm.getConfigurator().apply(armConfigs);
+    canrange.getConfigurator().apply(canrangeConfig);
 
     // Create Indexer status signals
     IndexerPosition = indexer.getPosition();
@@ -180,7 +204,8 @@ public class IntakeIOTalonFX implements IntakeIO {
     inputs.ArmAppliedVolts = ArmAppliedVolts.getValueAsDouble();
     inputs.ArmCurrentAmps = ArmCurrent.getValueAsDouble();
     // Update canrange inputs
-    inputs.Canrange = Canrange.getValue();
+    canrange.getIsDetected().refresh();
+    inputs.CanrangeDetected = canrange.getIsDetected().getValue();
   }
 
   @Override
@@ -207,6 +232,11 @@ public class IntakeIOTalonFX implements IntakeIO {
 
   @Override
   public boolean getCanRange() {
-    return Canrange.getValue();
+    canrange.getIsDetected().refresh();
+    return canrange.getIsDetected().getValue();
+  }
+
+  public void setArmPosition(double position) {
+    arm.setControl(new MotionMagicVoltage(position));
   }
 }

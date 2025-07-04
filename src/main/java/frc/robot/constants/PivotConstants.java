@@ -8,7 +8,11 @@ public class PivotConstants {
   public static final double L3Position = 0.0;
   public static final double L4Position = 0.0;
 
+  public static final double intakePosition = 0.0;
+  public static final double homedPosition = 0.0;
+
   public static final boolean neutralmode_Coast = true;
+
   public static final boolean inverted_CounterClockwisePositive = false;
   public static final double PositionDeadband = 2.00;
   public static final double kP = 0.0;

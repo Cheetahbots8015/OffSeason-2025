@@ -7,6 +7,7 @@ import static edu.wpi.first.units.Units.Volt;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
+import frc.robot.constants.IntakeConstants;
 import frc.robot.subsystems.intake.IntakeIO.IntakeIOInputs;
 import org.littletonrobotics.junction.Logger;
 
@@ -27,6 +28,7 @@ public class IntakeSubsystem extends SubsystemBase {
             new SysIdRoutine.Mechanism((voltage) -> setArmVoltage(voltage.in(Volt)), null, this));
   }
 
+  @Override
   public void periodic() {
     io.updateInputs(inputs);
     Logger.processInputs("Intake", inputs);
@@ -67,5 +69,28 @@ public class IntakeSubsystem extends SubsystemBase {
 
   public IntakeIOInputs getInput() {
     return inputs;
+  }
+
+  public void armDown() {
+    io.setArmPosition(IntakeConstants.armDownPosition);
+  }
+
+  public void armHome() {
+    io.setArmPosition(IntakeConstants.armHomePosition);
+  }
+
+  public void rollerIntake() {
+    io.setIntakeVoltage(IntakeConstants.intakingVoltage);
+    io.setIndexerVoltage(IntakeConstants.indexerVoltage);
+  }
+
+  public void rollerVomit() {
+    io.setIntakeVoltage(-IntakeConstants.intakingVoltage);
+    io.setIndexerVoltage(-IntakeConstants.indexerVoltage);
+  }
+
+  public void rollerStop() {
+    io.setIntakeVoltage(0.0);
+    io.setIndexerVoltage(0.0);
   }
 }

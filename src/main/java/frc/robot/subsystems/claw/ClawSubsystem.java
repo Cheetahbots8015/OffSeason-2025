@@ -7,16 +7,22 @@ import static edu.wpi.first.units.Units.Volt;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
+import frc.robot.constants.ClawConstants;
 import frc.robot.subsystems.claw.ClawIO.ClawIOInputs;
+import frc.robot.subsystems.statemachine.StateManagerIO.StateManagerIOInputs;
 import org.littletonrobotics.junction.Logger;
 
 public class ClawSubsystem extends SubsystemBase {
   private final ClawIO io;
+  private final StateManagerIOInputs stateIO;
+
   private final ClawIOInputsAutoLogged inputs = new ClawIOInputsAutoLogged();
   private final SysIdRoutine sysId;
 
-  public ClawSubsystem(ClawIO io) {
+  public ClawSubsystem(ClawIO io, StateManagerIOInputs stateIO) {
     this.io = io;
+    this.stateIO = stateIO;
+
     sysId =
         new SysIdRoutine(
             new SysIdRoutine.Config(
@@ -28,9 +34,110 @@ public class ClawSubsystem extends SubsystemBase {
                 (voltage) -> setIntakeVoltage(voltage.in(Volt)), null, this));
   }
 
+  @Override
   public void periodic() {
     io.updateInputs(inputs);
     Logger.processInputs("Claw", inputs);
+
+    if (stateIO.isUpdating) {
+      switch (stateIO.targetCoralState) {
+        case IDLE:
+          io.setOpenLoop(0, 0);
+          break;
+
+        case ElevatorUp:
+          io.setOpenLoop(0, 0);
+          break;
+
+        case ReadyToIntake:
+          io.setOpenLoop(0, 0);
+          break;
+
+        case ClawIntaking:
+          io.setIntakeVoltage(ClawConstants.intakeVolts);
+          break;
+
+        case FinishedIntaking:
+          io.setOpenLoop(0, 0);
+          break;
+
+        case L1:
+          io.setOpenLoop(0, 0);
+          break;
+
+        case L2:
+          io.setOpenLoop(0, 0);
+          break;
+
+        case L3:
+          io.setOpenLoop(0, 0);
+          break;
+
+        case L4:
+          io.setOpenLoop(0, 0);
+          break;
+
+        case Shooting:
+          if (stateIO.isShootingL4) {
+            io.L4Shoot();
+          } else {
+            io.normalShoot();
+          }
+          break;
+
+        default:
+          break;
+      }
+    } else {
+      switch (stateIO.currentCoralState) {
+        case IDLE:
+          io.setOpenLoop(0, 0);
+          break;
+
+        case ElevatorUp:
+          io.setOpenLoop(0, 0);
+          break;
+
+        case ReadyToIntake:
+          io.setOpenLoop(0, 0);
+          break;
+
+        case ClawIntaking:
+          io.setIntakeVoltage(ClawConstants.intakeVolts);
+          break;
+
+        case FinishedIntaking:
+          io.setOpenLoop(0, 0);
+          break;
+
+        case L1:
+          io.setOpenLoop(0, 0);
+          break;
+
+        case L2:
+          io.setOpenLoop(0, 0);
+          break;
+
+        case L3:
+          io.setOpenLoop(0, 0);
+          break;
+
+        case L4:
+          io.setOpenLoop(0, 0);
+          break;
+
+        case Shooting:
+          if (stateIO.isShootingL4) {
+            io.L4Shoot();
+          } else {
+            io.normalShoot();
+          }
+          break;
+
+        default:
+          break;
+      }
+    }
   }
 
   public void runVelocity(double intakeOutput, double shooterOutput) {

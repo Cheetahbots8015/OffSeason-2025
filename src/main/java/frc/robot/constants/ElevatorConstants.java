@@ -10,6 +10,11 @@ public class ElevatorConstants {
   public static final double L2Position = 0.0;
   public static final double L3Position = 0.0;
   public static final double L4Position = 0.0;
+  public static final double intakePosition = 0.0;
+  public static final double finishedIntakePosition = 0.0;
+  public static final double homedPosition = 0.0;
+  public static final double readyToCookPosition = 0.0;
+  public static final double dutyCycleDeadband = 0.05;
   public static final double PositionDeadband = 1.0;
   public static final double kP = 0.1;
   public static final double kI = 0.0;

@@ -47,6 +47,7 @@ public class ClimberSubsystem extends SubsystemBase {
             new SysIdRoutine.Mechanism((voltage) -> setPivotVoltage(voltage.in(Volt)), null, this));
   }
 
+  @Override
   public void periodic() {
     io.updateInputs(inputs);
     Logger.processInputs("Climber", inputs);
