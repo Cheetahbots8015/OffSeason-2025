@@ -6,20 +6,20 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.constants.ElevatorConstants;
+import frc.robot.subsystems.SuperStructureIO.SuperStructureIOInputs;
 import frc.robot.subsystems.elevator.ElevatorIO.ElevatorIOInputs;
-import frc.robot.subsystems.statemachine.StateManagerIO.StateManagerIOInputs;
 import org.littletonrobotics.junction.Logger;
 
 public class ElevatorSubsystem extends SubsystemBase {
 
   private final ElevatorIO io;
 
-  private final StateManagerIOInputs stateIO;
+  private final SuperStructureIOInputs stateIO;
 
   private final ElevatorIOInputsAutoLogged inputs = new ElevatorIOInputsAutoLogged();
   private final SysIdRoutine sysId;
 
-  public ElevatorSubsystem(ElevatorIO io, StateManagerIOInputs stateIO) {
+  public ElevatorSubsystem(ElevatorIO io, SuperStructureIOInputs stateIO) {
     this.io = io;
     this.stateIO = stateIO;
     sysId =
@@ -58,20 +58,12 @@ public class ElevatorSubsystem extends SubsystemBase {
           io.setPosition(ElevatorConstants.finishedIntakePosition);
           break;
 
-        case L1:
-          io.setPosition(ElevatorConstants.L1Position);
+        case PivotAtReef:
+          io.setPosition(inputs.PositionRad);
           break;
 
-        case L2:
-          io.setPosition(ElevatorConstants.L2Position);
-          break;
-
-        case L3:
-          io.setPosition(ElevatorConstants.L3Position);
-          break;
-
-        case L4:
-          io.setPosition(ElevatorConstants.L4Position);
+        case ElevatorAtReef:
+          setToReef();
           break;
 
         case Shooting:
@@ -103,20 +95,12 @@ public class ElevatorSubsystem extends SubsystemBase {
           io.setPosition(ElevatorConstants.finishedIntakePosition);
           break;
 
-        case L1:
-          io.setPosition(ElevatorConstants.L1Position);
+        case PivotAtReef:
+          io.setPosition(inputs.PositionRad);
           break;
 
-        case L2:
-          io.setPosition(ElevatorConstants.L2Position);
-          break;
-
-        case L3:
-          io.setPosition(ElevatorConstants.L3Position);
-          break;
-
-        case L4:
-          io.setPosition(ElevatorConstants.L4Position);
+        case ElevatorAtReef:
+          setToReef();
           break;
 
         case Shooting:
@@ -163,5 +147,25 @@ public class ElevatorSubsystem extends SubsystemBase {
 
   public ElevatorIOInputs getInput() {
     return inputs;
+  }
+
+  public boolean isAtPosition(double position) {
+    return Math.abs(inputs.PositionRad - position) < ElevatorConstants.PositionDeadband;
+  }
+
+  private void setToReef() {
+    switch (stateIO.currentReef) {
+      case "L1":
+        setPosition(ElevatorConstants.L1Position);
+
+      case "L2":
+        setPosition(ElevatorConstants.L2Position);
+
+      case "L3":
+        setPosition(ElevatorConstants.L3Position);
+
+      case "L4":
+        setPosition(ElevatorConstants.L4Position);
+    }
   }
 }

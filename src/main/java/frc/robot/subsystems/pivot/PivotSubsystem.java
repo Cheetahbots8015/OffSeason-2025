@@ -6,8 +6,8 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.constants.PivotConstants;
+import frc.robot.subsystems.SuperStructureIO.SuperStructureIOInputs;
 import frc.robot.subsystems.pivot.PivotIO.PivotIOInputs;
-import frc.robot.subsystems.statemachine.StateManagerIO.StateManagerIOInputs;
 import org.littletonrobotics.junction.Logger;
 
 public class PivotSubsystem extends SubsystemBase {
@@ -16,9 +16,9 @@ public class PivotSubsystem extends SubsystemBase {
   private final PivotIOInputsAutoLogged inputs = new PivotIOInputsAutoLogged();
   private final SysIdRoutine sysId;
 
-  private StateManagerIOInputs stateIO;
+  private SuperStructureIOInputs stateIO;
 
-  public PivotSubsystem(PivotIO io, StateManagerIOInputs stateIO) {
+  public PivotSubsystem(PivotIO io, SuperStructureIOInputs stateIO) {
     this.stateIO = stateIO;
     this.io = io;
     sysId =
@@ -57,20 +57,12 @@ public class PivotSubsystem extends SubsystemBase {
           io.setPosition(PivotConstants.intakePosition);
           break;
 
-        case L1:
-          io.setPosition(PivotConstants.L1Position);
+        case PivotAtReef:
+          setToReef();
           break;
 
-        case L2:
-          io.setPosition(PivotConstants.L2Position);
-          break;
-
-        case L3:
-          io.setPosition(PivotConstants.L3Position);
-          break;
-
-        case L4:
-          io.setPosition(PivotConstants.L4Position);
+        case ElevatorAtReef:
+          setToReef();
           break;
 
         case Shooting:
@@ -102,20 +94,12 @@ public class PivotSubsystem extends SubsystemBase {
           io.setPosition(PivotConstants.intakePosition);
           break;
 
-        case L1:
-          io.setPosition(PivotConstants.L1Position);
+        case PivotAtReef:
+          setToReef();
           break;
 
-        case L2:
-          io.setPosition(PivotConstants.L2Position);
-          break;
-
-        case L3:
-          io.setPosition(PivotConstants.L3Position);
-          break;
-
-        case L4:
-          io.setPosition(PivotConstants.L4Position);
+        case ElevatorAtReef:
+          setToReef();
           break;
 
         case Shooting:
@@ -155,5 +139,25 @@ public class PivotSubsystem extends SubsystemBase {
 
   public PivotIOInputs getInput() {
     return inputs;
+  }
+
+  public boolean isAtPosition(double position) {
+    return Math.abs(inputs.PositionRad - position) < PivotConstants.PositionDeadband;
+  }
+
+  private void setToReef() {
+    switch (stateIO.currentReef) {
+      case "L1":
+        setPosition(PivotConstants.L1Position);
+
+      case "L2":
+        setPosition(PivotConstants.L2Position);
+
+      case "L3":
+        setPosition(PivotConstants.L3Position);
+
+      case "L4":
+        setPosition(PivotConstants.L4Position);
+    }
   }
 }
