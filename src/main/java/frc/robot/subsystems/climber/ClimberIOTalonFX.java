@@ -2,8 +2,10 @@ package frc.robot.subsystems.climber;
 
 import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.StatusSignal;
+import com.ctre.phoenix6.configs.CANrangeConfiguration;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.DutyCycleOut;
+import com.ctre.phoenix6.hardware.CANrange;
 import com.ctre.phoenix6.hardware.ParentDevice;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.InvertedValue;
@@ -19,8 +21,10 @@ public class ClimberIOTalonFX implements ClimberIO {
   // Hardware objects
   private final TalonFX claw;
   private final TalonFX pivot;
+  private final CANrange canrange;
   private TalonFXConfiguration clawConfigs = new TalonFXConfiguration();
   private TalonFXConfiguration pivotConfigs = new TalonFXConfiguration();
+  private CANrangeConfiguration canrangeConfigs = new CANrangeConfiguration();
   // Voltage control requests
 
   // Inputs from claw
@@ -38,6 +42,7 @@ public class ClimberIOTalonFX implements ClimberIO {
     pivot = new TalonFX(ClimberConstants.pivotID, "canivore");
     clawConfigs.MotorOutput.withNeutralMode(
         ClimberConstants.claw_neutralmode_Coast ? NeutralModeValue.Coast : NeutralModeValue.Brake);
+    canrange = new CANrange(ClimberConstants.canrangID, "caniovre");
 
     // Set motor inversion based on desired rotation direction
     clawConfigs.MotorOutput.withInverted(
@@ -132,5 +137,10 @@ public class ClimberIOTalonFX implements ClimberIO {
   @Override
   public void setPivotVoltage(double volts) {
     pivot.setVoltage(volts);
+  }
+
+  @Override
+  public boolean returnCanrange() {
+    return canrange.getDistance().getValueAsDouble() < ClimberConstants.canrangeDistance;
   }
 }

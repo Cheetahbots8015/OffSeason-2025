@@ -1,14 +1,16 @@
 package frc.robot.commands.PivotCommands;
 
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.constants.PivotConstants;
 import frc.robot.subsystems.pivot.PivotSubsystem;
 
 public class PivotSetPositionCommand extends Command {
   private final PivotSubsystem m_subsystem;
+  private final double m_position;
 
-  public PivotSetPositionCommand(PivotSubsystem subsystem) {
+  public PivotSetPositionCommand(PivotSubsystem subsystem, double position) {
     m_subsystem = subsystem;
+    m_position = position;
     addRequirements(subsystem);
   }
 
@@ -17,7 +19,7 @@ public class PivotSetPositionCommand extends Command {
 
   @Override
   public void execute() {
-    m_subsystem.setPosition(SmartDashboard.getNumber("PivotMotionMagicPositionRads", 0.0));
+    m_subsystem.setPosition(m_position);
   }
 
   @Override
@@ -25,6 +27,7 @@ public class PivotSetPositionCommand extends Command {
 
   @Override
   public boolean isFinished() {
-    return false;
+    return Math.abs(m_subsystem.getInput().PositionRad - m_position)
+        < PivotConstants.PositionDeadband;
   }
 }

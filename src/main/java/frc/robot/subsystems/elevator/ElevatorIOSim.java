@@ -31,11 +31,6 @@ public class ElevatorIOSim implements ElevatorIO {
   }
 
   @Override
-  public void elevatorDutyCycleOut(double output) {
-    AppliedVolts = output * 12.0;
-  }
-
-  @Override
   public void setElevatorVoltage(double volts) {
     AppliedVolts = volts;
   }

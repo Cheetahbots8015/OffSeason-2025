@@ -1,10 +1,9 @@
 package frc.robot.constants;
 
 public class IntakeConstants {
-  public static final int indexerID = 2;
-  public static final int intakeID = 3;
-  public static final int armID = 4;
-
+  public static final int indexerID = 49;
+  public static final int intakeID = 47;
+  public static final int armID = 48;
   public static final double armDownPosition = 0.0;
   public static final double armHomePosition = 0.0;
 
@@ -21,10 +20,11 @@ public class IntakeConstants {
   public static final double armCruiseVelocity = 1.07;
   public static final double armCruiseAcceleration = 1.07;
 
-  public static final boolean indexer_neutralmode_Coast = false;
-  public static final boolean indexer_inverted_CounterClockwisePositive = false;
+  public static final boolean indexer_neutralmode_Coast = true;
+  public static final boolean indexer_inverted_CounterClockwisePositive = true;
+
   public static final boolean intake_neutralmode_Coast = true;
-  public static final boolean intake_inverted_CounterClockwisePositive = false;
+  public static final boolean intake_inverted_CounterClockwisePositive = true;
   public static final boolean arm_neutralmode_Coast = false;
   public static final boolean arm_inverted_CounterClockwisePositive = false;
 
