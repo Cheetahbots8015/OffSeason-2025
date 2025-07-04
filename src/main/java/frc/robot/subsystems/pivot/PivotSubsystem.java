@@ -5,6 +5,7 @@ import static edu.wpi.first.units.Units.Volt;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
+import frc.robot.constants.PivotConstants;
 import frc.robot.subsystems.pivot.PivotIO.PivotIOInputs;
 import frc.robot.subsystems.statemachine.StateManagerIO.StateManagerIOInputs;
 import org.littletonrobotics.junction.Logger;
@@ -15,8 +16,8 @@ public class PivotSubsystem extends SubsystemBase {
   private final PivotIOInputsAutoLogged inputs = new PivotIOInputsAutoLogged();
   private final SysIdRoutine sysId;
 
-
   private StateManagerIOInputs stateIO;
+
   public PivotSubsystem(PivotIO io, StateManagerIOInputs stateIO) {
     this.stateIO = stateIO;
     this.io = io;

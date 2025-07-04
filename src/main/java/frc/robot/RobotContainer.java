@@ -31,6 +31,7 @@ import frc.robot.commands.IntakeCommands.*;
 import frc.robot.commands.PivotCommands.*;
 import frc.robot.constants.ContainerConstants;
 import frc.robot.generated.TunerConstants;
+import frc.robot.subsystems.Superstructure;
 import frc.robot.subsystems.claw.*;
 import frc.robot.subsystems.climber.*;
 import frc.robot.subsystems.drive.Drive;
@@ -41,7 +42,6 @@ import frc.robot.subsystems.elevator.*;
 import frc.robot.subsystems.intake.*;
 import frc.robot.subsystems.pivot.*;
 import frc.robot.subsystems.pivot.PivotIOSim;
-import frc.robot.subsystems.pivot.PivotIOTalonFX;
 import frc.robot.subsystems.pivot.PivotSubsystem;
 import frc.robot.subsystems.statemachine.StateManager;
 import frc.robot.subsystems.statemachine.StateManagerIO;
@@ -59,7 +59,6 @@ public class RobotContainer {
   private final Drive drive;
   private final ClawSubsystem clawSubsystem;
   private final ElevatorSubsystem elevatorSubsystem;
-  private final IntakeSubsystem intakeSubsystem;
   private final ClimberSubsystem climberSubsystem;
   private final PivotSubsystem pivotSubsystem;
   private final IntakeSubsystem intakeSubsystem;
@@ -91,6 +90,8 @@ public class RobotContainer {
         clawSubsystem = new ClawSubsystem(new ClawIOTalonFX(), stateIO);
         elevatorSubsystem = new ElevatorSubsystem(new ElevatorIOTalonFX(), stateIO);
         intakeSubsystem = new IntakeSubsystem(new IntakeIOTalonFX());
+        pivotSubsystem = new PivotSubsystem(new PivotIOTalonFX(), stateIO);
+        climberSubsystem = new ClimberSubsystem(new ClimberIOSim());
         superstructure = new Superstructure(clawSubsystem, elevatorSubsystem, pivotSubsystem);
         break;
 
@@ -106,6 +107,8 @@ public class RobotContainer {
         clawSubsystem = new ClawSubsystem(new ClawIOSim(), stateIO);
         elevatorSubsystem = new ElevatorSubsystem(new ElevatorIOSim(), stateIO);
         intakeSubsystem = new IntakeSubsystem(new IntakeIOSim());
+        pivotSubsystem = new PivotSubsystem(new PivotIOTalonFX(), stateIO);
+        climberSubsystem = new ClimberSubsystem(new ClimberIOSim());
         superstructure = new Superstructure(clawSubsystem, elevatorSubsystem, pivotSubsystem);
         break;
 
