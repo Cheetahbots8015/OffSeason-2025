@@ -31,6 +31,7 @@ import frc.robot.commands.IntakeCommands.*;
 import frc.robot.commands.PivotCommands.*;
 import frc.robot.constants.ContainerConstants;
 import frc.robot.generated.TunerConstants;
+import frc.robot.subsystems.Superstructure;
 import frc.robot.subsystems.claw.ClawIOSim;
 import frc.robot.subsystems.claw.ClawIOTalonFX;
 import frc.robot.subsystems.claw.ClawSubsystem;
@@ -62,6 +63,7 @@ public class RobotContainer {
   private final ElevatorSubsystem elevatorSubsystem;
   private final PivotSubsystem pivotSubsystem;
   private final IntakeSubsystem intakeSubsystem;
+  private final Superstructure superstructure;
 
   // Controller
   private final CommandXboxController controller = new CommandXboxController(0);
@@ -85,6 +87,7 @@ public class RobotContainer {
         elevatorSubsystem = new ElevatorSubsystem(new ElevatorIOTalonFX());
         pivotSubsystem = new PivotSubsystem(new PivotIOTalonFX());
         intakeSubsystem = new IntakeSubsystem(new IntakeIOTalonFX());
+        superstructure = new Superstructure(clawSubsystem, elevatorSubsystem, pivotSubsystem);
         break;
 
       case SIM:
@@ -100,6 +103,7 @@ public class RobotContainer {
         elevatorSubsystem = new ElevatorSubsystem(new ElevatorIOSim());
         pivotSubsystem = new PivotSubsystem(new PivotIOSim());
         intakeSubsystem = new IntakeSubsystem(new IntakeIOSim());
+        superstructure = new Superstructure(clawSubsystem, elevatorSubsystem, pivotSubsystem);
         break;
 
       default:
@@ -115,6 +119,7 @@ public class RobotContainer {
         elevatorSubsystem = new ElevatorSubsystem(new ElevatorIOTalonFX());
         pivotSubsystem = new PivotSubsystem(new PivotIOTalonFX());
         intakeSubsystem = new IntakeSubsystem(new IntakeIOTalonFX());
+        superstructure = new Superstructure(clawSubsystem, elevatorSubsystem, pivotSubsystem);
         break;
     }
 
