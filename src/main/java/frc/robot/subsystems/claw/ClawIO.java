@@ -25,6 +25,8 @@ public interface ClawIO {
 
   public default void setShooterVoltage(double volts) {}
 
+  public default void IntakeVelocityVoltage(double velocity) {}
+
   public default void L4Shoot() {}
   ;
 
