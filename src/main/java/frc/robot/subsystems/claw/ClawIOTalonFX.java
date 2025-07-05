@@ -4,7 +4,7 @@ import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.DutyCycleOut;
-import com.ctre.phoenix6.controls.VoltageOut;
+import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.hardware.ParentDevice;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.InvertedValue;
@@ -23,7 +23,7 @@ public class ClawIOTalonFX implements ClawIO {
   private TalonFXConfiguration intakeConfigs = new TalonFXConfiguration();
   private TalonFXConfiguration shooterConfigs = new TalonFXConfiguration();
   // Voltage control requests
-  private final VoltageOut voltageRequest = new VoltageOut(0);
+  final VelocityVoltage m_velocity = new VelocityVoltage(0).withSlot(0);
   // Inputs from intake
   private final StatusSignal<Angle> IntakePosition;
   private final StatusSignal<AngularVelocity> IntakeVelocity;
@@ -129,11 +129,16 @@ public class ClawIOTalonFX implements ClawIO {
   // SysId methods
   @Override
   public void setIntakeVoltage(double volts) {
-    intake.setControl(voltageRequest.withOutput(volts));
+    intake.setVoltage(volts);
   }
 
   @Override
   public void setShooterVoltage(double volts) {
-    shooter.setControl(voltageRequest.withOutput(volts));
+    shooter.setVoltage(volts);
+  }
+
+  @Override
+  public void IntakeVelocityVoltage(double velocity) {
+    intake.setControl(m_velocity.withVelocity(velocity).withFeedForward(1));
   }
 }
