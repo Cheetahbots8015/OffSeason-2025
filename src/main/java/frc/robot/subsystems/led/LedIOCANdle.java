@@ -16,6 +16,7 @@ import frc.robot.constants.LedConstants;
 
 public class LedIOCANdle implements LedIO {
   private final CANdle m_candle = new CANdle(LedConstants.CandleDeviceID, "rio");
+  private double brightness = 1.0d;
 
   public LedIOCANdle() {
     var cfg = new CANdleConfiguration();
@@ -83,13 +84,34 @@ public class LedIOCANdle implements LedIO {
   public void AllOff() {
     m_candle.setControl(new SolidColor(0, 399).withColor(new RGBWColor(0, 0, 0, 0)));
 
-    for (int i = 0; i < 399; ++i) {
+    for (int i = 0; i < 8; ++i) {
       m_candle.setControl(new EmptyAnimation(i));
     }
   }
 
   @Override
   public void setSingleLed(int id, RGBWColor color) {
+    if (id < 0 && id > 399) {
+      throw new IllegalArgumentException("LED ID must be between 0 and 399");
+    }
     m_candle.setControl(new SolidColor(id, id).withColor(color));
+  }
+
+  @Override
+  public void updateInputs(LedIOInputs inputs) {
+    inputs.CandleOutCurrent = m_candle.getOutputCurrent().getValueAsDouble();
+    inputs.CandleOutTemperature = m_candle.getDeviceTemp().getValueAsDouble();
+    inputs.CandleOutBrightness = brightness;
+  }
+
+  @Override
+  public void setBrightness(double number) {
+    brightness = number;
+    var cfg = new CANdleConfiguration();
+    cfg.LED.StripType = StripTypeValue.GRB;
+    cfg.LED.BrightnessScalar = number;
+    cfg.CANdleFeatures.StatusLedWhenActive = StatusLedWhenActiveValue.Disabled;
+
+    m_candle.getConfigurator().apply(cfg);
   }
 }

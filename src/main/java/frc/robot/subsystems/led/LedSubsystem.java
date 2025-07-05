@@ -21,11 +21,11 @@ public class LedSubsystem extends SubsystemBase {
     io.setLedMode(modeId, color);
   }
 
-  public void setLEDRange(RGBWColor[] colors) {
-    int i = 0;
-    for (RGBWColor rgbwColor : colors) {
-      io.setSingleLed(i, rgbwColor);
-      i++;
-    }
+  public void setSingleLed(int id, RGBWColor color) {
+    io.setSingleLed(id, color);
+  }
+
+  public void setBrightness(double number) {
+    io.setBrightness(number);
   }
 }

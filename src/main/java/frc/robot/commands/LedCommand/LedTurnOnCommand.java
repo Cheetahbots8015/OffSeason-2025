@@ -1,6 +1,7 @@
 package frc.robot.commands.LedCommand;
 
 import com.ctre.phoenix6.signals.RGBWColor;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.constants.LedConstants;
 import frc.robot.subsystems.led.LedSubsystem;
@@ -28,6 +29,7 @@ public class LedTurnOnCommand extends Command {
 
   @Override
   public void execute() {
+    m_subsystem.setBrightness(SmartDashboard.getNumber("LEDBrightness", 0.0));
     m_subsystem.setLedMode(m_type, m_color);
   }
 

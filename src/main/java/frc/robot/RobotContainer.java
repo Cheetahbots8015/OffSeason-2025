@@ -29,9 +29,9 @@ import frc.robot.commands.ClawCommands.ClawTimedShootCommand;
 import frc.robot.commands.DriveCommands;
 import frc.robot.commands.ElevatorCommands.*;
 import frc.robot.commands.IntakeCommands.*;
+import frc.robot.commands.LedCommand.LedShowIconCommand;
 import frc.robot.commands.LedCommand.LedTurnOffCommand;
 import frc.robot.commands.LedCommand.LedTurnOnCommand;
-import frc.robot.commands.LedCommand.LedTurnSomeOnCommand;
 import frc.robot.commands.PivotCommands.*;
 import frc.robot.constants.ContainerConstants;
 import frc.robot.constants.LedConstants;
@@ -55,6 +55,7 @@ import frc.robot.subsystems.led.LedSubsystem;
 import frc.robot.subsystems.pivot.PivotIOSim;
 import frc.robot.subsystems.pivot.PivotIOTalonFX;
 import frc.robot.subsystems.pivot.PivotSubsystem;
+import frc.robot.util.*;
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 
 /**
@@ -165,6 +166,8 @@ public class RobotContainer {
     SmartDashboard.putNumber("SetMotionMagicPositionRads", 160.0);
     SmartDashboard.putNumber("PivotMotionMagicPositionRads", 100.0);
 
+    SmartDashboard.putNumber("LEDBrightness", 1);
+
     // Configure the button bindings
     configureButtonBindings();
   }
@@ -198,26 +201,32 @@ public class RobotContainer {
                     drive)
                 .ignoringDisable(true));
 
-    /* Claw Subsystem test
-    controller.leftTrigger().whileTrue(new
-    ClawIntakeInCommand(clawSubsystem)); controller.leftBumper().whileTrue(new
-    ClawIntakeOutCommand(clawSubsystem)); controller.rightTrigger().whileTrue(new
-    ClawShooterInCommand(clawSubsystem)); controller.rightBumper().whileTrue(new
-    ClawShooterOutCommand(clawSubsystem));
-    */
+    /*
+     * Claw Subsystem test
+     * controller.leftTrigger().whileTrue(new
+     * ClawIntakeInCommand(clawSubsystem)); controller.leftBumper().whileTrue(new
+     * ClawIntakeOutCommand(clawSubsystem)); controller.rightTrigger().whileTrue(new
+     * ClawShooterInCommand(clawSubsystem)); controller.rightBumper().whileTrue(new
+     * ClawShooterOutCommand(clawSubsystem));
+     */
 
-    /* Elevator Subsystem test
-    controller.a().whileTrue(new ElevatorDefaultCommand(elevatorSubsystem));
-    controller.y().whileTrue(new ElevatorSetPositionCommand(elevatorSubsystem));
-    controller.leftTrigger().whileTrue(new ElevatorUpCommand(elevatorSubsystem));
-    controller.leftBumper().whileTrue(new ElevatorDownCommand(elevatorSubsystem));
-    */
+    /*
+     * Elevator Subsystem test
+     * controller.a().whileTrue(new ElevatorDefaultCommand(elevatorSubsystem));
+     * controller.y().whileTrue(new ElevatorSetPositionCommand(elevatorSubsystem));
+     * controller.leftTrigger().whileTrue(new ElevatorUpCommand(elevatorSubsystem));
+     * controller.leftBumper().whileTrue(new
+     * ElevatorDownCommand(elevatorSubsystem));
+     */
 
-    /* Pivot Subsystem test
-    controller.rightTrigger().whileTrue(new PivotClockWiseCommand(pivotSubsystem));
-    controller.rightBumper().whileTrue(new PivotAntiClockWiseCommand(pivotSubsystem));
-    controller.x().whileTrue(new PivotSetPositionCommand(pivotSubsystem));
-    */
+    /*
+     * Pivot Subsystem test
+     * controller.rightTrigger().whileTrue(new
+     * PivotClockWiseCommand(pivotSubsystem));
+     * controller.rightBumper().whileTrue(new
+     * PivotAntiClockWiseCommand(pivotSubsystem));
+     * controller.x().whileTrue(new PivotSetPositionCommand(pivotSubsystem));
+     */
 
     // Intake Subsystem test
     controller.leftTrigger().whileTrue(new IntakeRollerIndexerInCommand(intakeSubsystem));
@@ -249,14 +258,15 @@ public class RobotContainer {
                 .alongWith(new PivotSetPositionCommand(pivotSubsystem, 80))
                 .andThen(new ClawTimedShootCommand(clawSubsystem)));
 
-    /* L4 Command
-    controller
-        .b()
-        .whileTrue(
-            new ElevatorSetPositionCommand(elevatorSubsystem, 300)
-                .alongWith(new PivotSetPositionCommand(pivotSubsystem, 60))
-                .andThen(new ClawTimedShootCommand(clawSubsystem)));
-    */
+    /*
+     * L4 Command
+     * controller
+     * .b()
+     * .whileTrue(
+     * new ElevatorSetPositionCommand(elevatorSubsystem, 300)
+     * .alongWith(new PivotSetPositionCommand(pivotSubsystem, 60))
+     * .andThen(new ClawTimedShootCommand(clawSubsystem)));
+     */
 
     // L2 Command
     controller
@@ -271,7 +281,7 @@ public class RobotContainer {
             (new LedTurnOnCommand(
                     ledSubsystem,
                     new RGBWColor(255, 255, 255),
-                    LedConstants.AnimationType.AllOn,
+                    LedConstants.AnimationType.Larson,
                     true))
                 .andThen(new LedTurnOffCommand(ledSubsystem)));
 
@@ -288,70 +298,13 @@ public class RobotContainer {
     ledController
         .x()
         .whileTrue(
-            (new LedTurnOnCommand(
-                    ledSubsystem,
-                    new RGBWColor(0, 255, 0),
-                    LedConstants.AnimationType.RgbFade,
-                    true))
+            new LedShowIconCommand(ledSubsystem, 0, true)
                 .andThen(new LedTurnOffCommand(ledSubsystem)));
-
-    RGBWColor[] colors = {
-      new RGBWColor(255, 0, 0),
-      new RGBWColor(0, 0, 0),
-      new RGBWColor(255, 0, 0),
-      new RGBWColor(0, 0, 0),
-      new RGBWColor(255, 0, 0),
-      new RGBWColor(0, 0, 0),
-      new RGBWColor(255, 0, 0),
-      new RGBWColor(0, 0, 0),
-      new RGBWColor(255, 0, 0),
-      new RGBWColor(0, 0, 0),
-      new RGBWColor(255, 0, 0),
-      new RGBWColor(0, 0, 0),
-      new RGBWColor(255, 0, 0),
-      new RGBWColor(0, 0, 0),
-      new RGBWColor(255, 0, 0),
-      new RGBWColor(0, 0, 0),
-      new RGBWColor(255, 0, 0),
-      new RGBWColor(0, 0, 0),
-      new RGBWColor(255, 0, 0),
-      new RGBWColor(0, 0, 0),
-      new RGBWColor(255, 0, 0),
-      new RGBWColor(0, 0, 0),
-      new RGBWColor(255, 0, 0),
-      new RGBWColor(0, 0, 0),
-      new RGBWColor(255, 0, 0),
-      new RGBWColor(0, 0, 0),
-      new RGBWColor(255, 0, 0),
-      new RGBWColor(0, 0, 0),
-      new RGBWColor(255, 0, 0),
-      new RGBWColor(0, 0, 0),
-      new RGBWColor(255, 0, 0),
-      new RGBWColor(0, 0, 0),
-      new RGBWColor(255, 0, 0),
-      new RGBWColor(0, 0, 0),
-      new RGBWColor(255, 0, 0),
-      new RGBWColor(0, 0, 0),
-      new RGBWColor(255, 0, 0),
-      new RGBWColor(0, 0, 0),
-      new RGBWColor(255, 0, 0),
-      new RGBWColor(0, 0, 0),
-      new RGBWColor(255, 0, 0),
-      new RGBWColor(0, 0, 0),
-      new RGBWColor(255, 0, 0),
-      new RGBWColor(0, 0, 0),
-      new RGBWColor(255, 0, 0),
-      new RGBWColor(0, 0, 0),
-      new RGBWColor(255, 0, 0),
-      new RGBWColor(0, 0, 0),
-      new RGBWColor(255, 0, 0),
-      new RGBWColor(0, 0, 0),
-    };
 
     ledController
         .y()
         .whileTrue(
-            new LedTurnSomeOnCommand(ledSubsystem, colors, true)
+            new LedShowIconCommand(ledSubsystem, 1, true)
                 .andThen(new LedTurnOffCommand(ledSubsystem)));
   }
 
