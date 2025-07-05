@@ -46,6 +46,7 @@ import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.drive.GyroIO;
 import frc.robot.subsystems.drive.ModuleIO;
 import frc.robot.subsystems.drive.ModuleIOSim;
+import frc.robot.subsystems.drive.ModuleIOTalonFX;
 import frc.robot.subsystems.elevator.*;
 import frc.robot.subsystems.intake.*;
 import frc.robot.subsystems.pivot.*;
@@ -267,7 +268,6 @@ public class RobotContainer {
     controller
         .b()
         .whileTrue(
-            
             new ElevatorSetPositionCommand(elevatorSubsystem, 315)
                 .andThen(new PivotSetPositionCommand(pivotSubsystem, 40))
                 .andThen(new ClawAlageShootCommand(clawSubsystem)));
