@@ -4,6 +4,7 @@ public class IntakeConstants {
   public static final int indexerID = 49;
   public static final int intakeID = 47;
   public static final int armID = 48;
+  public static final double ArmPositionDeadband = 2.0;
   public static final boolean indexer_neutralmode_Coast = true;
   public static final boolean indexer_inverted_CounterClockwisePositive = true;
   public static final boolean intake_neutralmode_Coast = true;
@@ -22,7 +23,7 @@ public class IntakeConstants {
   public static final double intake_kA = 0.0;
   public static final double intake_kS = 0.0;
   public static final double intake_kV = 0.0;
-  public static final double arm_kP = 0.0;
+  public static final double arm_kP = 0.1;
   public static final double arm_kI = 0.0;
   public static final double arm_kD = 0.0;
   public static final double arm_kA = 0.0;

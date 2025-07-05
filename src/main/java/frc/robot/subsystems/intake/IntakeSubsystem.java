@@ -68,4 +68,8 @@ public class IntakeSubsystem extends SubsystemBase {
   public IntakeIOInputs getInput() {
     return inputs;
   }
+
+  public void armVelocityVoltage(double velocity) {
+    io.armVelocityVoltage(velocity);
+  }
 }

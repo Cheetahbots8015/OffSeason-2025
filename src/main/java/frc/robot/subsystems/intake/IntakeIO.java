@@ -38,4 +38,6 @@ public interface IntakeIO {
   public default boolean getCanRange() {
     return false;
   }
+
+  public default void armVelocityVoltage(double velocity) {}
 }
