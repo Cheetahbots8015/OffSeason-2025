@@ -38,6 +38,7 @@ import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.drive.GyroIO;
 import frc.robot.subsystems.drive.ModuleIO;
 import frc.robot.subsystems.drive.ModuleIOSim;
+import frc.robot.subsystems.drive.ModuleIOTalonFX;
 import frc.robot.subsystems.elevator.ElevatorIOSim;
 import frc.robot.subsystems.elevator.ElevatorIOTalonFX;
 import frc.robot.subsystems.elevator.ElevatorSubsystem;
@@ -77,14 +78,14 @@ public class RobotContainer {
         drive =
             new Drive(
                 new GyroIO() {},
-                new ModuleIOSim(TunerConstants.FrontLeft),
-                new ModuleIOSim(TunerConstants.FrontRight),
-                new ModuleIOSim(TunerConstants.BackLeft),
-                new ModuleIOSim(TunerConstants.BackRight));
+                new ModuleIOTalonFX(TunerConstants.FrontLeft),
+                new ModuleIOTalonFX(TunerConstants.FrontRight),
+                new ModuleIOTalonFX(TunerConstants.BackLeft),
+                new ModuleIOTalonFX(TunerConstants.BackRight));
         clawSubsystem = new ClawSubsystem(new ClawIOTalonFX());
         elevatorSubsystem = new ElevatorSubsystem(new ElevatorIOTalonFX());
         pivotSubsystem = new PivotSubsystem(new PivotIOTalonFX());
-        intakeSubsystem = new IntakeSubsystem(new IntakeIOTalonFX());
+        intakeSubsystem = new IntakeSubsystem(new IntakeIOSim());
         break;
 
       case SIM:
@@ -165,9 +166,6 @@ public class RobotContainer {
             () -> -controller.getLeftY(),
             () -> -controller.getLeftX(),
             () -> -controller.getRightX()));
-
-    DriveCommands.joystickDriveAtAngle(
-        drive, () -> -controller.getLeftY(), () -> -controller.getLeftX(), () -> new Rotation2d());
 
     controller.x().onTrue(Commands.runOnce(drive::stopWithX, drive));
 
