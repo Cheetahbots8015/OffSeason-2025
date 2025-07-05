@@ -1,19 +1,17 @@
-package frc.robot.subsystems.statemachine;
+package frc.robot.subsystems;
 
 import org.littletonrobotics.junction.AutoLog;
 
-public class StateManagerIO {
+public class SuperStructureIO {
   @AutoLog
-  public static class StateManagerIOInputs {
+  public static class SuperStructureIOInputs {
     public enum CoralState {
       ClawIntaking,
       ReadyToIntake,
       FinishedIntaking,
       ElevatorUp,
-      L1,
-      L2,
-      L3,
-      L4,
+      PivotAtReef,
+      ElevatorAtReef,
       Shooting,
       IDLE
     }
@@ -24,8 +22,8 @@ public class StateManagerIO {
     public CoralState currentCoralState = CoralState.IDLE;
     public CoralState targetCoralState = null;
 
-    public boolean isShootingL4 = false;
-
     public boolean isUpdating;
+
+    public String currentReef = "";
   }
 }

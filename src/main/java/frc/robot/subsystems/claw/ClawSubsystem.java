@@ -8,18 +8,18 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.constants.ClawConstants;
+import frc.robot.subsystems.SuperStructureIO.SuperStructureIOInputs;
 import frc.robot.subsystems.claw.ClawIO.ClawIOInputs;
-import frc.robot.subsystems.statemachine.StateManagerIO.StateManagerIOInputs;
 import org.littletonrobotics.junction.Logger;
 
 public class ClawSubsystem extends SubsystemBase {
   private final ClawIO io;
-  private final StateManagerIOInputs stateIO;
+  private final SuperStructureIOInputs stateIO;
 
   private final ClawIOInputsAutoLogged inputs = new ClawIOInputsAutoLogged();
   private final SysIdRoutine sysId;
 
-  public ClawSubsystem(ClawIO io, StateManagerIOInputs stateIO) {
+  public ClawSubsystem(ClawIO io, SuperStructureIOInputs stateIO) {
     this.io = io;
     this.stateIO = stateIO;
 
@@ -61,24 +61,14 @@ public class ClawSubsystem extends SubsystemBase {
           io.setOpenLoop(0, 0);
           break;
 
-        case L1:
-          io.setOpenLoop(0, 0);
+        case PivotAtReef:
           break;
 
-        case L2:
-          io.setOpenLoop(0, 0);
-          break;
-
-        case L3:
-          io.setOpenLoop(0, 0);
-          break;
-
-        case L4:
-          io.setOpenLoop(0, 0);
+        case ElevatorAtReef:
           break;
 
         case Shooting:
-          if (stateIO.isShootingL4) {
+          if (stateIO.currentReef.equals("L4")) {
             io.L4Shoot();
           } else {
             io.normalShoot();
@@ -110,24 +100,14 @@ public class ClawSubsystem extends SubsystemBase {
           io.setOpenLoop(0, 0);
           break;
 
-        case L1:
-          io.setOpenLoop(0, 0);
+        case PivotAtReef:
           break;
 
-        case L2:
-          io.setOpenLoop(0, 0);
-          break;
-
-        case L3:
-          io.setOpenLoop(0, 0);
-          break;
-
-        case L4:
-          io.setOpenLoop(0, 0);
+        case ElevatorAtReef:
           break;
 
         case Shooting:
-          if (stateIO.isShootingL4) {
+          if (stateIO.currentReef.equals("L4")) {
             io.L4Shoot();
           } else {
             io.normalShoot();

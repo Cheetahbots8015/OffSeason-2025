@@ -29,8 +29,17 @@ import frc.robot.commands.DriveCommands;
 import frc.robot.commands.ElevatorCommands.*;
 import frc.robot.commands.IntakeCommands.*;
 import frc.robot.commands.PivotCommands.*;
+import frc.robot.commands.SuperstructureCommands.RequestClawIntakeCommand;
+import frc.robot.commands.SuperstructureCommands.RequestForL1Command;
+import frc.robot.commands.SuperstructureCommands.RequestForL2Command;
+import frc.robot.commands.SuperstructureCommands.RequestForL3Command;
+import frc.robot.commands.SuperstructureCommands.RequestForL4Command;
+import frc.robot.commands.SuperstructureCommands.RequestIdleCommand;
+import frc.robot.commands.SuperstructureCommands.RequestShootingCommand;
 import frc.robot.constants.ContainerConstants;
 import frc.robot.generated.TunerConstants;
+import frc.robot.subsystems.SuperStructureIO.SuperStructureIOInputs;
+import frc.robot.subsystems.Superstructure;
 import frc.robot.subsystems.claw.*;
 import frc.robot.subsystems.climber.*;
 import frc.robot.subsystems.drive.Drive;
@@ -41,11 +50,7 @@ import frc.robot.subsystems.elevator.*;
 import frc.robot.subsystems.intake.*;
 import frc.robot.subsystems.pivot.*;
 import frc.robot.subsystems.pivot.PivotIOSim;
-import frc.robot.subsystems.pivot.PivotIOTalonFX;
 import frc.robot.subsystems.pivot.PivotSubsystem;
-import frc.robot.subsystems.statemachine.StateManager;
-import frc.robot.subsystems.statemachine.StateManagerIO;
-import frc.robot.subsystems.statemachine.StateManagerIO.StateManagerIOInputs;
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 
 /**
@@ -59,24 +64,23 @@ public class RobotContainer {
   private final Drive drive;
   private final ClawSubsystem clawSubsystem;
   private final ElevatorSubsystem elevatorSubsystem;
-  private final IntakeSubsystem intakeSubsystem;
   private final ClimberSubsystem climberSubsystem;
   private final PivotSubsystem pivotSubsystem;
   private final IntakeSubsystem intakeSubsystem;
   private final Superstructure superstructure;
 
-  private final StateManager stateManager;
-  private final StateManagerIOInputs stateIO;
+  private final SuperStructureIOInputs stateIO;
 
   // Controller
   private final CommandXboxController controller = new CommandXboxController(0);
+  private final CommandXboxController testController = new CommandXboxController(1);
 
   // Dashboard inputs
   private final LoggedDashboardChooser<Command> autoChooser;
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
-    stateIO = new StateManagerIOInputs();
+    stateIO = new SuperStructureIOInputs();
 
     switch (ContainerConstants.currentMode) {
       case REAL:
@@ -91,7 +95,10 @@ public class RobotContainer {
         clawSubsystem = new ClawSubsystem(new ClawIOTalonFX(), stateIO);
         elevatorSubsystem = new ElevatorSubsystem(new ElevatorIOTalonFX(), stateIO);
         intakeSubsystem = new IntakeSubsystem(new IntakeIOTalonFX());
-        superstructure = new Superstructure(clawSubsystem, elevatorSubsystem, pivotSubsystem);
+        pivotSubsystem = new PivotSubsystem(new PivotIOTalonFX(), stateIO);
+        climberSubsystem = new ClimberSubsystem(new ClimberIOSim());
+        superstructure =
+            new Superstructure(clawSubsystem, elevatorSubsystem, pivotSubsystem, stateIO);
         break;
 
       case SIM:
@@ -106,7 +113,10 @@ public class RobotContainer {
         clawSubsystem = new ClawSubsystem(new ClawIOSim(), stateIO);
         elevatorSubsystem = new ElevatorSubsystem(new ElevatorIOSim(), stateIO);
         intakeSubsystem = new IntakeSubsystem(new IntakeIOSim());
-        superstructure = new Superstructure(clawSubsystem, elevatorSubsystem, pivotSubsystem);
+        pivotSubsystem = new PivotSubsystem(new PivotIOTalonFX(), stateIO);
+        climberSubsystem = new ClimberSubsystem(new ClimberIOSim());
+        superstructure =
+            new Superstructure(clawSubsystem, elevatorSubsystem, pivotSubsystem, stateIO);
         break;
 
       default:
@@ -123,18 +133,10 @@ public class RobotContainer {
         intakeSubsystem = new IntakeSubsystem(new IntakeIOSim());
         climberSubsystem = new ClimberSubsystem(new ClimberIOSim());
         pivotSubsystem = new PivotSubsystem(new PivotIOSim(), stateIO);
-        superstructure = new Superstructure(clawSubsystem, elevatorSubsystem, pivotSubsystem);
+        superstructure =
+            new Superstructure(clawSubsystem, elevatorSubsystem, pivotSubsystem, stateIO);
         break;
     }
-
-    stateManager =
-        new StateManager(
-            new StateManagerIO(),
-            pivotSubsystem,
-            clawSubsystem,
-            elevatorSubsystem,
-            climberSubsystem,
-            intakeSubsystem);
 
     // Set up auto routines
     autoChooser = new LoggedDashboardChooser<>("Auto Choices", AutoBuilder.buildAutoChooser());
@@ -266,6 +268,15 @@ public class RobotContainer {
             new ElevatorSetPositionCommand(elevatorSubsystem, 5)
                 .alongWith(new PivotSetPositionCommand(pivotSubsystem, 50))
                 .andThen(new ClawTimedShootCommand(clawSubsystem)));
+
+    testController.a().whileTrue(new RequestForL1Command(superstructure));
+    testController.b().whileTrue(new RequestForL2Command(superstructure));
+    testController.x().whileTrue(new RequestForL3Command(superstructure));
+    testController.y().whileTrue(new RequestForL4Command(superstructure));
+
+    testController.povUp().whileTrue(new RequestIdleCommand(superstructure));
+    testController.povDown().whileTrue(new RequestClawIntakeCommand(superstructure));
+    testController.rightTrigger().whileTrue(new RequestShootingCommand(superstructure));
   }
 
   /**
