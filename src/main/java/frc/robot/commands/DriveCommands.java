@@ -74,17 +74,23 @@ public class DriveCommands {
       DoubleSupplier omegaSupplier) {
     return Commands.run(
         () -> {
+          double x = xSupplier.getAsDouble();
+          double y = ySupplier.getAsDouble();
+          x = Math.copySign(x * x, x); // Square for more precise control
+          y = Math.copySign(y * y, y); // Square for more precise control
+          x = CheetahUtil.applyDeadband(x, DEADBAND);
+          y = CheetahUtil.applyDeadband(y, DEADBAND);
+
           // Get linear velocity
           Translation2d linearVelocity =
-              getLinearVelocityFromJoysticks(
-                  CheetahUtil.applyDeadband(xSupplier.getAsDouble(), DEADBAND),
-                  CheetahUtil.applyDeadband(ySupplier.getAsDouble(), DEADBAND));
+              getLinearVelocityFromJoysticks(x,y);
 
           // Apply rotation deadband
-          double omega = MathUtil.applyDeadband(omegaSupplier.getAsDouble(), DEADBAND);
+          double omega = omegaSupplier.getAsDouble();
 
           // Square rotation value for more precise control
-          omega = Math.copySign(omega * omega, omega);
+          omega = Math.copySign(Math.pow(omega, 3), omega);
+          omega = CheetahUtil.applyDeadband(omega, DEADBAND);
 
           // Convert to field relative speeds & send command
           ChassisSpeeds speeds =

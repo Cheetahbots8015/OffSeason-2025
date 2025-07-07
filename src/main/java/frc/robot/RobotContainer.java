@@ -25,6 +25,7 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.commands.ClawCommands.ClawAlageInCommand;
 import frc.robot.commands.ClawCommands.ClawAlageShootCommand;
+import frc.robot.commands.ClawCommands.ClawTimedShootCommand;
 import frc.robot.commands.DriveCommands;
 import frc.robot.commands.ElevatorCommands.*;
 import frc.robot.commands.IntakeCommands.*;
@@ -185,12 +186,12 @@ public class RobotContainer {
     ClawShooterOutCommand(clawSubsystem));
     */
 
-    // Intake Subsystem test
-
+    /* Intake Subsystem test
     controller.leftTrigger().whileTrue(new IntakeRollerIndexerInCommand(intakeSubsystem));
     controller.leftBumper().whileTrue(new IntakeIndexerOutCommand(intakeSubsystem));
     controller.rightBumper().whileTrue(new IntakeRollerOutCommand(intakeSubsystem));
     controller.rightTrigger().whileTrue(new IntakeArmSetPositionCommand(intakeSubsystem, -35));
+    */
 
     controller.povUp().whileTrue(new ElevatorSetPositionCommand(elevatorSubsystem, 40));
     controller.povDown().whileTrue(new ElevatorReleaseCommand(elevatorSubsystem));
@@ -210,24 +211,27 @@ public class RobotContainer {
                         .andThen(new PivotSetPositionCommand(pivotSubsystem, 0))
                         .andThen(new ElevatorSetPositionCommand(elevatorSubsystem, 5))
                         .andThen(new ElevatorReleaseCommand(elevatorSubsystem))));
+    */
 
-    // L3 Command
+    /* L3 Command
     controller
         .x()
         .whileTrue(
             new ElevatorSetPositionCommand(elevatorSubsystem, 130)
                 .alongWith(new PivotSetPositionCommand(pivotSubsystem, 80))
                 .andThen(new ClawTimedShootCommand(clawSubsystem)));
+    */
 
-    // L4 Command
+    /* L4 Command
     controller
-        .b()
+        .rightTrigger()
         .whileTrue(
             new ElevatorSetPositionCommand(elevatorSubsystem, 315)
                 .andThen(new PivotSetPositionCommand(pivotSubsystem, 95))
                 .andThen(new ClawTimedShootCommand(clawSubsystem)));
+    */
 
-    // L2 Command
+    /* L2 Command
     controller
         .a()
         .whileTrue(
@@ -248,7 +252,6 @@ public class RobotContainer {
     controller
         .b()
         .whileTrue(
-            
             new ElevatorSetPositionCommand(elevatorSubsystem, 315)
                 .andThen(new PivotSetPositionCommand(pivotSubsystem, 40))
                 .andThen(new ClawAlageShootCommand(clawSubsystem)));
