@@ -23,21 +23,15 @@ public class ElevatorIOSim implements ElevatorIO {
     elevatorIOSim.update(0.02);
 
     // Update roller inputs
-    inputs.PositionRad = elevatorIOSim.getAngularPositionRad();
-    inputs.VelocityRadPerSec = elevatorIOSim.getAngularVelocityRadPerSec();
+    inputs.PositionRot = elevatorIOSim.getAngularPositionRotations();
+    inputs.VelocityRPS = elevatorIOSim.getAngularVelocityRPM()/60;
     inputs.AppliedVolts = AppliedVolts;
     inputs.CurrentAmps = Math.abs(elevatorIOSim.getCurrentDrawAmps());
-    inputs.AccelerationRad = elevatorIOSim.getAngularAccelerationRadPerSecSq();
   }
 
   @Override
   public void setElevatorVoltage(double volts) {
     AppliedVolts = volts;
-  }
-
-  @Override
-  public double getElevatorVelocity() {
-    return elevatorIOSim.getAngularVelocityRadPerSec();
   }
 
   @Override
