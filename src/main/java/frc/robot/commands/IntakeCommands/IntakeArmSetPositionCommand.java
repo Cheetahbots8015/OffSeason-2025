@@ -1,6 +1,7 @@
 package frc.robot.commands.IntakeCommands;
 
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.constants.IntakeConstants;
 import frc.robot.subsystems.intake.IntakeSubsystem;
 
 public class IntakeArmSetPositionCommand extends Command {
@@ -17,16 +18,17 @@ public class IntakeArmSetPositionCommand extends Command {
 
   @Override
   public void execute() {
-    m_subsystem.setArmVoltage(-3);
+    m_subsystem.setArmVoltage(-2);
   }
 
   @Override
   public void end(boolean interrupted) {
-    m_subsystem.setArmVoltage(0);
+    m_subsystem.armVelocityVoltage(0);
   }
 
   @Override
   public boolean isFinished() {
-    return false;
+    return Math.abs(m_subsystem.getInput().ArmPositionRad - m_position)
+        < IntakeConstants.PositionDeadband;
   }
 }

@@ -10,6 +10,7 @@ public interface ElevatorIO {
     public double AppliedVolts = 0.0;
     public double CurrentAmps = 0.0;
     public double ElevatorHeightMeters = 0.0;
+    public double AccelerationRPSS = 0.0;
   }
 
   /** Updates the set of loggable inputs. */
