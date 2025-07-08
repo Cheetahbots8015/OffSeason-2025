@@ -20,7 +20,7 @@ public class ElevatorLittleCommand extends Command {
   @Override
   public void execute() {
     m_subsystem.setElevatorVoltage(
-        (m_position - m_subsystem.getInput().PositionRad) > 0 ? 2.5 : -1.5);
+        (m_position - m_subsystem.getInput().ElevatorHeightMeters) > 0 ? 2.5 : -1.5);
     ;
   }
 
@@ -31,7 +31,7 @@ public class ElevatorLittleCommand extends Command {
 
   @Override
   public boolean isFinished() {
-    return Math.abs(m_subsystem.getInput().PositionRad - m_position)
+    return Math.abs(m_subsystem.getInput().ElevatorHeightMeters - m_position)
         < ElevatorConstants.PositionDeadband;
   }
 }

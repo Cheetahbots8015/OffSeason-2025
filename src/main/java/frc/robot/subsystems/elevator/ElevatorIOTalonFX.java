@@ -13,11 +13,11 @@ import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.units.measure.Angle;
-import edu.wpi.first.units.measure.AngularAcceleration;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Current;
 import edu.wpi.first.units.measure.Voltage;
 import frc.robot.constants.ElevatorConstants;
+import frc.robot.util.CheetahUtil;
 
 public class ElevatorIOTalonFX implements ElevatorIO {
   // Hardware objects
@@ -32,7 +32,6 @@ public class ElevatorIOTalonFX implements ElevatorIO {
   private final StatusSignal<AngularVelocity> Velocity;
   private final StatusSignal<Voltage> AppliedVolts;
   private final StatusSignal<Current> Current;
-  private final StatusSignal<AngularAcceleration> Acceleration;
 
   public ElevatorIOTalonFX() {
     elevator = new TalonFX(ElevatorConstants.elevatorID, "canivore");
@@ -75,38 +74,26 @@ public class ElevatorIOTalonFX implements ElevatorIO {
     Velocity = elevator.getVelocity();
     AppliedVolts = elevator.getMotorVoltage();
     Current = elevator.getStatorCurrent();
-    Acceleration = elevator.getAcceleration();
 
     BaseStatusSignal.setUpdateFrequencyForAll(
-        ElevatorConstants.statusUpdateFrequency,
-        Velocity,
-        AppliedVolts,
-        Current,
-        Position,
-        Acceleration);
+        ElevatorConstants.statusUpdateFrequency, Velocity, AppliedVolts, Current, Position);
     ParentDevice.optimizeBusUtilizationForAll(elevator);
   }
 
   @Override
   public void updateInputs(ElevatorIOInputs inputs) {
-    BaseStatusSignal.refreshAll(Position, Velocity, AppliedVolts, Current, Acceleration);
+    BaseStatusSignal.refreshAll(Position, Velocity, AppliedVolts, Current);
     // Update elevator inputs
-    inputs.PositionRad = Units.rotationsToRadians(Position.getValueAsDouble());
-    inputs.VelocityRadPerSec = Units.rotationsToRadians(Velocity.getValueAsDouble());
+    inputs.PositionRot = Position.getValueAsDouble();
+    inputs.VelocityRPS = Velocity.getValueAsDouble();
     inputs.AppliedVolts = AppliedVolts.getValueAsDouble();
     inputs.CurrentAmps = Current.getValueAsDouble();
-    inputs.AccelerationRad = Units.rotationsToRadians(Acceleration.getValueAsDouble());
+    inputs.ElevatorHeightMeters = CheetahUtil.elevatorRotationToMeters(Position.getValueAsDouble());
   }
 
   @Override
   public void setElevatorVoltage(double volts) {
     elevator.setVoltage(volts);
-  }
-
-  @Override
-  public double getElevatorVelocity() {
-    BaseStatusSignal.refreshAll(Position, Velocity, AppliedVolts, Current, Acceleration);
-    return Units.rotationsToRadians(Velocity.getValueAsDouble());
   }
 
   @Override

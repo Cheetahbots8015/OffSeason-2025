@@ -17,6 +17,7 @@ import edu.wpi.first.units.measure.Current;
 import edu.wpi.first.units.measure.Voltage;
 import frc.robot.constants.PivotConstants;
 import frc.robot.subsystems.pivot.PivotIO.PivotIOInputs;
+import frc.robot.util.CheetahUtil;
 
 public class PivotIOTalonFX implements PivotIO {
   // Hardware objects
@@ -78,11 +79,12 @@ public class PivotIOTalonFX implements PivotIO {
   @Override
   public void updateInputs(PivotIOInputs inputs) {
     BaseStatusSignal.refreshAll(Position, Velocity, AppliedVolts, Current);
-    // Update indexer inputs
+    // Update pivot inputs
     inputs.PositionRad = Units.rotationsToRadians(Position.getValueAsDouble());
     inputs.VelocityRadPerSec = Units.rotationsToRadians(Velocity.getValueAsDouble());
     inputs.AppliedVolts = AppliedVolts.getValueAsDouble();
     inputs.CurrentAmps = Current.getValueAsDouble();
+    inputs.PivotPositionDegree = CheetahUtil.pivotRotationToDegrees(Position.getValueAsDouble());
   }
 
   @Override
