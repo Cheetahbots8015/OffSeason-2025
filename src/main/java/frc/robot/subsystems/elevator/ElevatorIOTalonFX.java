@@ -84,8 +84,8 @@ public class ElevatorIOTalonFX implements ElevatorIO {
   public void updateInputs(ElevatorIOInputs inputs) {
     BaseStatusSignal.refreshAll(Position, Velocity, AppliedVolts, Current);
     // Update elevator inputs
-    inputs.PositionRad = Units.rotationsToRadians(Position.getValueAsDouble());
-    inputs.VelocityRadPerSec = Units.rotationsToRadians(Velocity.getValueAsDouble());
+    inputs.PositionRot = Position.getValueAsDouble();
+    inputs.VelocityRPS = Velocity.getValueAsDouble();
     inputs.AppliedVolts = AppliedVolts.getValueAsDouble();
     inputs.CurrentAmps = Current.getValueAsDouble();
     inputs.ElevatorHeightMeters = CheetahUtil.elevatorRotationToMeters(Position.getValueAsDouble());

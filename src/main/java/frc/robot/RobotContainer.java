@@ -25,7 +25,6 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.commands.ClawCommands.ClawAlageInCommand;
 import frc.robot.commands.ClawCommands.ClawAlageShootCommand;
-import frc.robot.commands.ClawCommands.ClawTimedShootCommand;
 import frc.robot.commands.DriveCommands;
 import frc.robot.commands.ElevatorCommands.*;
 import frc.robot.commands.IntakeCommands.*;
@@ -147,8 +146,6 @@ public class RobotContainer {
     SmartDashboard.putNumber("PivotVolts", 0.5);
     SmartDashboard.putNumber("IntakeIndexerVolts", 3);
     SmartDashboard.putNumber("IntakeRollerVolts", 3);
-    SmartDashboard.putNumber("SetMotionMagicPositionRads", 160.0);
-    SmartDashboard.putNumber("PivotMotionMagicPositionRads", 100.0);
 
     // Configure the button bindings
     configureButtonBindings();
@@ -178,22 +175,10 @@ public class RobotContainer {
                     drive)
                 .ignoringDisable(true));
 
-    /* Claw Subsystem test
-    controller.leftTrigger().whileTrue(new
-    ClawIntakeInCommand(clawSubsystem)); controller.leftBumper().whileTrue(new
-    ClawIntakeOutCommand(clawSubsystem)); controller.rightTrigger().whileTrue(new
-    ClawShooterInCommand(clawSubsystem)); controller.rightBumper().whileTrue(new
-    ClawShooterOutCommand(clawSubsystem));
-    */
-
-    /* Intake Subsystem test
+    // Intake Subsystem test
     controller.leftTrigger().whileTrue(new IntakeRollerIndexerInCommand(intakeSubsystem));
-    controller.leftBumper().whileTrue(new IntakeIndexerOutCommand(intakeSubsystem));
-    controller.rightBumper().whileTrue(new IntakeRollerOutCommand(intakeSubsystem));
-    controller.rightTrigger().whileTrue(new IntakeArmSetPositionCommand(intakeSubsystem, -35));
-    */
 
-    controller.povUp().whileTrue(new ElevatorSetPositionCommand(elevatorSubsystem, 40));
+    controller.povUp().whileTrue(new ElevatorSetPositionCommand(elevatorSubsystem, 0.521));
     controller.povDown().whileTrue(new ElevatorReleaseCommand(elevatorSubsystem));
     controller.povLeft().whileTrue(new PivotSetPositionCommand(pivotSubsystem, 0));
 
@@ -201,15 +186,15 @@ public class RobotContainer {
     controller
         .y()
         .whileTrue(
-            new ElevatorSetPositionCommand(elevatorSubsystem, 140)
+            new ElevatorSetPositionCommand(elevatorSubsystem, 0.919)
                 .andThen(
                     new PivotSetPositionCommand(pivotSubsystem, 330)
                         .andThen(
-                            new ElevatorLittleCommand(elevatorSubsystem, 120)
+                            new ElevatorLittleCommand(elevatorSubsystem, 0.839)
                                 .alongWith(new ClawTimedIntakeCommand(clawSubsystem)))
-                        .andThen(new ElevatorLittleCommand(elevatorSubsystem, 140))
+                        .andThen(new ElevatorLittleCommand(elevatorSubsystem, 0.919))
                         .andThen(new PivotSetPositionCommand(pivotSubsystem, 0))
-                        .andThen(new ElevatorSetPositionCommand(elevatorSubsystem, 5))
+                        .andThen(new ElevatorSetPositionCommand(elevatorSubsystem, 0.382))
                         .andThen(new ElevatorReleaseCommand(elevatorSubsystem))));
     */
 
@@ -217,7 +202,7 @@ public class RobotContainer {
     controller
         .x()
         .whileTrue(
-            new ElevatorSetPositionCommand(elevatorSubsystem, 130)
+            new ElevatorSetPositionCommand(elevatorSubsystem, 0.879)
                 .alongWith(new PivotSetPositionCommand(pivotSubsystem, 80))
                 .andThen(new ClawTimedShootCommand(clawSubsystem)));
     */
@@ -226,7 +211,7 @@ public class RobotContainer {
     controller
         .rightTrigger()
         .whileTrue(
-            new ElevatorSetPositionCommand(elevatorSubsystem, 315)
+            new ElevatorSetPositionCommand(elevatorSubsystem, 1.615)
                 .andThen(new PivotSetPositionCommand(pivotSubsystem, 95))
                 .andThen(new ClawTimedShootCommand(clawSubsystem)));
     */
@@ -235,7 +220,7 @@ public class RobotContainer {
     controller
         .a()
         .whileTrue(
-            new ElevatorSetPositionCommand(elevatorSubsystem, 5)
+            new ElevatorSetPositionCommand(elevatorSubsystem, 0.382)
                 .alongWith(new PivotSetPositionCommand(pivotSubsystem, 50))
                 .andThen(new ClawTimedShootCommand(clawSubsystem)));
     */
@@ -244,7 +229,7 @@ public class RobotContainer {
     controller
         .a()
         .whileTrue(
-            new ElevatorSetPositionCommand(elevatorSubsystem, 210)
+            new ElevatorSetPositionCommand(elevatorSubsystem, 1.198)
                 .andThen(new PivotSetPositionCommand(pivotSubsystem, 210))
                 .andThen(new ClawAlageInCommand(clawSubsystem)));
 
@@ -252,7 +237,7 @@ public class RobotContainer {
     controller
         .b()
         .whileTrue(
-            new ElevatorSetPositionCommand(elevatorSubsystem, 315)
+            new ElevatorSetPositionCommand(elevatorSubsystem, 1.615)
                 .andThen(new PivotSetPositionCommand(pivotSubsystem, 40))
                 .andThen(new ClawAlageShootCommand(clawSubsystem)));
   }

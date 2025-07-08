@@ -82,8 +82,7 @@ public class DriveCommands {
           y = CheetahUtil.applyDeadband(y, DEADBAND);
 
           // Get linear velocity
-          Translation2d linearVelocity =
-              getLinearVelocityFromJoysticks(x,y);
+          Translation2d linearVelocity = getLinearVelocityFromJoysticks(x, y);
 
           // Apply rotation deadband
           double omega = omegaSupplier.getAsDouble();

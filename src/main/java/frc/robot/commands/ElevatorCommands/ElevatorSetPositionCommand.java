@@ -29,7 +29,7 @@ public class ElevatorSetPositionCommand extends Command {
 
   @Override
   public boolean isFinished() {
-    return Math.abs(m_subsystem.getInput().PositionRad - m_position)
+    return Math.abs(m_subsystem.getInput().ElevatorHeightMeters - m_position)
         < ElevatorConstants.PositionDeadband;
   }
 }

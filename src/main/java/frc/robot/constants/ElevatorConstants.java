@@ -10,7 +10,7 @@ public class ElevatorConstants {
   public static final double L2Position = 0.0;
   public static final double L3Position = 0.0;
   public static final double L4Position = 0.0;
-  public static final double PositionDeadband = 1.0;
+  public static final double PositionDeadband = 0.02;
   public static final double kP = 0.1;
   public static final double kI = 0.0;
   public static final double kD = 0;

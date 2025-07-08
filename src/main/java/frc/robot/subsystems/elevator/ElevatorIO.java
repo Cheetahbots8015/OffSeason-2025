@@ -5,8 +5,8 @@ import org.littletonrobotics.junction.AutoLog;
 public interface ElevatorIO {
   @AutoLog
   public static class ElevatorIOInputs {
-    public double PositionRad = 0.0;
-    public double VelocityRadPerSec = 0.0;
+    public double PositionRot = 0.0;
+    public double VelocityRPS = 0.0;
     public double AppliedVolts = 0.0;
     public double CurrentAmps = 0.0;
     public double ElevatorHeightMeters = 0.0;
