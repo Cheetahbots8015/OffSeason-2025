@@ -137,15 +137,6 @@ public class RobotContainer {
     autoChooser.addOption(
         "Drive SysId (Dynamic Reverse)", drive.sysIdDynamic(SysIdRoutine.Direction.kReverse));
 
-    SmartDashboard.putNumber("ClawIntakeVolts", 0.0);
-    SmartDashboard.putNumber("ClawShooterVolts", 0.0);
-    SmartDashboard.putNumber("ClimberPivotVolts", 0.0);
-    SmartDashboard.putNumber("ClimberClawVolts", 0.0);
-    SmartDashboard.putNumber("ElevatorVolts", 0.0);
-    SmartDashboard.putNumber("PivotVolts", 0.5);
-    SmartDashboard.putNumber("IntakeIndexerVolts", 4);
-    SmartDashboard.putNumber("IntakeRollerVolts", 4);
-
     // Configure the button bindings
     configureButtonBindings();
   }
@@ -176,7 +167,7 @@ public class RobotContainer {
 
     // Intake Subsystem test
     controller.leftTrigger().whileTrue(new IntakeRollerIndexerInCommand(intakeSubsystem));
-    controller.rightTrigger().whileTrue(new CombinedIntakeOutCommand(intakeSubsystem));
+    controller.rightTrigger().whileTrue(new IntakeRollerIndexerOutCommand(intakeSubsystem));
 
     controller.povUp().whileTrue(new ElevatorSetPositionCommand(elevatorSubsystem, 0.521));
     controller.povDown().whileTrue(new ElevatorReleaseCommand(elevatorSubsystem));
