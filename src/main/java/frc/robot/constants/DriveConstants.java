@@ -1,8 +1,8 @@
 package frc.robot.constants;
 
 public class DriveConstants {
-  public static final double robotMassKg = 74.088;
-  public static final double robotMOI = 6.883;
+  public static final double robotMassKg = 58;
+  public static final double robotMOI = 4.084;
   public static final double wheelCOF = 1.2;
   // PID constants for path following
   public static final double autoTranslationkP = 5.0;

@@ -38,7 +38,7 @@ import java.util.function.DoubleSupplier;
 import java.util.function.Supplier;
 
 public class DriveCommands {
-  private static final double DEADBAND = 0.1;
+  private static final double DEADBAND = 0.2;
   private static final double ANGLE_KP = 5.0;
   private static final double ANGLE_KD = 0.4;
   private static final double ANGLE_MAX_VELOCITY = 8.0;
@@ -76,10 +76,10 @@ public class DriveCommands {
         () -> {
           double x = xSupplier.getAsDouble();
           double y = ySupplier.getAsDouble();
-          x = Math.copySign(x * x, x); // Square for more precise control
-          y = Math.copySign(y * y, y); // Square for more precise control
           x = CheetahUtil.applyDeadband(x, DEADBAND);
           y = CheetahUtil.applyDeadband(y, DEADBAND);
+          x = Math.copySign(x * x, x); // Square for more precise control
+          y = Math.copySign(y * y, y); // Square for more precise control
 
           // Get linear velocity
           Translation2d linearVelocity = getLinearVelocityFromJoysticks(x, y);
@@ -88,8 +88,8 @@ public class DriveCommands {
           double omega = omegaSupplier.getAsDouble();
 
           // Square rotation value for more precise control
-          omega = Math.copySign(Math.pow(omega, 3), omega);
           omega = CheetahUtil.applyDeadband(omega, DEADBAND);
+          omega = Math.copySign(Math.pow(omega, 2), omega);
 
           // Convert to field relative speeds & send command
           ChassisSpeeds speeds =

@@ -36,4 +36,5 @@ public class IntakeConstants {
   public static final double canRangeHysteresis = 0.005;
   public static final int minSignalStrength = 2500;
   public static final double statusUpdateFrequency = 50.0;
+  public static final double PositionDeadband = 1.0;
 }

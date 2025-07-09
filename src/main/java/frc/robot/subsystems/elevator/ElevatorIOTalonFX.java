@@ -11,8 +11,9 @@ import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.GravityTypeValue;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
-import edu.wpi.first.math.util.Units;
+import edu.wpi.first.units.measure.Acceleration;
 import edu.wpi.first.units.measure.Angle;
+import edu.wpi.first.units.measure.AngularAcceleration;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Current;
 import edu.wpi.first.units.measure.Voltage;
@@ -26,12 +27,14 @@ public class ElevatorIOTalonFX implements ElevatorIO {
 
   // class member variable
   final VelocityVoltage m_velocity = new VelocityVoltage(0).withSlot(0);
-  final MotionMagicExpoVoltage m_ExpoVoltage = new MotionMagicExpoVoltage(0).withSlot(1);
+  final MotionMagicExpoVoltage m_ExpoVoltage =
+      new MotionMagicExpoVoltage(0).withSlot(1).withEnableFOC(true).withUpdateFreqHz(200.0);
   // Inputs from roller
   private final StatusSignal<Angle> Position;
   private final StatusSignal<AngularVelocity> Velocity;
   private final StatusSignal<Voltage> AppliedVolts;
   private final StatusSignal<Current> Current;
+  private final StatusSignal<AngularAcceleration> Acceleration;
 
   public ElevatorIOTalonFX() {
     elevator = new TalonFX(ElevatorConstants.elevatorID, "canivore");
@@ -62,9 +65,9 @@ public class ElevatorIOTalonFX implements ElevatorIO {
     elevatorConfigs.Slot1.GravityType = GravityTypeValue.Elevator_Static;
 
     MotionMagicConfigs motionMagicConfigs = elevatorConfigs.MotionMagic;
-    motionMagicConfigs.MotionMagicCruiseVelocity = 0; // Unlimited cruise velocity
-    motionMagicConfigs.MotionMagicExpo_kV = 0.06;
-    motionMagicConfigs.MotionMagicExpo_kA = 0.02; // Use a slower kA of 0.1 V/(rps/s)
+    motionMagicConfigs.MotionMagicCruiseVelocity = 85; // limited cruise velocity
+    motionMagicConfigs.MotionMagicExpo_kV = 0.12;
+    motionMagicConfigs.MotionMagicExpo_kA = 0.03; // Use a slower kA of 0.1 V/(rps/s)
 
     // Apply the configuration to the motor
     elevator.getConfigurator().apply(elevatorConfigs);
@@ -74,20 +77,27 @@ public class ElevatorIOTalonFX implements ElevatorIO {
     Velocity = elevator.getVelocity();
     AppliedVolts = elevator.getMotorVoltage();
     Current = elevator.getStatorCurrent();
+    Acceleration = elevator.getAcceleration();
 
     BaseStatusSignal.setUpdateFrequencyForAll(
-        ElevatorConstants.statusUpdateFrequency, Velocity, AppliedVolts, Current, Position);
+        ElevatorConstants.statusUpdateFrequency,
+        Velocity,
+        AppliedVolts,
+        Current,
+        Position,
+        Acceleration);
     ParentDevice.optimizeBusUtilizationForAll(elevator);
   }
 
   @Override
   public void updateInputs(ElevatorIOInputs inputs) {
-    BaseStatusSignal.refreshAll(Position, Velocity, AppliedVolts, Current);
+    BaseStatusSignal.refreshAll(Position, Velocity, AppliedVolts, Current, Acceleration);
     // Update elevator inputs
     inputs.PositionRot = Position.getValueAsDouble();
     inputs.VelocityRPS = Velocity.getValueAsDouble();
     inputs.AppliedVolts = AppliedVolts.getValueAsDouble();
     inputs.CurrentAmps = Current.getValueAsDouble();
+    inputs.AccelerationRPSS = Acceleration.getValueAsDouble();
     inputs.ElevatorHeightMeters = CheetahUtil.elevatorRotationToMeters(Position.getValueAsDouble());
   }
 
@@ -103,7 +113,7 @@ public class ElevatorIOTalonFX implements ElevatorIO {
 
   @Override
   public void setPosition(double position) {
-    double rotation = Units.radiansToRotations(position);
+    double rotation = CheetahUtil.elevatorMetersToRotation(position);
     elevator.setControl(m_ExpoVoltage.withPosition(rotation));
   }
 }

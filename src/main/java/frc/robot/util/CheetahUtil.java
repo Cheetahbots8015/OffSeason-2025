@@ -98,6 +98,17 @@ public class CheetahUtil {
   }
 
   /**
+   * Converts meters to elevator rotations.
+   *
+   * @param meters The distance in meters.
+   * @return The equivalent number of rotations based on the gear ratio and conversion factor. The
+   *     calculation subtracts the offset (0.362) and reverses the scaling.
+   */
+  public static double elevatorMetersToRotation(double meters) {
+    return (meters - 0.362) * 6.0 / (0.005 * 30);
+  }
+
+  /**
    * Converts pivot rotations to degrees.
    *
    * @param rotations The number of rotations of the pivot mechanism.
