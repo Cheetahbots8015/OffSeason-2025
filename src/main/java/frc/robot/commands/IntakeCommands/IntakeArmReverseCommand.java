@@ -3,11 +3,11 @@ package frc.robot.commands.IntakeCommands;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.intake.IntakeSubsystem;
 
-public class IntakeArmInCommand extends Command {
+public class IntakeArmReverseCommand extends Command {
   private final IntakeSubsystem m_subsystem;
   private double m_volts;
 
-  public IntakeArmInCommand(IntakeSubsystem subsystem, double volts) {
+  public IntakeArmReverseCommand(IntakeSubsystem subsystem, double volts) {
     m_subsystem = subsystem;
     m_volts = volts;
     addRequirements(subsystem);
@@ -18,7 +18,7 @@ public class IntakeArmInCommand extends Command {
 
   @Override
   public void execute() {
-    m_subsystem.setArmVoltage(m_volts);
+    m_subsystem.setArmVoltage(-m_volts);
   }
 
   @Override

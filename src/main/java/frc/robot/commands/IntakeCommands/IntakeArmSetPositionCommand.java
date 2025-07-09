@@ -10,6 +10,7 @@ public class IntakeArmSetPositionCommand extends Command {
 
   public IntakeArmSetPositionCommand(IntakeSubsystem subsystem, double position) {
     m_subsystem = subsystem;
+    m_position = position;
     addRequirements(subsystem);
   }
 
@@ -18,17 +19,15 @@ public class IntakeArmSetPositionCommand extends Command {
 
   @Override
   public void execute() {
-    m_subsystem.setArmVoltage(-2);
+    m_subsystem.setArmToDegrees(m_position);
   }
 
   @Override
-  public void end(boolean interrupted) {
-    m_subsystem.armVelocityVoltage(0);
-  }
+  public void end(boolean interrupted) {}
 
   @Override
   public boolean isFinished() {
-    return Math.abs(m_subsystem.getInput().ArmPositionRad - m_position)
+    return Math.abs(m_subsystem.getInput().ArmPositionDeg - m_position)
         < IntakeConstants.PositionDeadband;
   }
 }

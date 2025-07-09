@@ -57,6 +57,10 @@ public class IntakeSubsystem extends SubsystemBase {
     return io.getCanRange();
   }
 
+  public void setArmToDegrees(double degrees) {
+    io.setArmToDegrees(degrees);
+  }
+
   public Command sysIdQuasistatic(SysIdRoutine.Direction direction) {
     return sysId.quasistatic(direction);
   }

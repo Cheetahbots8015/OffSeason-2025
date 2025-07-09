@@ -18,7 +18,6 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
@@ -65,6 +64,7 @@ public class RobotContainer {
 
   // Controller
   private final CommandXboxController controller = new CommandXboxController(0);
+  private final CommandXboxController testController = new CommandXboxController(1);
 
   // Dashboard inputs
   private final LoggedDashboardChooser<Command> autoChooser;
@@ -166,8 +166,8 @@ public class RobotContainer {
                 .ignoringDisable(true));
 
     // Intake Subsystem test
-    controller.leftTrigger().whileTrue(new IntakeRollerIndexerInCommand(intakeSubsystem));
-    controller.rightTrigger().whileTrue(new IntakeRollerIndexerOutCommand(intakeSubsystem));
+    // controller.leftTrigger().whileTrue(new IntakeRollerIndexerInCommand(intakeSubsystem));
+    // controller.rightTrigger().whileTrue(new IntakeRollerIndexerOutCommand(intakeSubsystem));
 
     controller.povUp().whileTrue(new ElevatorSetPositionCommand(elevatorSubsystem, 0.521));
     controller.povDown().whileTrue(new ElevatorReleaseCommand(elevatorSubsystem));
@@ -231,6 +231,11 @@ public class RobotContainer {
             new ElevatorSetPositionCommand(elevatorSubsystem, 1.615)
                 .andThen(new PivotSetPositionCommand(pivotSubsystem, 21.5))
                 .andThen(new ClawAlageShootCommand(clawSubsystem)));
+
+    // Arm Test
+    testController.leftTrigger().whileTrue(new IntakeArmSetPositionCommand(intakeSubsystem, 0));
+    testController.rightBumper().whileTrue(new IntakeArmForwardCommand(intakeSubsystem, 1));
+    testController.leftBumper().whileTrue(new IntakeArmReverseCommand(intakeSubsystem, 1));
   }
 
   /**
