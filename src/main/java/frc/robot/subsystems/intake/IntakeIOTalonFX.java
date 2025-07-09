@@ -4,17 +4,21 @@ import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.DutyCycleOut;
+import com.ctre.phoenix6.controls.MotionMagicTorqueCurrentFOC;
 import com.ctre.phoenix6.hardware.CANrange;
 import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.signals.GravityTypeValue;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.units.Units.*;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Current;
 import edu.wpi.first.units.measure.Voltage;
 import frc.robot.constants.IntakeConstants;
 import frc.robot.subsystems.intake.IntakeIO.IntakeIOInputs;
+import frc.robot.util.CheetahUtil;
 
 public class IntakeIOTalonFX implements IntakeIO {
   // Hardware objects
@@ -46,6 +50,9 @@ public class IntakeIOTalonFX implements IntakeIO {
 
   // Inputs from canrange
   private final StatusSignal<Boolean> Canrange;
+
+  // Arm VelocityVoltage
+  final MotionMagicTorqueCurrentFOC m_motorRequest = new MotionMagicTorqueCurrentFOC(0);
 
   public IntakeIOTalonFX() {
     indexer = new TalonFX(IntakeConstants.indexerID, IntakeConstants.canName);
@@ -104,6 +111,21 @@ public class IntakeIOTalonFX implements IntakeIO {
     armConfigs.Slot0.kA = IntakeConstants.arm_kA;
     armConfigs.Slot0.kS = IntakeConstants.arm_kS;
     armConfigs.Slot0.kV = IntakeConstants.arm_kV;
+    armConfigs.Slot0.kG = IntakeConstants.arm_kG;
+    armConfigs.Slot0.GravityType = GravityTypeValue.Elevator_Static;
+
+    // MotionMagic config
+    armConfigs.MotionMagic.MotionMagicCruiseVelocity = 6.5;
+    armConfigs.MotionMagic.MotionMagicAcceleration = 6.5;
+
+    // Limit TorqueCurrent
+    armConfigs.TorqueCurrent.PeakForwardTorqueCurrent = 20;
+    armConfigs.TorqueCurrent.PeakReverseTorqueCurrent = -60;
+
+    armConfigs.SoftwareLimitSwitch.ReverseSoftLimitThreshold = 0.0;
+    armConfigs.SoftwareLimitSwitch.ForwardSoftLimitThreshold = Units.radiansToRotations(30);
+    armConfigs.SoftwareLimitSwitch.ReverseSoftLimitEnable = false;
+    armConfigs.SoftwareLimitSwitch.ForwardSoftLimitEnable = false;
 
     // Apply the configuration to the motor
     indexer.getConfigurator().apply(indexerConfigs);
@@ -126,7 +148,7 @@ public class IntakeIOTalonFX implements IntakeIO {
     ArmPosition = arm.getPosition();
     ArmVelocity = arm.getVelocity();
     ArmAppliedVolts = arm.getMotorVoltage();
-    ArmCurrent = arm.getStatorCurrent();
+    ArmCurrent = arm.getTorqueCurrent();
 
     // Create canrange status signals
     Canrange = canrange.getIsDetected();
@@ -175,7 +197,7 @@ public class IntakeIOTalonFX implements IntakeIO {
     inputs.IntakeAppliedVolts = IntakeAppliedVolts.getValueAsDouble();
     inputs.IntakeCurrentAmps = IntakeCurrent.getValueAsDouble();
     // Update arm inputs
-    inputs.ArmPositionRad = Units.rotationsToRadians(ArmPosition.getValueAsDouble());
+    inputs.ArmPositionDeg = CheetahUtil.intakeArmRotationToDegrees(ArmPosition.getValueAsDouble());
     inputs.ArmVelocityRadPerSec = Units.rotationsToRadians(ArmVelocity.getValueAsDouble());
     inputs.ArmAppliedVolts = ArmAppliedVolts.getValueAsDouble();
     inputs.ArmCurrentAmps = ArmCurrent.getValueAsDouble();
@@ -208,5 +230,11 @@ public class IntakeIOTalonFX implements IntakeIO {
   @Override
   public boolean getCanRange() {
     return Canrange.getValue();
+  }
+
+  @Override
+  public void setArmToDegrees(double degrees) {
+    double rotation = CheetahUtil.intakeArmDegreesToRotation(degrees);
+    arm.setControl(m_motorRequest.withPosition(rotation));
   }
 }

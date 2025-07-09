@@ -64,4 +64,8 @@ public class ClawSubsystem extends SubsystemBase {
   public ClawIOInputs getInput() {
     return inputs;
   }
+
+  public void IntakeVelocityVoltage(double velocity) {
+    io.IntakeVelocityVoltage(velocity);
+  }
 }

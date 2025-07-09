@@ -26,4 +26,8 @@ public interface ClimberIO {
 
   public default void setPivotVoltage(double volts) {}
   ;
+
+  public default boolean returnCanrange() {
+    return true;
+  }
 }
