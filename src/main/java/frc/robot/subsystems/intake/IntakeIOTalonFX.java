@@ -216,6 +216,6 @@ public class IntakeIOTalonFX implements IntakeIO {
 
   @Override
   public void armVelocityVoltage(double velocity) {
-    arm.setControl(m_velocity.withVelocity(velocity));
+    arm.setControl(m_velocity.withVelocity(velocity).withFeedForward(0.5));
   }
 }

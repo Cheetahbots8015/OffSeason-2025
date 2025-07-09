@@ -84,4 +84,38 @@ public class CheetahUtil {
     }
     return value.getAsDouble();
   }
+
+  /**
+   * Converts elevator rotations to meters.
+   *
+   * @param rotations The number of rotations of the elevator mechanism.
+   * @return The equivalent distance in meters based on the gear ratio and conversion factor. The
+   *     calculation divides the rotations by 6 (gear ratio) and multiplies by the effective
+   *     distance per rotation (0.005 * 30 meters).
+   */
+  public static double elevatorRotationToMeters(double rotations) {
+    return rotations / 6.0 * (0.005 * 30) + 0.362;
+  }
+
+  /**
+   * Converts meters to elevator rotations.
+   *
+   * @param meters The distance in meters.
+   * @return The equivalent number of rotations based on the gear ratio and conversion factor. The
+   *     calculation subtracts the offset (0.362) and reverses the scaling.
+   */
+  public static double elevatorMetersToRotation(double meters) {
+    return (meters - 0.362) * 6.0 / (0.005 * 30);
+  }
+
+  /**
+   * Converts pivot rotations to degrees.
+   *
+   * @param rotations The number of rotations of the pivot mechanism.
+   * @return The equivalent angle in degrees. The calculation multiplies the rotations by 360 and
+   *     divides by the effective ratio, which is derived from the product of (1/8 * 18/64 * 24/90).
+   */
+  public static double pivotRotationToDegrees(double rotations) {
+    return rotations * 360 * (1.0 / 8.0 * 18 / 64 * 24 / 90);
+  }
 }

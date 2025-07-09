@@ -23,13 +23,11 @@ public class ElevatorSetPositionCommand extends Command {
   }
 
   @Override
-  public void end(boolean interrupted) {
-    m_subsystem.VelocityVoltage(0.0);
-  }
+  public void end(boolean interrupted) {}
 
   @Override
   public boolean isFinished() {
-    return Math.abs(m_subsystem.getInput().PositionRad - m_position)
+    return Math.abs(m_subsystem.getInput().ElevatorHeightMeters - m_position)
         < ElevatorConstants.PositionDeadband;
   }
 }
