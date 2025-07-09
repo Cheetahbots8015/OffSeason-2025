@@ -1,5 +1,6 @@
 package frc.robot.util;
 
+import frc.robot.constants.PivotConstants;
 import java.util.function.DoubleSupplier;
 
 public class CheetahUtil {
@@ -116,6 +117,17 @@ public class CheetahUtil {
    *     divides by the effective ratio, which is derived from the product of (1/8 * 18/64 * 24/90).
    */
   public static double pivotRotationToDegrees(double rotations) {
-    return rotations * 360 * (1.0 / 8.0 * 18 / 64 * 24 / 90);
+    return rotations * 360.0 * PivotConstants.ReductionRatio;
+  }
+
+  /**
+   * Converts degrees to pivot rotations.
+   *
+   * @param degrees The angle in degrees.
+   * @return The equivalent number of rotations. The calculation divides the degrees by 360 and
+   *     reverses the effective ratio.
+   */
+  public static double pivotDegreesToRotation(double degrees) {
+    return degrees / 360.0 / PivotConstants.ReductionRatio;
   }
 }
