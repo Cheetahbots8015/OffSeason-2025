@@ -95,7 +95,11 @@ public class PivotIOTalonFX implements PivotIO {
    */
   public void setPosition(double degrees) {
     if (degrees < 0 || degrees > 180) {
-      throw new IllegalArgumentException("Pivot position must be between 0 and 180 degrees.");
+      try {
+        throw new IllegalArgumentException("Pivot position must be between 0 and 180 degrees.");
+      } catch (IllegalArgumentException e) {
+        System.out.println("Error: " + e.getMessage());
+      }
     }
     double rotation = CheetahUtil.pivotDegreesToRotation(degrees);
     pivot.setControl(m_motion.withPosition(rotation));
