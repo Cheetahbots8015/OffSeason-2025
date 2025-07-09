@@ -65,10 +65,12 @@ public class ElevatorIOTalonFX implements ElevatorIO {
     elevatorConfigs.Slot1.GravityType = GravityTypeValue.Elevator_Static;
 
     MotionMagicConfigs motionMagicConfigs = elevatorConfigs.MotionMagic;
-    motionMagicConfigs.MotionMagicCruiseVelocity = 85; // limited cruise velocity
+    motionMagicConfigs.MotionMagicCruiseVelocity = 90; // limited cruise velocity
     motionMagicConfigs.MotionMagicExpo_kV = 0.12;
     motionMagicConfigs.MotionMagicExpo_kA = 0.03; // Use a slower kA of 0.1 V/(rps/s)
-
+    elevatorConfigs.Voltage.PeakReverseVoltage = -12.0;
+    elevatorConfigs.Voltage.PeakForwardVoltage = 12.0;
+    
     // Apply the configuration to the motor
     elevator.getConfigurator().apply(elevatorConfigs);
 
