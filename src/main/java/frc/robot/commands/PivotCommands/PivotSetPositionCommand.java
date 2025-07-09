@@ -27,7 +27,7 @@ public class PivotSetPositionCommand extends Command {
 
   @Override
   public boolean isFinished() {
-    return Math.abs(m_subsystem.getInput().PositionRad - m_position)
+    return Math.abs(m_subsystem.getInput().PivotPositionDegree - m_position)
         < PivotConstants.PositionDeadband;
   }
 }

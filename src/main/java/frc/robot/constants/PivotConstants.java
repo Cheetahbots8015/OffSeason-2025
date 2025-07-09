@@ -10,7 +10,7 @@ public class PivotConstants {
 
   public static final boolean neutralmode_Coast = true;
   public static final boolean inverted_CounterClockwisePositive = false;
-  public static final double PositionDeadband = 5.00;
+  public static final double PositionDeadband = 3.00;
   public static final double kPMM = 0.6;
   public static final double kIMM = 0.0;
   public static final double kDMM = 0.0;
