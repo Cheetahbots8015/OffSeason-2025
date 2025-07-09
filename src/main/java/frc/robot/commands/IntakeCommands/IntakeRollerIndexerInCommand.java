@@ -17,8 +17,8 @@ public class IntakeRollerIndexerInCommand extends Command {
 
   @Override
   public void execute() {
-    m_subsystem.setIntakeVoltage(SmartDashboard.getNumber("IntakeRollerVolts", 0.0));
-    m_subsystem.setIndexerVoltage(SmartDashboard.getNumber("IntakeIndexerVolts", 0.0));
+    m_subsystem.setIntakeVoltage(3);
+    m_subsystem.setIndexerVoltage(3);
   }
 
   @Override
