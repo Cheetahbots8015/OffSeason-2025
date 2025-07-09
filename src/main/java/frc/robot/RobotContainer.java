@@ -233,7 +233,7 @@ public class RobotContainer {
 
     // Arm Test
     testController.leftTrigger().whileTrue(new IntakeArmSetPositionCommand(intakeSubsystem, 0));
-    testController.rightBumper().whileTrue(new IntakeArmForwardCommand(intakeSubsystem, 1));
+    testController.rightBumper().whileTrue(new IntakeArmForwardCommand(intakeSubsystem, 2));
     testController.leftBumper().whileTrue(new IntakeArmReverseCommand(intakeSubsystem, 1));
   }
 
