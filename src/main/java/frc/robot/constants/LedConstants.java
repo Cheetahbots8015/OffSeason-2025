@@ -7,9 +7,13 @@ public class LedConstants {
 
   public static final int LedIndexEnd = 399;
 
-  public static final int LedWidth = 15;
+  public static final int ExternalLedStripIndexStart = 10;
 
-  public static final int LedHeight = 15;
+  public static final int LedWidth = 14;
+
+  public static final int LedHeight = 14;
+
+  public static final double statusUpdateFrequency = 50.0;
 
   public enum AnimationType {
     None,

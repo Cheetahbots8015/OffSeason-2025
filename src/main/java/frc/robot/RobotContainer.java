@@ -13,7 +13,6 @@
 
 package frc.robot;
 
-import com.ctre.phoenix6.signals.RGBWColor;
 import com.pathplanner.lib.auto.AutoBuilder;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -30,11 +29,8 @@ import frc.robot.commands.DriveCommands;
 import frc.robot.commands.ElevatorCommands.*;
 import frc.robot.commands.IntakeCommands.*;
 import frc.robot.commands.LedCommand.LedShowIconCommand;
-import frc.robot.commands.LedCommand.LedTurnOffCommand;
-import frc.robot.commands.LedCommand.LedTurnOnCommand;
 import frc.robot.commands.PivotCommands.*;
 import frc.robot.constants.ContainerConstants;
-import frc.robot.constants.LedConstants;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.claw.ClawIOSim;
 import frc.robot.subsystems.claw.ClawIOTalonFX;
@@ -55,7 +51,6 @@ import frc.robot.subsystems.led.LedSubsystem;
 import frc.robot.subsystems.pivot.PivotIOSim;
 import frc.robot.subsystems.pivot.PivotIOTalonFX;
 import frc.robot.subsystems.pivot.PivotSubsystem;
-import frc.robot.util.*;
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 
 /**
@@ -166,8 +161,6 @@ public class RobotContainer {
     SmartDashboard.putNumber("SetMotionMagicPositionRads", 160.0);
     SmartDashboard.putNumber("PivotMotionMagicPositionRads", 100.0);
 
-    SmartDashboard.putNumber("LEDBrightness", 1);
-
     // Configure the button bindings
     configureButtonBindings();
   }
@@ -275,37 +268,35 @@ public class RobotContainer {
             new ElevatorSetPositionCommand(elevatorSubsystem, 5)
                 .alongWith(new PivotSetPositionCommand(pivotSubsystem, 50))
                 .andThen(new ClawTimedShootCommand(clawSubsystem)));
-    ledController
-        .a()
-        .whileTrue(
-            (new LedTurnOnCommand(
-                    ledSubsystem,
-                    new RGBWColor(255, 255, 255),
-                    LedConstants.AnimationType.Larson,
-                    true))
-                .andThen(new LedTurnOffCommand(ledSubsystem)));
+    // CANdle internal animation, disabled because always cause robot code crash by
+    // out-of-memory
+    // ledController
+    // .a()
+    // .whileTrue(
+    // (new LedTurnOnCommand(
+    // ledSubsystem,
+    // new RGBWColor(255, 255, 255),
+    // LedConstants.AnimationType.Larson,
+    // true))
+    // .andThen(new LedTurnOffCommand(ledSubsystem)));
 
     ledController
         .b()
         .whileTrue(
-            (new LedTurnOnCommand(
-                    ledSubsystem,
-                    new RGBWColor(0, 0, 255),
-                    LedConstants.AnimationType.ColorFlow,
-                    true))
-                .andThen(new LedTurnOffCommand(ledSubsystem)));
+            (new LedShowIconCommand(
+                ledSubsystem, 2, true))); // .andThen(new LedTurnOffCommand(ledSubsystem)));
 
     ledController
         .x()
         .whileTrue(
-            new LedShowIconCommand(ledSubsystem, 0, true)
-                .andThen(new LedTurnOffCommand(ledSubsystem)));
+            new LedShowIconCommand(
+                ledSubsystem, 0, true)); // .andThen(new LedTurnOffCommand(ledSubsystem)));
 
     ledController
         .y()
         .whileTrue(
-            new LedShowIconCommand(ledSubsystem, 1, true)
-                .andThen(new LedTurnOffCommand(ledSubsystem)));
+            new LedShowIconCommand(
+                ledSubsystem, 1, true)); // .andThen(new LedTurnOffCommand(ledSubsystem)));
   }
 
   /**

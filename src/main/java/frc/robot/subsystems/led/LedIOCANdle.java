@@ -1,5 +1,7 @@
 package frc.robot.subsystems.led;
 
+import com.ctre.phoenix6.BaseStatusSignal;
+import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.configs.CANdleConfiguration;
 import com.ctre.phoenix6.controls.ColorFlowAnimation;
 import com.ctre.phoenix6.controls.EmptyAnimation;
@@ -12,11 +14,17 @@ import com.ctre.phoenix6.hardware.CANdle;
 import com.ctre.phoenix6.signals.RGBWColor;
 import com.ctre.phoenix6.signals.StatusLedWhenActiveValue;
 import com.ctre.phoenix6.signals.StripTypeValue;
+import edu.wpi.first.units.measure.Current;
+import edu.wpi.first.units.measure.Temperature;
+import edu.wpi.first.units.measure.Voltage;
 import frc.robot.constants.LedConstants;
 
 public class LedIOCANdle implements LedIO {
   private final CANdle m_candle = new CANdle(LedConstants.CandleDeviceID, "rio");
-  private double brightness = 1.0d;
+  private final StatusSignal<Current> CANdleCurrent;
+  private final StatusSignal<Voltage> CANdleOutVoltage;
+
+  private final StatusSignal<Temperature> CANdleTemp;
 
   public LedIOCANdle() {
     var cfg = new CANdleConfiguration();
@@ -34,6 +42,12 @@ public class LedIOCANdle implements LedIO {
     }
     /* set the onboard LEDs to a solid color */
     m_candle.setControl(new SolidColor(0, 7).withColor(new RGBWColor(0, 0, 0)));
+
+    CANdleCurrent = m_candle.getOutputCurrent();
+    CANdleTemp = m_candle.getDeviceTemp();
+    CANdleOutVoltage = m_candle.getFiveVRailVoltage();
+    BaseStatusSignal.setUpdateFrequencyForAll(
+        LedConstants.statusUpdateFrequency, CANdleCurrent, CANdleTemp, CANdleOutVoltage);
   }
 
   @Override
@@ -94,19 +108,23 @@ public class LedIOCANdle implements LedIO {
     if (id < 0 && id > 399) {
       throw new IllegalArgumentException("LED ID must be between 0 and 399");
     }
-    m_candle.setControl(new SolidColor(id, id).withColor(color));
+    m_candle.setControl(
+        new SolidColor(
+                id + LedConstants.ExternalLedStripIndexStart,
+                id + LedConstants.ExternalLedStripIndexStart)
+            .withColor(color));
   }
 
   @Override
   public void updateInputs(LedIOInputs inputs) {
+    BaseStatusSignal.refreshAll(CANdleCurrent, CANdleTemp, CANdleOutVoltage);
     inputs.CandleOutCurrent = m_candle.getOutputCurrent().getValueAsDouble();
-    inputs.CandleOutTemperature = m_candle.getDeviceTemp().getValueAsDouble();
-    inputs.CandleOutBrightness = brightness;
+    inputs.CandleTemperature = m_candle.getDeviceTemp().getValueAsDouble();
+    inputs.Candle5VOutVoltage = m_candle.getFiveVRailVoltage().getValueAsDouble();
   }
 
   @Override
   public void setBrightness(double number) {
-    brightness = number;
     var cfg = new CANdleConfiguration();
     cfg.LED.StripType = StripTypeValue.GRB;
     cfg.LED.BrightnessScalar = number;
@@ -114,4 +132,7 @@ public class LedIOCANdle implements LedIO {
 
     m_candle.getConfigurator().apply(cfg);
   }
+
+  @Override
+  public void updateLEDs() {} // needn't in real bot
 }

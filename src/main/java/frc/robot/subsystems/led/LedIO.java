@@ -8,8 +8,9 @@ public interface LedIO {
   @AutoLog
   public static class LedIOInputs {
     double CandleOutCurrent = 0.0d;
-    double CandleOutTemperature = 0.0d;
-    double CandleOutBrightness = 0.0d;
+    double Candle5VOutVoltage = 0.0d;
+
+    double CandleTemperature = 0.0d;
   }
 
   public default void setLedMode(LedConstants.AnimationType modeId, RGBWColor color) {}
@@ -21,4 +22,6 @@ public interface LedIO {
   public default void updateInputs(LedIOInputs inputs) {}
 
   public default void setBrightness(double number) {}
+
+  public default void updateLEDs() {}
 }
