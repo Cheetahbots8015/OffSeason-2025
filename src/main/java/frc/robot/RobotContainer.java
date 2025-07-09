@@ -188,7 +188,7 @@ public class RobotContainer {
         .whileTrue(
             new ElevatorSetPositionCommand(elevatorSubsystem, 0.919)
                 .andThen(
-                    new PivotSetPositionCommand(pivotSubsystem, 330)
+                    new PivotSetPositionCommand(pivotSubsystem, 177)
                         .andThen(
                             new ElevatorLittleCommand(elevatorSubsystem, 0.820)
                                 .alongWith(new ClawTimedIntakeCommand(clawSubsystem)))
@@ -203,7 +203,7 @@ public class RobotContainer {
         .x()
         .whileTrue(
             new ElevatorSetPositionCommand(elevatorSubsystem, 0.879)
-                .alongWith(new PivotSetPositionCommand(pivotSubsystem, 80))
+                .alongWith(new PivotSetPositionCommand(pivotSubsystem, 43))
                 .andThen(new ClawTimedShootCommand(clawSubsystem)));
     */
 
@@ -212,7 +212,7 @@ public class RobotContainer {
         .a()
         .whileTrue(
             new ElevatorSetPositionCommand(elevatorSubsystem, 1.615)
-                .andThen(new PivotSetPositionCommand(pivotSubsystem, 95))
+                .andThen(new PivotSetPositionCommand(pivotSubsystem, 51))
                 .andThen(new ClawTimedShootCommand(clawSubsystem)));
     */
 
@@ -221,7 +221,7 @@ public class RobotContainer {
         .a()
         .whileTrue(
             new ElevatorSetPositionCommand(elevatorSubsystem, 0.382)
-                .alongWith(new PivotSetPositionCommand(pivotSubsystem, 50))
+                .alongWith(new PivotSetPositionCommand(pivotSubsystem, 27))
                 .andThen(new ClawTimedShootCommand(clawSubsystem)));
     */
 
@@ -230,7 +230,7 @@ public class RobotContainer {
         .a()
         .whileTrue(
             new ElevatorSetPositionCommand(elevatorSubsystem, 1.198)
-                .andThen(new PivotSetPositionCommand(pivotSubsystem, 210))
+                .andThen(new PivotSetPositionCommand(pivotSubsystem, 112.8))
                 .andThen(new ClawAlageInCommand(clawSubsystem)));
 
     // Alage Shoot
@@ -238,7 +238,7 @@ public class RobotContainer {
         .b()
         .whileTrue(
             new ElevatorSetPositionCommand(elevatorSubsystem, 1.615)
-                .andThen(new PivotSetPositionCommand(pivotSubsystem, 40))
+                .andThen(new PivotSetPositionCommand(pivotSubsystem, 21.5))
                 .andThen(new ClawAlageShootCommand(clawSubsystem)));
   }
 
