@@ -18,7 +18,6 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
@@ -173,21 +172,19 @@ public class RobotContainer {
     controller.povDown().whileTrue(new ElevatorReleaseCommand(elevatorSubsystem));
     controller.povLeft().whileTrue(new PivotSetPositionCommand(pivotSubsystem, 0));
 
-    /* Claw Intake Command
+    // Claw Intake Command
     controller
         .y()
         .whileTrue(
             new ElevatorSetPositionCommand(elevatorSubsystem, 0.919)
+                .andThen(new PivotSetPositionCommand(pivotSubsystem, 177))
                 .andThen(
-                    new PivotSetPositionCommand(pivotSubsystem, 177)
-                        .andThen(
-                            new ElevatorLittleCommand(elevatorSubsystem, 0.820)
-                                .alongWith(new ClawTimedIntakeCommand(clawSubsystem)))
-                        .andThen(new ElevatorLittleCommand(elevatorSubsystem, 0.919))
-                        .andThen(new PivotSetPositionCommand(pivotSubsystem, 0))
-                        .andThen(new ElevatorSetPositionCommand(elevatorSubsystem, 0.382))
-                        .andThen(new ElevatorReleaseCommand(elevatorSubsystem))));
-    */
+                    new ElevatorLittleCommand(elevatorSubsystem, 0.820)
+                        .alongWith(new ClawTimedIntakeCommand(clawSubsystem)))
+                .andThen(new ElevatorLittleCommand(elevatorSubsystem, 0.919))
+                .andThen(new PivotSetPositionCommand(pivotSubsystem, 0))
+                .andThen(new ElevatorSetPositionCommand(elevatorSubsystem, 0.382))
+                .andThen(new ElevatorReleaseCommand(elevatorSubsystem)));
 
     /* L3 Command
     controller
@@ -198,14 +195,13 @@ public class RobotContainer {
                 .andThen(new ClawTimedShootCommand(clawSubsystem)));
     */
 
-    /* L4 Command
+    // L4 Command
     controller
         .a()
         .whileTrue(
             new ElevatorSetPositionCommand(elevatorSubsystem, 1.615)
                 .andThen(new PivotSetPositionCommand(pivotSubsystem, 51))
                 .andThen(new ClawTimedShootCommand(clawSubsystem)));
-    */
 
     /* L2 Command
     controller
@@ -216,21 +212,23 @@ public class RobotContainer {
                 .andThen(new ClawTimedShootCommand(clawSubsystem)));
     */
 
-    // Alage Level1 Intake
+    /* Alage Level1 Intake
     controller
         .a()
         .whileTrue(
             new ElevatorSetPositionCommand(elevatorSubsystem, 1.198)
                 .andThen(new PivotSetPositionCommand(pivotSubsystem, 112.8))
                 .andThen(new ClawAlageInCommand(clawSubsystem)));
+    */
 
-    // Alage Shoot
+    /* Alage Shoot
     controller
         .b()
         .whileTrue(
             new ElevatorSetPositionCommand(elevatorSubsystem, 1.615)
                 .andThen(new PivotSetPositionCommand(pivotSubsystem, 21.5))
                 .andThen(new ClawAlageShootCommand(clawSubsystem)));
+    */
   }
 
   /**
