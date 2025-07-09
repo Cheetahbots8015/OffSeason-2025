@@ -25,6 +25,7 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.commands.ClawCommands.*;
 import frc.robot.commands.DriveCommands;
+import frc.robot.commands.alignreef;
 import frc.robot.commands.ElevatorCommands.*;
 import frc.robot.commands.IntakeCommands.*;
 import frc.robot.commands.PivotCommands.*;
@@ -65,6 +66,7 @@ public class RobotContainer {
 
   // Controller
   private final CommandXboxController controller = new CommandXboxController(0);
+  private final CommandXboxController testController = new CommandXboxController(1);
 
   // Dashboard inputs
   private final LoggedDashboardChooser<Command> autoChooser;
@@ -240,6 +242,16 @@ public class RobotContainer {
             new ElevatorSetPositionCommand(elevatorSubsystem, 1.615)
                 .andThen(new PivotSetPositionCommand(pivotSubsystem, 40))
                 .andThen(new ClawAlageShootCommand(clawSubsystem)));
+
+    testController
+        .povLeft()
+        .whileTrue(
+            new alignreef(false, drive));
+
+    testController
+        .povRight()
+        .whileTrue(
+            new alignreef(true, drive));
   }
 
   /**
