@@ -156,7 +156,7 @@ public class RobotContainer {
             () -> -controller.getRightX()));
 
     controller
-        .x()
+        .povUp()
         .onTrue(
             Commands.runOnce(
                     () ->
@@ -166,11 +166,10 @@ public class RobotContainer {
                 .ignoringDisable(true));
 
     // Intake Subsystem test
-    // controller.leftTrigger().whileTrue(new IntakeRollerIndexerInCommand(intakeSubsystem));
-    // controller.rightTrigger().whileTrue(new IntakeRollerIndexerOutCommand(intakeSubsystem));
+    controller.leftTrigger().whileTrue(new IntakeRollerIndexerInCommand(intakeSubsystem));
+    controller.rightTrigger().whileTrue(new IntakeRollerIndexerOutCommand(intakeSubsystem));
 
-    controller.povUp().whileTrue(new ElevatorSetPositionCommand(elevatorSubsystem, 0.521));
-    controller.povDown().whileTrue(new ElevatorReleaseCommand(elevatorSubsystem));
+    controller.povDown().whileTrue(new ElevatorSetPositionCommand(elevatorSubsystem, 0.521));
     controller.povLeft().whileTrue(new PivotSetPositionCommand(pivotSubsystem, 0));
 
     // Claw Intake Command
@@ -180,7 +179,7 @@ public class RobotContainer {
             new ElevatorSetPositionCommand(elevatorSubsystem, 0.919)
                 .andThen(new PivotSetPositionCommand(pivotSubsystem, 177))
                 .andThen(
-                    new ElevatorLittleCommand(elevatorSubsystem, 0.820)
+                    new ElevatorLittleCommand(elevatorSubsystem, 0.810)
                         .alongWith(new ClawTimedIntakeCommand(clawSubsystem)))
                 .andThen(new ElevatorLittleCommand(elevatorSubsystem, 0.919))
                 .andThen(new PivotSetPositionCommand(pivotSubsystem, 0))
@@ -198,7 +197,7 @@ public class RobotContainer {
 
     // L4 Command
     controller
-        .a()
+        .x()
         .whileTrue(
             new ElevatorSetPositionCommand(elevatorSubsystem, 1.615)
                 .andThen(new PivotSetPositionCommand(pivotSubsystem, 51))
@@ -213,28 +212,27 @@ public class RobotContainer {
                 .andThen(new ClawTimedShootCommand(clawSubsystem)));
     */
 
-    /* Alage Level1 Intake
+    // Alage Level1 Intake
     controller
         .a()
         .whileTrue(
             new ElevatorSetPositionCommand(elevatorSubsystem, 1.198)
                 .andThen(new PivotSetPositionCommand(pivotSubsystem, 112.8))
                 .andThen(new ClawAlageInCommand(clawSubsystem)));
-    */
 
-    /* Alage Shoot
+    // Alage Shoot
     controller
         .b()
         .whileTrue(
             new ElevatorSetPositionCommand(elevatorSubsystem, 1.615)
                 .andThen(new PivotSetPositionCommand(pivotSubsystem, 21.5))
                 .andThen(new ClawAlageShootCommand(clawSubsystem)));
-    */
 
-    // Arm Test
+    /* Arm Test
     testController.leftTrigger().whileTrue(new IntakeArmSetPositionCommand(intakeSubsystem, 0));
     testController.rightBumper().whileTrue(new IntakeArmForwardCommand(intakeSubsystem, 1));
     testController.leftBumper().whileTrue(new IntakeArmReverseCommand(intakeSubsystem, 1));
+    */
   }
 
   /**

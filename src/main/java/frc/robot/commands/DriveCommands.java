@@ -78,8 +78,6 @@ public class DriveCommands {
           double y = ySupplier.getAsDouble();
           x = CheetahUtil.applyDeadband(x, DEADBAND);
           y = CheetahUtil.applyDeadband(y, DEADBAND);
-          x = Math.copySign(x * x, x); // Square for more precise control
-          y = Math.copySign(y * y, y); // Square for more precise control
 
           // Get linear velocity
           Translation2d linearVelocity = getLinearVelocityFromJoysticks(x, y);
