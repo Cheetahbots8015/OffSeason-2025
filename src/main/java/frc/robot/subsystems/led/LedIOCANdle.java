@@ -116,6 +116,14 @@ public class LedIOCANdle implements LedIO {
   }
 
   @Override
+  public void setSingleLedWithoutAnyIndexAdd(int id, RGBWColor color) {
+    if (id < 0 && id > 399) {
+      throw new IllegalArgumentException("LED ID must be between 0 and 399");
+    }
+    m_candle.setControl(new SolidColor(id, id).withColor(color));
+  }
+
+  @Override
   public void updateInputs(LedIOInputs inputs) {
     BaseStatusSignal.refreshAll(CANdleCurrent, CANdleTemp, CANdleOutVoltage);
     inputs.CandleOutCurrent = m_candle.getOutputCurrent().getValueAsDouble();

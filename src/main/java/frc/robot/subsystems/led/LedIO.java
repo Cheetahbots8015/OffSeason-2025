@@ -15,6 +15,8 @@ public interface LedIO {
 
   public default void setLedMode(LedConstants.AnimationType modeId, RGBWColor color) {}
 
+  public default void setSingleLedWithoutAnyIndexAdd(int id, RGBWColor color) {}
+
   public default void setSingleLed(int id, RGBWColor color) {}
 
   public default void AllOff() {}

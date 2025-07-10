@@ -9,6 +9,7 @@ import org.littletonrobotics.junction.Logger;
 public class LedSubsystem extends SubsystemBase {
   private LedIO io;
   private final LedIOInputsAutoLogged inputs = new LedIOInputsAutoLogged();
+  private int LedRingCount = 0;
 
   public LedSubsystem(LedIO io) {
     this.io = io;
@@ -19,6 +20,13 @@ public class LedSubsystem extends SubsystemBase {
     Logger.processInputs(
         "Led",
         inputs); // Send input data to the logging framework (or update from the log during replay)
+    if (LedRingCount == 7) LedRingCount = 0;
+    else LedRingCount++;
+
+    for (int i = 0; i < 8; i++) {
+      if (i == LedRingCount) io.setSingleLedWithoutAnyIndexAdd(i, new RGBWColor(0, 255, 0));
+      else io.setSingleLedWithoutAnyIndexAdd(i, new RGBWColor(0, 0, 0));
+    }
   }
 
   public void shutDown() {

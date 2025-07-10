@@ -1,20 +1,23 @@
 package frc.robot.commands.LedCommand;
 
 import com.ctre.phoenix6.signals.RGBWColor;
+
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.constants.LedConstants;
 import frc.robot.subsystems.led.LedSubsystem;
-import frc.robot.util.LedUtil;
 
 public class LedShowIconCommand extends Command {
   private final LedSubsystem m_subsystem;
   private boolean m_offWhenStoped;
   private int m_colorIndex;
+  private long m_lastTimeStamp;
 
   public LedShowIconCommand(LedSubsystem subsystem, int ColorIndex, boolean offWhenStoped) {
     m_subsystem = subsystem;
     m_colorIndex = ColorIndex;
     m_offWhenStoped = offWhenStoped;
+    m_lastTimeStamp = 
     addRequirements(subsystem);
   }
 
@@ -42,43 +45,30 @@ public class LedShowIconCommand extends Command {
     m_subsystem.setSingleLed(0, new RGBWColor(0, 255, 0));
 
     // boolean isWhite = true;
-    // for (int i = 10; i < LedConstants.LedHeight * LedConstants.LedWidth; i++) {
-    //   if (isWhite) {
-    //     isWhite = false;
-    //   } else {
-    //     m_subsystem.setSingleLed(i, new RGBWColor(0, 0, 0));
-    //     isWhite = true;
-    //   }
-    // }
+
+    for (int i = 0; i < LedConstants.LedHeight * LedConstants.LedWidth; i += 2) {
+
+      m_subsystem.setSingleLed(i, new RGBWColor(255, 255, 255));
+    }
 
     m_subsystem.update();
   }
 
   private void TestIcon2() {
     int line = 0;
-    for (int i = 0; i < LedConstants.LedHeight * LedConstants.LedWidth; i++) {
-      if (i % LedConstants.LedHeight == 0) {
-        line++;
-      }
-      m_subsystem.setSingleLed(i, new RGBWColor(line / 5, line / 5, line / 5));
-    }
-    m_subsystem.update();
+    
+    m_subsystem.update(); 
   }
 
   private void TestIcon3() {
-    int pos = 0;
-    int line = 0;
-    for (int i = 0; i < LedConstants.LedHeight * LedConstants.LedWidth; i++) {
-      if (LedUtil.isInStartOfRaw(i)) {
-        line++;
-      }
+    int step = 255 / (LedConstants.LedHeight * LedConstants.LedWidth);
+    int i = 0;
+    for (; i < LedConstants.LedHeight * LedConstants.LedWidth / 2; i++) {
+      m_subsystem.setSingleLed(i, new RGBWColor(255 - i * step, 255 - i * step, 255 - i * step));
+    }
 
-      if (LedUtil.isInSpecificPositionInTheRow(
-          LedUtil.isInPositiveSequenceRow(i) ? line - 1 : line, i)) {
-        m_subsystem.setSingleLed(i, new RGBWColor(69, 69, 69));
-      }
-
-      pos += LedUtil.isInPositiveSequenceRow(i) ? 1 : -1;
+    for (; i < LedConstants.LedHeight * LedConstants.LedWidth; i++) {
+      m_subsystem.setSingleLed(i, new RGBWColor(i * step, i * step, i * step));
     }
 
     m_subsystem.update();
