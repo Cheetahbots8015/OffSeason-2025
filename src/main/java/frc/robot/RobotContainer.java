@@ -150,6 +150,8 @@ public class RobotContainer {
         "Drive SysId (Dynamic Reverse)", drive.sysIdDynamic(SysIdRoutine.Direction.kReverse));
 
     // Configure the button bindings
+    Commands.runOnce(() -> new PivotStartCommand(pivotSubsystem), pivotSubsystem)
+        .ignoringDisable(true);
     configureButtonBindings();
   }
 
@@ -168,7 +170,7 @@ public class RobotContainer {
             () -> -controller.getRightX()));
 
     controller
-        .x()
+        .povUp()
         .onTrue(
             Commands.runOnce(
                     () ->
@@ -178,73 +180,62 @@ public class RobotContainer {
                 .ignoringDisable(true));
 
     // Intake Subsystem test
-    // controller.leftTrigger().whileTrue(new IntakeRollerIndexerInCommand(intakeSubsystem));
-    // controller.rightTrigger().whileTrue(new IntakeRollerIndexerOutCommand(intakeSubsystem));
+    controller.leftTrigger().whileTrue(new IntakeRollerIndexerInCommand(intakeSubsystem));
+    controller.rightTrigger().whileTrue(new IntakeRollerIndexerOutCommand(intakeSubsystem));
 
-    controller.povUp().whileTrue(new ElevatorSetPositionCommand(elevatorSubsystem, 0.521));
-    controller.povDown().whileTrue(new ElevatorReleaseCommand(elevatorSubsystem));
+    controller.povDown().whileTrue(new ElevatorSetPositionCommand(elevatorSubsystem, 0.382));
     controller.povLeft().whileTrue(new PivotSetPositionCommand(pivotSubsystem, 0));
 
     // Claw Intake Command
     controller
         .y()
         .whileTrue(
-            new ElevatorSetPositionCommand(elevatorSubsystem, 0.919)
-                .andThen(new PivotSetPositionCommand(pivotSubsystem, 177))
+            new ElevatorSetPositionCommand(elevatorSubsystem, 0.90)
+                .alongWith(new PivotSetPositionCommand(pivotSubsystem, 180))
                 .andThen(
-                    new ElevatorLittleCommand(elevatorSubsystem, 0.820)
-                        .alongWith(new ClawTimedIntakeCommand(clawSubsystem)))
-                .andThen(new ElevatorLittleCommand(elevatorSubsystem, 0.919))
-                .andThen(new PivotSetPositionCommand(pivotSubsystem, 0))
+                    new ElevatorSetPositionCommand(elevatorSubsystem, 0.84)
+                        .alongWith(new ClawIntakeCommand(clawSubsystem)))
+                .andThen(new ElevatorSetPositionCommand(elevatorSubsystem, 0.9))
+                .andThen(new PivotSetPositionCommand(pivotSubsystem, 0, 130))
                 .andThen(new ElevatorSetPositionCommand(elevatorSubsystem, 0.382))
-                .andThen(new ElevatorReleaseCommand(elevatorSubsystem)));
+                .andThen(new ClawShootTimedBackCommand(clawSubsystem)));
 
-    /* L3 Command
-    controller
-        .x()
-        .whileTrue(
-            new ElevatorSetPositionCommand(elevatorSubsystem, 0.879)
-                .alongWith(new PivotSetPositionCommand(pivotSubsystem, 43))
-                .andThen(new ClawTimedShootCommand(clawSubsystem)));
-    */
-
-    // L4 Command
+    // L3 Command
     controller
         .a()
         .whileTrue(
-            new ElevatorSetPositionCommand(elevatorSubsystem, 1.615)
-                .andThen(new PivotSetPositionCommand(pivotSubsystem, 51))
-                .andThen(new ClawTimedShootCommand(clawSubsystem)));
+            new ElevatorSetPositionCommand(elevatorSubsystem, 0.879)
+                .andThen(new PivotSetPositionCommand(pivotSubsystem, 43))
+                .andThen(new ClawShootCommand(clawSubsystem))
+                .andThen(
+                    new PivotSetPositionCommand(pivotSubsystem, 0)
+                        .alongWith(new ElevatorSetPositionCommand(elevatorSubsystem, 0.382))));
 
-    /*
-     * L2 Command
-     * controller
-     * .a()
-     * .whileTrue(
-     * new ElevatorSetPositionCommand(elevatorSubsystem, 0.382)
-     * .alongWith(new PivotSetPositionCommand(pivotSubsystem, 27))
-     * .andThen(new ClawTimedShootCommand(clawSubsystem)));
-     */
+    // L4 Command
+    controller
+        .x()
+        .whileTrue(
+            new ElevatorSetPositionCommand(elevatorSubsystem, 1.60)
+                .andThen(new PivotSetPositionCommand(pivotSubsystem, 54))
+                .andThen(new ClawShootCommand(clawSubsystem))
+                .andThen(new PivotSetPositionCommand(pivotSubsystem, 0))
+                .andThen(new ElevatorSetPositionCommand(elevatorSubsystem, 0.382)));
+
+    /* L2 Command
+    controller
+        .a()
+        .whileTrue(
+            new ElevatorSetPositionCommand(elevatorSubsystem, 0.382)
+                .alongWith(new PivotSetPositionCommand(pivotSubsystem, 27))
+                .andThen(new ClawTimedShootCommand(clawSubsystem)));
+    */
 
     /* Alage Level1 Intake
     controller
         .a()
-        .whileTrue(
-            new ElevatorSetPositionCommand(elevatorSubsystem, 5)
-                .alongWith(new PivotSetPositionCommand(pivotSubsystem, 50))
-                .andThen(new ClawTimedShootCommand(clawSubsystem)));
-    // CANdle internal animation, disabled because always cause robot code crash by
-    // out-of-memory
-    // ledController
-    // .a()
-    // .whileTrue(
-    // (new LedTurnOnCommand(
-    // ledSubsystem,
-    // new RGBWColor(255, 255, 255),
-    // LedConstants.AnimationType.Larson,
-    // true))
-    // .andThen(new LedTurnOffCommand(ledSubsystem)));
-    */
+
+        */
+
 
     ledController
         .b()

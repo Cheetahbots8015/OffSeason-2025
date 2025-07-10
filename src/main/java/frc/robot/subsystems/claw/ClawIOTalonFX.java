@@ -9,11 +9,13 @@ import com.ctre.phoenix6.hardware.ParentDevice;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
+import edu.wpi.first.math.filter.MedianFilter;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Current;
 import edu.wpi.first.units.measure.Voltage;
+import edu.wpi.first.wpilibj.DigitalInput;
 import frc.robot.constants.ClawConstants;
 
 public class ClawIOTalonFX implements ClawIO {
@@ -22,6 +24,7 @@ public class ClawIOTalonFX implements ClawIO {
   private final TalonFX shooter;
   private TalonFXConfiguration intakeConfigs = new TalonFXConfiguration();
   private TalonFXConfiguration shooterConfigs = new TalonFXConfiguration();
+  private final DigitalInput lightTrigger = new DigitalInput(0);
   // Voltage control requests
   final VelocityVoltage m_velocity = new VelocityVoltage(0).withSlot(0);
   // Inputs from intake
@@ -33,6 +36,9 @@ public class ClawIOTalonFX implements ClawIO {
   private final StatusSignal<AngularVelocity> ShooterVelocity;
   private final StatusSignal<Voltage> ShooterAppliedVolts;
   private final StatusSignal<Current> ShooterCurrent;
+
+  // filter
+  private final MedianFilter filter = new MedianFilter(30);
 
   public ClawIOTalonFX() {
     intake = new TalonFX(ClawConstants.intakeID, "canivore");
@@ -118,6 +124,8 @@ public class ClawIOTalonFX implements ClawIO {
     inputs.ShooterVelocityRadPerSec = Units.rotationsToRadians(ShooterVelocity.getValueAsDouble());
     inputs.ShooterAppliedVolts = ShooterAppliedVolts.getValueAsDouble();
     inputs.ShooterCurrentAmps = ShooterCurrent.getValueAsDouble();
+
+    inputs.lightTrigger = filter.calculate((!lightTrigger.get()) ? 1.0 : 0.0);
   }
 
   @Override
