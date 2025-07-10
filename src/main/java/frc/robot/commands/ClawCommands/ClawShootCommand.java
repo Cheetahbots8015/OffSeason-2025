@@ -1,14 +1,12 @@
 package frc.robot.commands.ClawCommands;
 
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.claw.ClawSubsystem;
 
-public class ClawIntakeInCommand extends Command {
+public class ClawShootCommand extends Command {
   private final ClawSubsystem m_subsystem;
-  private double volts;
 
-  public ClawIntakeInCommand(ClawSubsystem subsystem) {
+  public ClawShootCommand(ClawSubsystem subsystem) {
     m_subsystem = subsystem;
     addRequirements(subsystem);
   }
@@ -18,16 +16,18 @@ public class ClawIntakeInCommand extends Command {
 
   @Override
   public void execute() {
-    m_subsystem.setIntakeVoltage(SmartDashboard.getNumber("ClawIntakeVolts", 0.0));
+    m_subsystem.setIntakeVoltage(2);
+    m_subsystem.setShooterVoltage(12);
   }
 
   @Override
   public void end(boolean interrupted) {
-    m_subsystem.setIntakeVoltage(0.0);
+    m_subsystem.setIntakeVoltage(0);
+    m_subsystem.setShooterVoltage(0.0);
   }
 
   @Override
   public boolean isFinished() {
-    return false;
+    return m_subsystem.getInput().lightTrigger <= 0.1;
   }
 }

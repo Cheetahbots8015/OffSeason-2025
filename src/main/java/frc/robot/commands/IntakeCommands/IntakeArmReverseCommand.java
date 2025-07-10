@@ -1,14 +1,15 @@
 package frc.robot.commands.IntakeCommands;
 
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.intake.IntakeSubsystem;
 
-public class IntakeIndexerInCommand extends Command {
+public class IntakeArmReverseCommand extends Command {
   private final IntakeSubsystem m_subsystem;
+  private double m_volts;
 
-  public IntakeIndexerInCommand(IntakeSubsystem subsystem) {
+  public IntakeArmReverseCommand(IntakeSubsystem subsystem, double volts) {
     m_subsystem = subsystem;
+    m_volts = volts;
     addRequirements(subsystem);
   }
 
@@ -17,12 +18,12 @@ public class IntakeIndexerInCommand extends Command {
 
   @Override
   public void execute() {
-    m_subsystem.setIndexerVoltage(SmartDashboard.getNumber("IntakeIndexerVolts", 0.0));
+    m_subsystem.setArmVoltage(-m_volts);
   }
 
   @Override
   public void end(boolean interrupted) {
-    m_subsystem.setIndexerVoltage(0.0);
+    m_subsystem.setArmVoltage(0.0);
   }
 
   @Override

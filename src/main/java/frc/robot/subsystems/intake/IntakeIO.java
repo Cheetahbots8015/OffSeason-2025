@@ -15,7 +15,7 @@ public interface IntakeIO {
     public double IndexerAppliedVolts = 0.0;
     public double IndexerCurrentAmps = 0.0;
 
-    public double ArmPositionRad = 0.0;
+    public double ArmPositionDeg = 0.0;
     public double ArmVelocityRadPerSec = 0.0;
     public double ArmAppliedVolts = 0.0;
     public double ArmCurrentAmps = 0.0;
@@ -38,6 +38,8 @@ public interface IntakeIO {
   public default boolean getCanRange() {
     return false;
   }
+
+  public default void setArmToDegrees(double degrees) {}
 
   public default void armVelocityVoltage(double velocity) {}
 }
