@@ -235,6 +235,7 @@ public class RobotContainer {
             new ElevatorSetPositionCommand(elevatorSubsystem, 1.615)
                 .andThen(new PivotSetPositionCommand(pivotSubsystem, 21.5))
                 .andThen(new ClawAlageShootCommand(clawSubsystem)));
+    */
 
     testController
         .povLeft()
