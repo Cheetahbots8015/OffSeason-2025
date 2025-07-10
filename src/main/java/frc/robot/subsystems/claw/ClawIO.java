@@ -13,6 +13,7 @@ public interface ClawIO {
     public double ShooterVelocityRadPerSec = 0.0;
     public double ShooterAppliedVolts = 0.0;
     public double ShooterCurrentAmps = 0.0;
+    public double lightTrigger = 0.0;
   }
 
   /** Updates the set of loggable inputs. */

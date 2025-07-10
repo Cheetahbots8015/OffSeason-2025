@@ -7,10 +7,19 @@ import frc.robot.subsystems.pivot.PivotSubsystem;
 public class PivotSetPositionCommand extends Command {
   private final PivotSubsystem m_subsystem;
   private final double m_position;
+  private final double m_checkpoint;
 
   public PivotSetPositionCommand(PivotSubsystem subsystem, double position) {
     m_subsystem = subsystem;
     m_position = position;
+    m_checkpoint = Double.NEGATIVE_INFINITY;
+    addRequirements(subsystem);
+  }
+
+  public PivotSetPositionCommand(PivotSubsystem subsystem, double position, double checkpoint) {
+    m_subsystem = subsystem;
+    m_position = position;
+    m_checkpoint = checkpoint;
     addRequirements(subsystem);
   }
 
@@ -28,6 +37,8 @@ public class PivotSetPositionCommand extends Command {
   @Override
   public boolean isFinished() {
     return Math.abs(m_subsystem.getInput().PivotPositionDegree - m_position)
-        < PivotConstants.PositionDeadband;
+            < PivotConstants.PositionDeadband
+        || Math.abs(m_subsystem.getInput().PivotPositionDegree - m_checkpoint)
+            < PivotConstants.PositionDeadband;
   }
 }
