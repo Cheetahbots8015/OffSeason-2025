@@ -13,21 +13,19 @@ import frc.robot.LimelightHelpers;
 import frc.robot.constants.LimelightConstants;
 import frc.robot.subsystems.drive.Drive;
 
-public class alignreef extends Command {
+public class alignalage extends Command {
   private PIDController xController, yController, rotController;
-  private boolean isRightScore;
   private Timer dontSeeTagTimer, stopTimer;
   private Drive m_drive;
   private double tagID = -1;
   private boolean aligny;
 
-  public alignreef(boolean isRightScore, Drive drive) {
+  public alignalage(Drive drive) {
     xController =
         new PIDController(LimelightConstants.X_REEF_ALIGNMENT_P, 0.0, 0); // Vertical movement
     yController =
         new PIDController(LimelightConstants.Y_REEF_ALIGNMENT_P, 0.0, 0); // Horitontal movement
     rotController = new PIDController(LimelightConstants.ROT_REEF_ALIGNMENT_P, 0, 0); // Rotation
-    this.isRightScore = isRightScore;
     this.m_drive = drive;
     addRequirements(drive);
   }
@@ -43,10 +41,10 @@ public class alignreef extends Command {
     rotController.setSetpoint(LimelightConstants.ROT_SETPOINT_REEF_ALIGNMENT);
     rotController.setTolerance(LimelightConstants.ROT_TOLERANCE_REEF_ALIGNMENT);
 
-    xController.setSetpoint(LimelightConstants.X_SETPOINT_REEF_ALIGNMENT);
+    xController.setSetpoint(-0.9);
     xController.setTolerance(LimelightConstants.X_TOLERANCE_REEF_ALIGNMENT);
 
-    yController.setSetpoint(isRightScore ? 0.15 : -0.21);
+    yController.setSetpoint(-0.03);
     yController.setTolerance(LimelightConstants.Y_TOLERANCE_REEF_ALIGNMENT);
 
     if (LimelightHelpers.getTV("limelight-left") && !LimelightHelpers.getTV("limelight-right")) {
@@ -124,7 +122,6 @@ public class alignreef extends Command {
   public boolean isFinished() {
     // Requires the robot to stay in the correct position for 0.3 seconds, as long as it gets a tag
     // in the camera
-    return this.dontSeeTagTimer.hasElapsed(LimelightConstants.DONT_SEE_TAG_WAIT_TIME)
-        || stopTimer.hasElapsed(LimelightConstants.POSE_VALIDATION_TIME);
+    return this.dontSeeTagTimer.hasElapsed(LimelightConstants.DONT_SEE_TAG_WAIT_TIME);
   }
 }

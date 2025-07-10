@@ -24,10 +24,12 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.commands.ClawCommands.*;
 import frc.robot.commands.DriveCommands;
-import frc.robot.commands.alignreef;
 import frc.robot.commands.ElevatorCommands.*;
 import frc.robot.commands.IntakeCommands.*;
 import frc.robot.commands.PivotCommands.*;
+import frc.robot.commands.TimedDriveCommand;
+import frc.robot.commands.alignalage;
+import frc.robot.commands.alignreef;
 import frc.robot.constants.ContainerConstants;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.claw.ClawIOSim;
@@ -204,8 +206,8 @@ public class RobotContainer {
     controller
         .x()
         .whileTrue(
-            new ElevatorSetPositionCommand(elevatorSubsystem, 1.60)
-                .andThen(new PivotSetPositionCommand(pivotSubsystem, 54))
+            new ElevatorSetPositionCommand(elevatorSubsystem, 1.50)
+                .andThen(new PivotSetPositionCommand(pivotSubsystem, 35))
                 .andThen(new ClawShootCommand(clawSubsystem))
                 .andThen(new PivotSetPositionCommand(pivotSubsystem, 0))
                 .andThen(new ElevatorSetPositionCommand(elevatorSubsystem, 0.382)));
@@ -219,33 +221,30 @@ public class RobotContainer {
                 .andThen(new ClawTimedShootCommand(clawSubsystem)));
     */
 
-    /*  Alage Level1 Intake
-    controller
+    //  Alage Level1 Intake
+    testController
         .a()
         .whileTrue(
             new ElevatorSetPositionCommand(elevatorSubsystem, 1.198)
                 .andThen(new PivotSetPositionCommand(pivotSubsystem, 112.8))
-                .andThen(new ClawAlageInCommand(clawSubsystem)));
-    */
+                .andThen(
+                    new TimedDriveCommand(drive, 2)
+                        .alongWith(new ClawAlageInCommand(clawSubsystem))));
 
-    /* Alage Shoot
-    controller
+    // Alage Shoot
+    testController
         .b()
         .whileTrue(
             new ElevatorSetPositionCommand(elevatorSubsystem, 1.615)
                 .andThen(new PivotSetPositionCommand(pivotSubsystem, 21.5))
                 .andThen(new ClawAlageShootCommand(clawSubsystem)));
-    */
+    
 
-    testController
-        .povLeft()
-        .whileTrue(
-            new alignreef(false, drive));
+    testController.povLeft().whileTrue(new alignreef(false, drive));
 
-    testController
-        .povRight()
-        .whileTrue(
-            new alignreef(true, drive));
+    testController.povRight().whileTrue(new alignreef(true, drive));
+
+    testController.povUp().whileTrue(new alignalage(drive));
   }
 
   /**
