@@ -15,6 +15,10 @@ public class LedConstants {
 
   public static final double statusUpdateFrequency = 50.0;
 
+  public static int LedSize() {
+    return LedWidth * LedHeight;
+  }
+
   public enum AnimationType {
     None,
     AllOn,

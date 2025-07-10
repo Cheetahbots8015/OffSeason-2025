@@ -26,6 +26,7 @@ import frc.robot.commands.ClawCommands.*;
 import frc.robot.commands.DriveCommands;
 import frc.robot.commands.ElevatorCommands.*;
 import frc.robot.commands.IntakeCommands.*;
+import frc.robot.commands.LedCommand.LedSetAnimationCommand;
 import frc.robot.commands.LedCommand.LedShowIconCommand;
 import frc.robot.commands.PivotCommands.*;
 import frc.robot.constants.ContainerConstants;
@@ -230,11 +231,11 @@ public class RobotContainer {
                 .andThen(new ClawTimedShootCommand(clawSubsystem)));
     */
 
-    /* Alage Level1 Intake
-    controller
+    ledController
         .a()
-
-        */
+        .whileTrue(
+            (new LedSetAnimationCommand(
+                ledSubsystem, 0, false, true))); // .andThen(new LedTurnOffCommand(ledSubsystem)));
 
     ledController
         .b()

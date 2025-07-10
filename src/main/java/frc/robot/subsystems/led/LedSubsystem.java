@@ -1,6 +1,8 @@
 package frc.robot.subsystems.led;
 
 import com.ctre.phoenix6.signals.RGBWColor;
+import edu.wpi.first.wpilibj.RobotBase;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.constants.LedConstants;
 import frc.robot.subsystems.led.LedIO.LedIOInputs;
@@ -9,23 +11,25 @@ import org.littletonrobotics.junction.Logger;
 public class LedSubsystem extends SubsystemBase {
   private LedIO io;
   private final LedIOInputsAutoLogged inputs = new LedIOInputsAutoLogged();
-  private int LedRingCount = 0;
+
+  private double m_intervalPerFrame = 0.022d; // around 45fps
+  private double m_lastTimeStamp = 0d;
+  private boolean m_isSim = false;
 
   public LedSubsystem(LedIO io) {
     this.io = io;
+    m_isSim = RobotBase.isSimulation();
+    m_lastTimeStamp = Timer.getFPGATimestamp();
   }
 
   public void periodic() {
     io.updateInputs(inputs);
-    Logger.processInputs(
-        "Led",
-        inputs); // Send input data to the logging framework (or update from the log during replay)
-    if (LedRingCount == 7) LedRingCount = 0;
-    else LedRingCount++;
+    Logger.processInputs("Led", inputs);
 
-    for (int i = 0; i < 8; i++) {
-      if (i == LedRingCount) io.setSingleLedWithoutAnyIndexAdd(i, new RGBWColor(0, 255, 0));
-      else io.setSingleLedWithoutAnyIndexAdd(i, new RGBWColor(0, 0, 0));
+    if (m_lastTimeStamp + m_intervalPerFrame <= Timer.getFPGATimestamp()) { // refresh animation
+      m_lastTimeStamp = Timer.getFPGATimestamp();
+      if (CANdleInternalLedRingAnimation_isOn) CANdleInternalLedRingAnimation();
+      if (LedGradientAnimation_isOn) LedGradientAnimation();
     }
   }
 
@@ -51,5 +55,124 @@ public class LedSubsystem extends SubsystemBase {
 
   public LedIOInputs getInput() {
     return inputs;
+  }
+
+  // animation moudle
+
+  public void setAnimation(int id, boolean state) {
+    switch (id) {
+      case 0:
+        LedGradientAnimation_isOn = state;
+        break;
+
+      case -255:
+        CANdleInternalLedRingAnimation_isOn = state;
+
+      default:
+        break;
+    }
+  }
+
+  public void setAnimation(int id) {
+    switch (id) {
+      case 0:
+        LedGradientAnimation_isOn = !LedGradientAnimation_isOn;
+        break;
+
+      case -255:
+        CANdleInternalLedRingAnimation_isOn = !CANdleInternalLedRingAnimation_isOn;
+        break;
+
+      default:
+        break;
+    }
+  }
+
+  private boolean CANdleInternalLedRingAnimation_isOn = false;
+  private int CANdleInternalLedRingAnimation_LedRingCount = 0;
+
+  public void CANdleInternalLedRingAnimation() {
+    if (m_isSim) return; // no CANdle in emulator
+    if (CANdleInternalLedRingAnimation_LedRingCount == 7)
+      CANdleInternalLedRingAnimation_LedRingCount = 0;
+    else CANdleInternalLedRingAnimation_LedRingCount++;
+
+    for (int i = 0; i < 8; i++) {
+      if (i == CANdleInternalLedRingAnimation_LedRingCount)
+        io.setSingleLedWithoutAnyIndexAdd(i, new RGBWColor(0, 255, 0));
+      else io.setSingleLedWithoutAnyIndexAdd(i, new RGBWColor(0, 0, 0));
+    }
+  }
+
+  private boolean LedGradientAnimation_isOn = true;
+  private int LedGradientAnimation_CurrentLed = 0;
+  private boolean LedGradientAnimation_TouchEnd = false;
+
+  public void LedGradientAnimation() {
+    int stepR = 21;
+    int stepG = 12;
+    int stepB = 2;
+    int step;
+    io.AllOff();
+
+    io.setSingleLed(LedGradientAnimation_CurrentLed, new RGBWColor(248, 146, 35));
+
+    if (LedGradientAnimation_TouchEnd) {
+      for (int i = 1; i <= 12; i++) {
+        if (LedGradientAnimation_CurrentLed - i < 0) {
+          LedGradientAnimation_TouchEnd = false;
+
+          if (m_isSim) io.updateLEDs();
+          return;
+        }
+        step = 12 - i;
+        io.setSingleLed(
+            LedGradientAnimation_CurrentLed - i,
+            new RGBWColor(stepR * step, stepG * step, stepB * step + 1));
+      }
+
+      for (int i = 12; i >= 1; i--) {
+        step = 12 - i;
+        if (LedGradientAnimation_CurrentLed + i > LedConstants.LedSize() - 1) continue;
+        io.setSingleLed(
+            LedGradientAnimation_CurrentLed + i,
+            new RGBWColor(stepR * step, stepG * step, stepB * step + 1));
+      }
+
+      if (LedGradientAnimation_CurrentLed == LedConstants.LedSize() - 1)
+        LedGradientAnimation_CurrentLed = 0;
+      else LedGradientAnimation_CurrentLed--;
+      if (m_isSim) io.updateLEDs();
+
+      return;
+    }
+
+    for (int i = 1; i <= 12; i++) {
+      if (LedGradientAnimation_CurrentLed - i < 0) continue;
+
+      step = 12 - i;
+      io.setSingleLed(
+          LedGradientAnimation_CurrentLed - i,
+          new RGBWColor(stepR * step, stepG * step, stepB * step + 1));
+    }
+
+    for (int i = 12; i >= 1; i--) {
+      step = 12 - i;
+      if (LedGradientAnimation_CurrentLed + i > LedConstants.LedSize() - 1) {
+        LedGradientAnimation_TouchEnd = true;
+        if (m_isSim) io.updateLEDs();
+        return;
+      }
+
+      io.setSingleLed(
+          LedGradientAnimation_CurrentLed + i,
+          new RGBWColor(stepR * step, stepG * step, stepB * step + 1));
+    }
+
+    if (LedGradientAnimation_CurrentLed == LedConstants.LedSize() - 1)
+      LedGradientAnimation_CurrentLed = 0;
+    else LedGradientAnimation_CurrentLed++;
+
+    if (m_isSim) io.updateLEDs();
   }
 }
