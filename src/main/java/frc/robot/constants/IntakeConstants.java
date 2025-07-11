@@ -4,6 +4,9 @@ public class IntakeConstants {
   public static final int indexerID = 49;
   public static final int intakeID = 47;
   public static final int armID = 48;
+
+  public static final double armVoltage = 3.0;
+
   public static final double ArmPositionDeadband = 2.0;
   public static final boolean indexer_neutralmode_Coast = true;
   public static final boolean indexer_inverted_CounterClockwisePositive = true;

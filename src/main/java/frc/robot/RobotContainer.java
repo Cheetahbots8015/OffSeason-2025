@@ -14,14 +14,24 @@
 package frc.robot;
 
 import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.path.GoalEndState;
+import com.pathplanner.lib.path.PathConstraints;
+import com.pathplanner.lib.path.PathPlannerPath;
+import com.pathplanner.lib.path.Waypoint;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
+import frc.robot.commands.AutoCommands.IntakingAtStationCommand;
+import frc.robot.commands.AutoCommands.StationToReefCommand;
+import frc.robot.commands.AutoCommands.TestAuto;
 import frc.robot.commands.ClawCommands.*;
 import frc.robot.commands.DriveCommands;
 import frc.robot.commands.ElevatorCommands.*;
@@ -30,6 +40,7 @@ import frc.robot.commands.PivotCommands.*;
 import frc.robot.commands.TimedDriveCommand;
 import frc.robot.commands.alignalage;
 import frc.robot.commands.alignreef;
+import frc.robot.constants.AutoConstants;
 import frc.robot.constants.ContainerConstants;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.claw.ClawIOSim;
@@ -49,6 +60,7 @@ import frc.robot.subsystems.intake.IntakeSubsystem;
 import frc.robot.subsystems.pivot.PivotIOSim;
 import frc.robot.subsystems.pivot.PivotIOTalonFX;
 import frc.robot.subsystems.pivot.PivotSubsystem;
+import java.util.List;
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 
 /**
@@ -139,6 +151,12 @@ public class RobotContainer {
         "Drive SysId (Dynamic Forward)", drive.sysIdDynamic(SysIdRoutine.Direction.kForward));
     autoChooser.addOption(
         "Drive SysId (Dynamic Reverse)", drive.sysIdDynamic(SysIdRoutine.Direction.kReverse));
+
+    SmartDashboard.putNumber("TestX", AutoConstants.TestX);
+    SmartDashboard.putNumber("TestY", AutoConstants.TestY);
+    SmartDashboard.putNumber("TestRotationDeg", Math.toDegrees(AutoConstants.TestRotationRad));
+
+    SmartDashboard.putData(drive);
 
     // Configure the button bindings
     Commands.runOnce(() -> new PivotStartCommand(pivotSubsystem), pivotSubsystem)
@@ -238,13 +256,91 @@ public class RobotContainer {
             new ElevatorSetPositionCommand(elevatorSubsystem, 1.615)
                 .andThen(new PivotSetPositionCommand(pivotSubsystem, 21.5))
                 .andThen(new ClawAlageShootCommand(clawSubsystem)));
-    
 
     testController.povLeft().whileTrue(new alignreef(false, drive));
 
     testController.povRight().whileTrue(new alignreef(true, drive));
 
     testController.povUp().whileTrue(new alignalage(drive));
+
+    testController.x().whileTrue(new TestAuto(drive, intakeSubsystem));
+
+    testController
+        .povUp()
+        .whileTrue(
+            Commands.runOnce(
+                () -> {
+                  Pose2d currentPose = drive.getPose();
+
+                  // The rotation component in these poses represents the direction of travel
+                  Pose2d startPos = new Pose2d(currentPose.getTranslation(), new Rotation2d());
+                  Pose2d endPos =
+                      new Pose2d(
+                          AutoConstants.RStartIntakePointX,
+                          AutoConstants.RStartIntakePointY,
+                          new Rotation2d());
+
+                  List<Waypoint> waypoints = PathPlannerPath.waypointsFromPoses(startPos, endPos);
+                  PathPlannerPath path =
+                      new PathPlannerPath(
+                          waypoints,
+                          new PathConstraints(
+                              4.0, 4.0, Units.degreesToRadians(360), Units.degreesToRadians(540)),
+                          null, // Ideal starting state can be null for on-the-fly paths
+                          new GoalEndState(0.0, currentPose.getRotation()));
+
+                  // Prevent this path from being flipped on the red alliance, since the given
+                  // positions
+                  // are already correct
+                  path.preventFlipping = true;
+
+                  AutoBuilder.followPath(path).schedule();
+                }));
+    testController.povRight().whileTrue(new IntakingAtStationCommand(drive, intakeSubsystem));
+    testController
+        .povDown()
+        .whileTrue(
+            new StationToReefCommand(
+                drive,
+                drive.getPose(),
+                new Pose2d(
+                    (AutoConstants.ReefX + drive.getPose().getX()) / 2,
+                    (AutoConstants.ReefY + drive.getPose().getY()) / 2,
+                    new Rotation2d(AutoConstants.ReefRotationRad)),
+                new Pose2d(
+                    AutoConstants.ReefX,
+                    AutoConstants.ReefY,
+                    new Rotation2d(AutoConstants.ReefRotationRad))));
+    testController.povLeft().whileTrue(new alignreef(true, drive));
+
+    SmartDashboard.putData(
+        "On-the-fly path",
+        Commands.runOnce(
+            () -> {
+              Pose2d currentPose = drive.getPose();
+
+              // The rotation component in these poses represents the direction of travel
+              Pose2d startPos = new Pose2d(currentPose.getTranslation(), new Rotation2d());
+              Pose2d endPos =
+                  new Pose2d(
+                      currentPose.getTranslation().plus(new Translation2d(2.0, 0.0)),
+                      new Rotation2d());
+
+              List<Waypoint> waypoints = PathPlannerPath.waypointsFromPoses(startPos, endPos);
+              PathPlannerPath path =
+                  new PathPlannerPath(
+                      waypoints,
+                      new PathConstraints(
+                          4.0, 4.0, Units.degreesToRadians(360), Units.degreesToRadians(540)),
+                      null, // Ideal starting state can be null for on-the-fly paths
+                      new GoalEndState(0.0, currentPose.getRotation()));
+
+              // Prevent this path from being flipped on the red alliance, since the given positions
+              // are already correct
+              path.preventFlipping = true;
+
+              AutoBuilder.followPath(path).schedule();
+            }));
   }
 
   /**
