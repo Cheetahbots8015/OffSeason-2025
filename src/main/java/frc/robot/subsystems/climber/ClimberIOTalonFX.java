@@ -10,12 +10,15 @@ import com.ctre.phoenix6.hardware.ParentDevice;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
+import edu.wpi.first.math.filter.MedianFilter;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Current;
 import edu.wpi.first.units.measure.Voltage;
+import edu.wpi.first.wpilibj.DigitalInput;
 import frc.robot.constants.ClimberConstants;
+import frc.robot.util.CheetahUtil;
 
 public class ClimberIOTalonFX implements ClimberIO {
   // Hardware objects
@@ -25,6 +28,8 @@ public class ClimberIOTalonFX implements ClimberIO {
   private TalonFXConfiguration clawConfigs = new TalonFXConfiguration();
   private TalonFXConfiguration pivotConfigs = new TalonFXConfiguration();
   private CANrangeConfiguration canrangeConfigs = new CANrangeConfiguration();
+  private final DigitalInput lightTrigger = new DigitalInput(1);
+
   // Voltage control requests
 
   // Inputs from claw
@@ -36,6 +41,12 @@ public class ClimberIOTalonFX implements ClimberIO {
   private final StatusSignal<AngularVelocity> PivotVelocity;
   private final StatusSignal<Voltage> PivotAppliedVolts;
   private final StatusSignal<Current> PivotCurrent;
+
+  // Inputs from canrange
+  private final StatusSignal<Boolean> Canrange;
+
+  // Median filter for light trigger
+  private final MedianFilter filter = new MedianFilter(30);
 
   public ClimberIOTalonFX() {
     claw = new TalonFX(ClimberConstants.clawID, "canivore");
@@ -87,6 +98,9 @@ public class ClimberIOTalonFX implements ClimberIO {
     PivotAppliedVolts = pivot.getMotorVoltage();
     PivotCurrent = pivot.getStatorCurrent();
 
+    // Create canrange status signals
+    Canrange = canrange.getIsDetected();
+
     BaseStatusSignal.setUpdateFrequencyForAll(
         ClimberConstants.statusUpdateFrequency,
         ClawPosition,
@@ -96,7 +110,8 @@ public class ClimberIOTalonFX implements ClimberIO {
         PivotPosition,
         PivotVelocity,
         PivotAppliedVolts,
-        PivotCurrent);
+        PivotCurrent,
+        Canrange);
     ParentDevice.optimizeBusUtilizationForAll(claw, pivot);
   }
 
@@ -110,7 +125,8 @@ public class ClimberIOTalonFX implements ClimberIO {
         PivotPosition,
         PivotVelocity,
         PivotAppliedVolts,
-        PivotCurrent);
+        PivotCurrent,
+        Canrange);
     // Update claw inputs
     inputs.ClawPositionRad = Units.rotationsToRadians(ClawPosition.getValueAsDouble());
     inputs.ClawVelocityRadPerSec = Units.rotationsToRadians(ClawVelocity.getValueAsDouble());
@@ -121,6 +137,10 @@ public class ClimberIOTalonFX implements ClimberIO {
     inputs.PivotVelocityRadPerSec = Units.rotationsToRadians(PivotVelocity.getValueAsDouble());
     inputs.PivotAppliedVolts = PivotAppliedVolts.getValueAsDouble();
     inputs.PivotCurrentAmps = PivotCurrent.getValueAsDouble();
+    // Update canrange inputs
+    inputs.Canrange = Canrange.getValue();
+    // Update light trigger input
+    inputs.lightTrigger = filter.calculate((!lightTrigger.get()) ? 1.0 : 0.0);
   }
 
   @Override
@@ -140,7 +160,9 @@ public class ClimberIOTalonFX implements ClimberIO {
   }
 
   @Override
-  public boolean returnCanrange() {
-    return canrange.getDistance().getValueAsDouble() < ClimberConstants.canrangeDistance;
+  public boolean getCanRange() {
+    return Canrange.getValue();
   }
+
+  
 }

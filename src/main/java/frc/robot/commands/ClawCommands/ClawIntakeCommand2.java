@@ -2,16 +2,14 @@ package frc.robot.commands.ClawCommands;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.claw.ClawSubsystem;
-import frc.robot.subsystems.intake.IntakeSubsystem;
 
-public class ClawIntakeCommand extends Command {
+public class ClawIntakeCommand2 extends Command {
   private final ClawSubsystem claw;
-  private final IntakeSubsystem intake;
 
-  public ClawIntakeCommand(ClawSubsystem claw, IntakeSubsystem intake) {
+  public ClawIntakeCommand2(ClawSubsystem claw) {
     this.claw = claw;
-    this.intake = intake;
-    addRequirements(claw, intake);
+
+    addRequirements(claw);
   }
 
   @Override
@@ -20,17 +18,18 @@ public class ClawIntakeCommand extends Command {
   @Override
   public void execute() {
     claw.setIntakeVoltage(3);
-    intake.setIndexerVoltage(3);
+    claw.setShooterVoltage(-3);
   }
 
   @Override
   public void end(boolean interrupted) {
     claw.setIntakeVoltage(0);
-    intake.setIndexerVoltage(0);
+    claw.setShooterVoltage(0);
+    ;
   }
 
   @Override
   public boolean isFinished() {
-    return claw.getInput().lightTrigger >= 0.9;
+    return false;
   }
 }

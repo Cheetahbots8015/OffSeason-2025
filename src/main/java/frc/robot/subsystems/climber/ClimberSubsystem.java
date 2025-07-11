@@ -4,7 +4,6 @@ package frc.robot.subsystems.climber;
 
 import static edu.wpi.first.units.Units.Volt;
 
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.constants.ClimberConstants;
@@ -23,10 +22,11 @@ public class ClimberSubsystem extends SubsystemBase {
 
   public ClimberSubsystem(ClimberIO io) {
     this.io = io;
-    SmartDashboard.putNumber("Climber's pivot Up Duty Cycle Out Value", pivotUpDutyCycleOutValue);
-    SmartDashboard.putNumber(
-        "Climber's pivot Down Duty Cycle Out Value", pivotDownDutyCycleOutValue);
-    SmartDashboard.putNumber("Climber's claw Duty Cycle Out Value", clawDutyCycleOutValue);
+    // SmartDashboard.putNumber("Climber's pivot Up Duty Cycle Out Value",
+    // pivotUpDutyCycleOutValue);
+    // SmartDashboard.putNumber(
+    //     "Climber's pivot Down Duty Cycle Out Value", pivotDownDutyCycleOutValue);
+    // SmartDashboard.putNumber("Climber's claw Duty Cycle Out Value", clawDutyCycleOutValue);
 
     clawsysId =
         new SysIdRoutine(
@@ -50,14 +50,14 @@ public class ClimberSubsystem extends SubsystemBase {
   public void periodic() {
     io.updateInputs(inputs);
     Logger.processInputs("Climber", inputs);
-    pivotUpDutyCycleOutValue =
-        SmartDashboard.getNumber(
-            "Climber's pivot Up Duty Cycle Out Value", pivotUpDutyCycleOutValue);
-    pivotDownDutyCycleOutValue =
-        SmartDashboard.getNumber(
-            "Climber's pivot Down Duty Cycle Out Value", pivotDownDutyCycleOutValue);
-    clawDutyCycleOutValue =
-        SmartDashboard.getNumber("Climber's claw Duty Cycle Out Value", clawDutyCycleOutValue);
+    // pivotUpDutyCycleOutValue =
+    //     SmartDashboard.getNumber(
+    //         "Climber's pivot Up Duty Cycle Out Value", pivotUpDutyCycleOutValue);
+    // pivotDownDutyCycleOutValue =
+    //     SmartDashboard.getNumber(
+    //         "Climber's pivot Down Duty Cycle Out Value", pivotDownDutyCycleOutValue);
+    // clawDutyCycleOutValue =
+    //     SmartDashboard.getNumber("Climber's claw Duty Cycle Out Value", clawDutyCycleOutValue);
   }
 
   public double getPivotUpDutyCycleOutValue() {
@@ -86,10 +86,6 @@ public class ClimberSubsystem extends SubsystemBase {
 
   public void setPivotVoltage(double volts) {
     io.setPivotVoltage(volts);
-  }
-
-  public boolean returnCanrange() {
-    return io.returnCanrange();
   }
 
   public ClimberIOInputs getInput() {

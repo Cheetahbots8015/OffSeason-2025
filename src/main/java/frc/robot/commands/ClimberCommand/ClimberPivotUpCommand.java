@@ -20,7 +20,8 @@ public class ClimberPivotUpCommand extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    m_subsystem.setPivotVoltage(-SmartDashboard.getNumber("ClimberPivotVolts", 0.0));
+    m_subsystem.setPivotVoltage(2);
+    
   }
 
   // Called once the command ends or is interrupted.
@@ -32,6 +33,7 @@ public class ClimberPivotUpCommand extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return false;
+    SmartDashboard.putBoolean("Climber Status", m_subsystem.getInput().lightTrigger >= 0.9);
+    return m_subsystem.getInput().lightTrigger >= 0.9;
   }
 }

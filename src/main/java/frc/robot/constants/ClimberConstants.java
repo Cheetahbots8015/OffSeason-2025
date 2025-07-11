@@ -1,8 +1,8 @@
 package frc.robot.constants;
 
 public class ClimberConstants {
-  public static final int clawID = 5;
-  public static final int pivotID = 5;
+  public static final int clawID = 59;
+  public static final int pivotID = 58;
   public static final int canrangID = 6;
   public static final boolean claw_neutralmode_Coast = false;
   public static final boolean claw_inverted_CounterClockwisePositive = true;

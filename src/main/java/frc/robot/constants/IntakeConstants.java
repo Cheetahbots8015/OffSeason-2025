@@ -40,4 +40,5 @@ public class IntakeConstants {
   public static final double statusUpdateFrequency = 50.0;
   public static final double PositionDeadband = 5.0;
   public static final double ReductionRatio = 1 / 28.125;
+  public static final double armDownDegree = 61.056;
 }
