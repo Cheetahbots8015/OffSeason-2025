@@ -20,6 +20,7 @@ import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.commands.ClawCommands.*;
@@ -240,8 +241,8 @@ public class RobotContainer {
     ledController
         .b()
         .whileTrue(
-            (new LedShowIconCommand(
-                ledSubsystem, 2, true))); // .andThen(new LedTurnOffCommand(ledSubsystem)));
+            (new LedSetAnimationCommand(
+                ledSubsystem, 1, false, true))); // .andThen(new LedTurnOffCommand(ledSubsystem)));
 
     ledController
         .x()
@@ -251,16 +252,26 @@ public class RobotContainer {
 
     ledController
         .y()
+        .whileFalse(
+            new RunCommand(
+                () -> {
+                  if (ledController.getLeftX() >= 0d) {
+                    LedShowIconCommand.ProgressBarIndex = (int) (ledController.getLeftX());
+                  }
+                }))
         .whileTrue(
             new LedShowIconCommand(
-                ledSubsystem, 1, true)); // .andThen(new LedTurnOffCommand(ledSubsystem)));
+                ledSubsystem, 3, true)); // .andThen(new LedTurnOffCommand(ledSubsystem)));
+
+    ledController
+        .leftStick()
+        .whileTrue(
+            new RunCommand(
+                () -> {
+                  // Get X-axis value
+                }));
   }
 
-  /**
-   * Use this to pass the autonomous command to the main {@link Robot} class.
-   *
-   * @return the command to run in autonomous
-   */
   public Command getAutonomousCommand() {
     return autoChooser.get();
   }
