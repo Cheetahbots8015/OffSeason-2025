@@ -12,12 +12,12 @@ public class PivotStartCommand extends Command {
   }
 
   @Override
-  public void initialize() {
-    m_subsystem.setPosition(0);
-  }
+  public void initialize() {}
 
   @Override
-  public void execute() {}
+  public void execute() {
+    m_subsystem.setPosition(0);
+  }
 
   @Override
   public void end(boolean interrupted) {}

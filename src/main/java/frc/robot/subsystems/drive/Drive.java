@@ -27,6 +27,7 @@ import edu.wpi.first.hal.FRCNetComm.tInstances;
 import edu.wpi.first.hal.FRCNetComm.tResourceType;
 import edu.wpi.first.hal.HAL;
 import edu.wpi.first.math.Matrix;
+import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -49,6 +50,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
+import frc.robot.LimelightHelpers;
 import frc.robot.constants.ContainerConstants;
 import frc.robot.constants.ContainerConstants.Mode;
 import frc.robot.constants.DriveConstants;
@@ -106,6 +108,8 @@ public class Drive extends SubsystemBase {
       };
   private SwerveDrivePoseEstimator poseEstimator =
       new SwerveDrivePoseEstimator(kinematics, rawGyroRotation, lastModulePositions, new Pose2d());
+  private boolean doRejectUpdate;
+  private boolean doRejectUpdater;
 
   public Drive(
       GyroIO gyroIO,
@@ -246,9 +250,52 @@ public class Drive extends SubsystemBase {
         Twist2d twist = kinematics.toTwist2d(moduleDeltas);
         rawGyroRotation = rawGyroRotation.plus(new Rotation2d(twist.dtheta));
       }
-
+      doRejectUpdate = false;
       // Apply update
       poseEstimator.updateWithTime(sampleTimestamps[i], rawGyroRotation, modulePositions);
+      LimelightHelpers.SetRobotOrientation(
+          "limelight-left",
+          poseEstimator.getEstimatedPosition().getRotation().getDegrees(),
+          0,
+          0,
+          0,
+          0,
+          0);
+      try {
+        LimelightHelpers.PoseEstimate mt2 =
+            LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2("limelight-left");
+        if (mt2.tagCount == 0) {
+          doRejectUpdate = true;
+        }
+        if (!doRejectUpdate) {
+          poseEstimator.setVisionMeasurementStdDevs(VecBuilder.fill(.5, .5, 9999999));
+          poseEstimator.addVisionMeasurement(mt2.pose, mt2.timestampSeconds);
+        }
+      } catch (Exception e) {
+        // TODO: handle exception
+      }
+      try {
+        doRejectUpdater = false;
+        LimelightHelpers.SetRobotOrientation(
+            "limelight-right",
+            poseEstimator.getEstimatedPosition().getRotation().getDegrees(),
+            0,
+            0,
+            0,
+            0,
+            0);
+        LimelightHelpers.PoseEstimate mt2r =
+            LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2("limelight-right");
+        if (mt2r.tagCount == 0) {
+          doRejectUpdater = true;
+        }
+        if (!doRejectUpdater) {
+          poseEstimator.setVisionMeasurementStdDevs(VecBuilder.fill(.5, .5, 9999999));
+          poseEstimator.addVisionMeasurement(mt2r.pose, mt2r.timestampSeconds);
+        }
+      } catch (Exception e) {
+        // TODO: handle exception
+      }
     }
 
     // Update gyro alert
