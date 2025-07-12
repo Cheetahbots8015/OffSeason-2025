@@ -22,6 +22,7 @@ public class ClawShootTimedBackCommand extends Command {
   @Override
   public void execute() {
     m_subsystem.setShooterVoltage(-0.5);
+    m_subsystem.setIntakeVoltage(0.0);
   }
 
   @Override

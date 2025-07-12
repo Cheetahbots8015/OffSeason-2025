@@ -89,6 +89,7 @@ public class FieldConstants {
                 FieldConstants.FieldCenter, Rotation2d.k180deg)
             .minus(_Pose2d.getTranslation());
   }
+
   /**
    * @param _Pose2d
    * @param _LRindex 1 is left 2 is right
@@ -101,7 +102,7 @@ public class FieldConstants {
     double minDistance = Double.MAX_VALUE;
     for (int i = _LRindex; i <= 12; i += 2) {
       Pose2d reefPose = generateReefPose(i);
-      if (_Alliance == DriverStation.Alliance.Red) {
+      if (_Alliance == DriverStation.Alliance.Blue) {
         reefPose =
             FieldConstants.rotateAroundCenter(
                 reefPose, FieldConstants.FieldCenter, Rotation2d.k180deg);
@@ -114,6 +115,7 @@ public class FieldConstants {
     }
     return closest;
   }
+
   /**
    * @param _Pose2d
    * @param _LRindex 1 is left 2 is right

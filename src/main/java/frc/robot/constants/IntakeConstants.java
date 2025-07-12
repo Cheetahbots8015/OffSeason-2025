@@ -23,12 +23,12 @@ public class IntakeConstants {
   public static final double intake_kA = 0.0;
   public static final double intake_kS = 0.0;
   public static final double intake_kV = 0.0;
-  public static final double arm_kP = 40;
+  public static final double arm_kP = 60;
   public static final double arm_kI = 0.0;
   public static final double arm_kD = 0.0;
   public static final double arm_kA = 0.0;
   public static final double arm_kS = 0.0;
-  public static final double arm_kV = 0.0;
+  public static final double arm_kV = 1.0;
   public static final double arm_kG = -30;
 
   // canRange can ID, name and configs

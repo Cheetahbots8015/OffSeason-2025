@@ -19,13 +19,13 @@ public class ClawIntakeCommand extends Command {
 
   @Override
   public void execute() {
-    claw.setIntakeVoltage(3);
+    claw.setIntakeVoltage(4);
     intake.setIndexerVoltage(3);
   }
 
   @Override
   public void end(boolean interrupted) {
-    claw.setIntakeVoltage(0);
+    claw.setIntakeVoltage(0.5);
     intake.setIndexerVoltage(0);
   }
 

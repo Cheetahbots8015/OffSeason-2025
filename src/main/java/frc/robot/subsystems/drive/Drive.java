@@ -111,6 +111,11 @@ public class Drive extends SubsystemBase {
   private boolean doRejectUpdate;
   private boolean doRejectUpdater;
 
+  private ChassisSpeeds preSpeeds;
+  private RobotConfig robotconfig;
+
+  public boolean autoFliped = false;
+
   public Drive(
       GyroIO gyroIO,
       ModuleIO flModuleIO,
@@ -136,14 +141,7 @@ public class Drive extends SubsystemBase {
         this::getChassisSpeeds,
         this::runVelocity,
         new PPHolonomicDriveController(
-            new PIDConstants(
-                DriveConstants.autoTranslationkP,
-                DriveConstants.autoTranslationkI,
-                DriveConstants.autoTranslationkD),
-            new PIDConstants(
-                DriveConstants.autoRotationkP,
-                DriveConstants.autoRotationkI,
-                DriveConstants.autoRotationkD)),
+            new PIDConstants(5.0, 0.0, 0.0), new PIDConstants(5.0, 0.0, 0.0)),
         PP_CONFIG,
         () -> DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Red,
         this);
@@ -158,6 +156,12 @@ public class Drive extends SubsystemBase {
           Logger.recordOutput("Odometry/TrajectorySetpoint", targetPose);
         });
 
+    try {
+      robotconfig = RobotConfig.fromGUISettings();
+    } catch (Exception e) {
+      // Handle exception as needed
+      e.printStackTrace();
+    }
     // Configure SysId
     sysId =
         new SysIdRoutine(

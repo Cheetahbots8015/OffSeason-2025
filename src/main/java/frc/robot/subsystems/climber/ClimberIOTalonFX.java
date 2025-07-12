@@ -18,7 +18,6 @@ import edu.wpi.first.units.measure.Current;
 import edu.wpi.first.units.measure.Voltage;
 import edu.wpi.first.wpilibj.DigitalInput;
 import frc.robot.constants.ClimberConstants;
-import frc.robot.util.CheetahUtil;
 
 public class ClimberIOTalonFX implements ClimberIO {
   // Hardware objects
@@ -28,7 +27,7 @@ public class ClimberIOTalonFX implements ClimberIO {
   private TalonFXConfiguration clawConfigs = new TalonFXConfiguration();
   private TalonFXConfiguration pivotConfigs = new TalonFXConfiguration();
   private CANrangeConfiguration canrangeConfigs = new CANrangeConfiguration();
-  private final DigitalInput lightTrigger = new DigitalInput(1);
+  private final DigitalInput lightTrigger = new DigitalInput(3);
 
   // Voltage control requests
 
@@ -163,6 +162,4 @@ public class ClimberIOTalonFX implements ClimberIO {
   public boolean getCanRange() {
     return Canrange.getValue();
   }
-
-  
 }

@@ -21,7 +21,6 @@ public class ClimberPivotUpCommand extends Command {
   @Override
   public void execute() {
     m_subsystem.setPivotVoltage(2);
-    
   }
 
   // Called once the command ends or is interrupted.

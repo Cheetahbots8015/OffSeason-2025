@@ -115,8 +115,8 @@ public class IntakeIOTalonFX implements IntakeIO {
     armConfigs.Slot0.GravityType = GravityTypeValue.Elevator_Static;
 
     // MotionMagic config
-    armConfigs.MotionMagic.MotionMagicCruiseVelocity = 6.5;
-    armConfigs.MotionMagic.MotionMagicAcceleration = 6.5;
+    armConfigs.MotionMagic.MotionMagicCruiseVelocity = 10;
+    armConfigs.MotionMagic.MotionMagicAcceleration = 20;
 
     // Limit TorqueCurrent
     armConfigs.TorqueCurrent.PeakForwardTorqueCurrent = 20;

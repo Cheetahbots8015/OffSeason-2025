@@ -14,10 +14,16 @@
 package frc.robot;
 
 import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.path.PathConstraints;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
@@ -30,9 +36,8 @@ import frc.robot.commands.DriveCommands;
 import frc.robot.commands.ElevatorCommands.*;
 import frc.robot.commands.IntakeCommands.*;
 import frc.robot.commands.PivotCommands.*;
-import frc.robot.commands.alignalage;
-import frc.robot.commands.alignreef;
 import frc.robot.constants.ContainerConstants;
+import frc.robot.constants.FieldConstants;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.claw.ClawIOSim;
 import frc.robot.subsystems.claw.ClawIOTalonFX;
@@ -63,16 +68,18 @@ import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
  */
 public class RobotContainer {
   // Subsystems
-  private final Drive drive;
+  public final Drive drive;
   private final ClawSubsystem clawSubsystem;
   private final ElevatorSubsystem elevatorSubsystem;
   private final PivotSubsystem pivotSubsystem;
   private final IntakeSubsystem intakeSubsystem;
   private final ClimberSubsystem climberSubsystem;
 
+  private final RobotContainer robotContainer = this;
+
   // Controller
-  private final CommandXboxController controller = new CommandXboxController(0);
-  private final CommandXboxController testController = new CommandXboxController(1);
+  private CommandXboxController controller = new CommandXboxController(0);
+  private final CommandXboxController controller2 = new CommandXboxController(1);
   private final CommandXboxController climberController = new CommandXboxController(2);
 
   // Dashboard inputs
@@ -152,6 +159,9 @@ public class RobotContainer {
     // Configure the button bindings
     Commands.runOnce(() -> new PivotStartCommand(pivotSubsystem), pivotSubsystem)
         .ignoringDisable(true);
+    
+    // Default Command to set intake arm position
+    intakeSubsystem.setDefaultCommand(new IntakeArmSetPositionCommand(intakeSubsystem,0));
     configureButtonBindings();
   }
 
@@ -162,6 +172,7 @@ public class RobotContainer {
    * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
    */
   private void configureButtonBindings() {
+
     drive.setDefaultCommand(
         DriveCommands.joystickDrive(
             drive,
@@ -180,26 +191,27 @@ public class RobotContainer {
                 .ignoringDisable(true));
 
     // Intake Subsystem test
-    controller.leftTrigger().whileTrue(new IntakeArmForwardCommand(intakeSubsystem, 0.8));
-    controller.rightTrigger().whileTrue(new IntakeArmReverseCommand(intakeSubsystem, 1));
-    controller.rightBumper().whileTrue(new IntakeRollerIndexerOutCommand(intakeSubsystem));
+    controller.leftTrigger().whileTrue(new IntakeArmForwardCommand(intakeSubsystem, 1));
+    // controller.rightTrigger().whileTrue(new IntakeArmReverseCommand(intakeSubsystem, 1));
+    controller2.x().whileTrue(new IntakeRollerIndexerOutCommand(intakeSubsystem));
+    controller2.a().whileTrue(new IntakeArmSetPositionCommand(intakeSubsystem, 0));
 
-    controller.povDown().whileTrue(new ElevatorSetPositionCommand(elevatorSubsystem, 0.382));
-    controller.povLeft().whileTrue(new PivotSetPositionCommand(pivotSubsystem, 0));
+    controller2.b().whileTrue(new ElevatorSetPositionCommand(elevatorSubsystem, 0.382));
+    controller2.povLeft().whileTrue(new PivotSetPositionCommand(pivotSubsystem, 0));
 
-    // // Claw Intake Command
-    // controller
-    //     .y()
-    //     .whileTrue(
-    //         new ElevatorSetPositionCommand(elevatorSubsystem, 0.90)
-    //             .alongWith(new PivotSetPositionCommand(pivotSubsystem, 177))
-    //             .andThen(
-    //                 new ElevatorSetPositionCommand(elevatorSubsystem, 0.80)
-    //                     .alongWith(new ClawIntakeCommand(clawSubsystem, intakeSubsystem)))
-    //             .andThen(new ElevatorSetPositionCommand(elevatorSubsystem, 0.9))
-    //             .andThen(new PivotSetPositionCommand(pivotSubsystem, 0, 130))
-    //             .andThen(new ElevatorSetPositionCommand(elevatorSubsystem, 0.382))
-    //             .andThen(new ClawShootTimedBackCommand(clawSubsystem)));
+    // Claw Intake Command
+    controller
+        .y()
+        .whileTrue(
+            new ElevatorSetPositionCommand(elevatorSubsystem, 0.90)
+                .alongWith(new PivotSetPositionCommand(pivotSubsystem, 177))
+                .andThen(
+                    new ElevatorSetPositionCommand(elevatorSubsystem, 0.80)
+                        .alongWith(new ClawIntakeCommand(clawSubsystem, intakeSubsystem)))
+                .andThen(new ElevatorSetPositionCommand(elevatorSubsystem, 0.9))
+                .andThen(new PivotSetPositionCommand(pivotSubsystem, 0, 130))
+                .andThen(new ElevatorSetPositionCommand(elevatorSubsystem, 0.382))
+                .andThen(new ClawShootTimedBackCommand(clawSubsystem)));
 
     // L3 Command
     controller
@@ -214,7 +226,7 @@ public class RobotContainer {
 
     // L4 Command
     controller
-        .y()
+        .b()
         .whileTrue(
             new ElevatorSetPositionCommand(elevatorSubsystem, 1.50)
                 .andThen(new PivotSetPositionCommand(pivotSubsystem, 35))
@@ -233,7 +245,7 @@ public class RobotContainer {
 
     //  Alage Level1 Intake
     controller
-        .a()
+        .x()
         .whileTrue(
             new ElevatorSetPositionCommand(elevatorSubsystem, 1.198)
                 .andThen(new PivotSetPositionCommand(pivotSubsystem, 112.8))
@@ -241,23 +253,55 @@ public class RobotContainer {
 
     // Alage Shoot
     controller
-        .b()
+        .leftBumper()
         .whileTrue(
             new ElevatorSetPositionCommand(elevatorSubsystem, 1.615)
                 .andThen(new PivotSetPositionCommand(pivotSubsystem, 21.5))
                 .andThen(new ClawAlageShootCommand(clawSubsystem)));
 
-    // Auto Allignment
-    testController.povLeft().whileTrue(new alignreef(false, drive));
+    // // Auto Allignment
+    // controller2.leftBumper().whileTrue(new alignreef(false, drive));
 
-    testController.povRight().whileTrue(new alignreef(true, drive));
+    // controller2.rightBumper().whileTrue(new alignreef(true, drive));
 
-    testController.povDown().whileTrue(new alignalage(drive));
+    // controller2.y().whileTrue(new alignalage(drive));
 
     // Climber Test
-    climberController.povUp().whileTrue((new ClimberClawCommand(climberSubsystem)));
-    climberController.povLeft().whileTrue(new ClimberPivotDefaultCommand(climberSubsystem).alongWith(new PivotSetPositionCommand(pivotSubsystem, 100)));
-    climberController.povDown().whileTrue(new ClimberPivotUpCommand(climberSubsystem));
+    controller2.povUp().whileTrue((new ClimberClawCommand(climberSubsystem)));
+    controller2
+        .leftTrigger()
+        .whileTrue(
+            new ClimberPivotDefaultCommand(climberSubsystem)
+                .alongWith(new PivotSetPositionCommand(pivotSubsystem, 100)));
+    controller2.rightTrigger().whileTrue(new ClimberPivotUpCommand(climberSubsystem));
+
+    // Auto Test
+    final DriverStation.Alliance alliance = DriverStation.getAlliance().orElse(Alliance.Red);
+
+    Pose2d startPose = new Pose2d(new Translation2d(14.12, 7), Rotation2d.fromDegrees(180));
+
+    if (alliance == Alliance.Red) {
+      startPose =
+          FieldConstants.rotateAroundCenter(
+              startPose, FieldConstants.FieldCenter, Rotation2d.k180deg);
+    }
+    drive.setPose(startPose);
+    SmartDashboard.putData(
+        "Pathfind to Closest Reef",
+        Commands.runOnce(
+            () -> {
+              Pose2d currentPose = drive.getPose();
+
+              Pose2d closestPose =
+                  FieldConstants.getClosestReefPose(currentPose.getTranslation(), 1, alliance);
+
+              AutoBuilder.pathfindToPose(
+                      closestPose,
+                      new PathConstraints(
+                          3.0, 2.0, Units.degreesToRadians(540), Units.degreesToRadians(360)),
+                      0.0)
+                  .schedule();
+            }));
   }
 
   /**

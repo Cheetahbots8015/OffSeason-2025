@@ -18,8 +18,11 @@ public class IntakeArmForwardCommand extends Command {
 
   @Override
   public void execute() {
-    m_subsystem.setArmVoltage(m_volts);
-    m_subsystem.setIntakeVoltage(4);
+    if (m_subsystem.getArmPosition() <= 40) {
+      m_subsystem.setArmVoltage(m_volts);
+    }
+
+    m_subsystem.setIntakeVoltage(3);
     m_subsystem.setIndexerVoltage(3);
   }
 

@@ -33,5 +33,5 @@ public interface ClimberIO {
     return false;
   }
 
-  public default void setClimberPosition(){}
+  public default void setClimberPosition() {}
 }

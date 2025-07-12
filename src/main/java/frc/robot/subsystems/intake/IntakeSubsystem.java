@@ -76,4 +76,8 @@ public class IntakeSubsystem extends SubsystemBase {
   public void armVelocityVoltage(double velocity) {
     io.armVelocityVoltage(velocity);
   }
+
+  public double getArmPosition() {
+    return inputs.ArmPositionDeg;
+  }
 }
