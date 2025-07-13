@@ -30,6 +30,9 @@ import frc.robot.commands.IntakeCommands.*;
 import frc.robot.commands.LedCommand.LedSetAnimationCommand;
 import frc.robot.commands.LedCommand.LedShowIconCommand;
 import frc.robot.commands.PivotCommands.*;
+import frc.robot.commands.TimedDriveCommand;
+import frc.robot.commands.alignalage;
+import frc.robot.commands.alignreef;
 import frc.robot.constants.ContainerConstants;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.claw.ClawIOSim;
@@ -217,8 +220,8 @@ public class RobotContainer {
     controller
         .x()
         .whileTrue(
-            new ElevatorSetPositionCommand(elevatorSubsystem, 1.60)
-                .andThen(new PivotSetPositionCommand(pivotSubsystem, 54))
+            new ElevatorSetPositionCommand(elevatorSubsystem, 1.50)
+                .andThen(new PivotSetPositionCommand(pivotSubsystem, 35))
                 .andThen(new ClawShootCommand(clawSubsystem))
                 .andThen(new PivotSetPositionCommand(pivotSubsystem, 0))
                 .andThen(new ElevatorSetPositionCommand(elevatorSubsystem, 0.382)));
