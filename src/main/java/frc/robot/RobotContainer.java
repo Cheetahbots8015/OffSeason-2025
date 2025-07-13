@@ -14,6 +14,7 @@
 package frc.robot;
 
 import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.path.PathConstraints;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -157,11 +158,11 @@ public class RobotContainer {
         "Drive SysId (Dynamic Reverse)", drive.sysIdDynamic(SysIdRoutine.Direction.kReverse));
 
     // Configure the button bindings
-    Commands.runOnce(() -> new PivotStartCommand(pivotSubsystem), pivotSubsystem)
-        .ignoringDisable(true);
-    
+
     // Default Command to set intake arm position
-    intakeSubsystem.setDefaultCommand(new IntakeArmSetPositionCommand(intakeSubsystem,0));
+    intakeSubsystem.setDefaultCommand(new IntakeArmSetPositionCommand(intakeSubsystem, 0));
+
+    NamedCommands.registerCommand("PivotLocked", new PivotSetPositionCommand(pivotSubsystem, 0));
     configureButtonBindings();
   }
 
@@ -302,6 +303,10 @@ public class RobotContainer {
                       0.0)
                   .schedule();
             }));
+  }
+
+  public Command getPivotStartCommand() {
+    return new PivotSetPositionCommand(pivotSubsystem, 0);
   }
 
   /**

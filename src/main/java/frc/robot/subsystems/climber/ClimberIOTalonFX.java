@@ -95,7 +95,7 @@ public class ClimberIOTalonFX implements ClimberIO {
     PivotPosition = pivot.getPosition();
     PivotVelocity = pivot.getVelocity();
     PivotAppliedVolts = pivot.getMotorVoltage();
-    PivotCurrent = pivot.getStatorCurrent();
+    PivotCurrent = pivot.getTorqueCurrent();
 
     // Create canrange status signals
     Canrange = canrange.getIsDetected();

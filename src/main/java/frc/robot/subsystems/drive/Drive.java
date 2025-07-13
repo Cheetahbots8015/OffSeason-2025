@@ -141,7 +141,7 @@ public class Drive extends SubsystemBase {
         this::getChassisSpeeds,
         this::runVelocity,
         new PPHolonomicDriveController(
-            new PIDConstants(5.0, 0.0, 0.0), new PIDConstants(5.0, 0.0, 0.0)),
+            new PIDConstants(0.8, 0.0, 0.1), new PIDConstants(5, 0.0, 0.0)),
         PP_CONFIG,
         () -> DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Red,
         this);
@@ -266,11 +266,13 @@ public class Drive extends SubsystemBase {
           0,
           0);
       try {
+        
         LimelightHelpers.PoseEstimate mt2 =
             LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2("limelight-left");
         if (mt2.tagCount == 0) {
           doRejectUpdate = true;
         }
+        // else if{mt2.avgTagArea}
         if (!doRejectUpdate) {
           poseEstimator.setVisionMeasurementStdDevs(VecBuilder.fill(.5, .5, 9999999));
           poseEstimator.addVisionMeasurement(mt2.pose, mt2.timestampSeconds);
