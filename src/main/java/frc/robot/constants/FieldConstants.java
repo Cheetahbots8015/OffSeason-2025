@@ -41,9 +41,9 @@ public class FieldConstants {
     // Rotation2d.k180deg);
     // }
 
-    if (res == null) {
-      DriverStation.reportWarning("1111111111111111111", false);
-    }
+    // if (res == null) {
+    //   DriverStation.reportWarning("1111111111111111111", false);
+    // }
 
     return res;
   }
@@ -102,7 +102,7 @@ public class FieldConstants {
     double minDistance = Double.MAX_VALUE;
     for (int i = _LRindex; i <= 12; i += 2) {
       Pose2d reefPose = generateReefPose(i);
-      if (_Alliance == DriverStation.Alliance.Blue) {
+      if (_Alliance == DriverStation.Alliance.Red) {
         reefPose =
             FieldConstants.rotateAroundCenter(
                 reefPose, FieldConstants.FieldCenter, Rotation2d.k180deg);

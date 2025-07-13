@@ -279,13 +279,7 @@ public class RobotContainer {
     // Auto Test
     final DriverStation.Alliance alliance = DriverStation.getAlliance().orElse(Alliance.Red);
 
-    Pose2d startPose = new Pose2d(new Translation2d(14.12, 7), Rotation2d.fromDegrees(180));
-
-    if (alliance == Alliance.Red) {
-      startPose =
-          FieldConstants.rotateAroundCenter(
-              startPose, FieldConstants.FieldCenter, Rotation2d.k180deg);
-    }
+    Pose2d startPose = new Pose2d(new Translation2d(10.574, 6.607), Rotation2d.fromDegrees(180));
     drive.setPose(startPose);
     SmartDashboard.putData(
         "Pathfind to Closest Reef",
