@@ -299,15 +299,17 @@ public class RobotContainer {
               AutoBuilder.pathfindToPose(
                       closestPose,
                       new PathConstraints(
-                          3.0, 2.0, Units.degreesToRadians(540), Units.degreesToRadians(360)),
+                          1, 1, Units.degreesToRadians(540), Units.degreesToRadians(360)),
                       0.0)
                   .schedule();
             }));
 
     // Climber Close Loop Test
     SmartDashboard.putData(
-        "Climber → Default",
+        "Climber Default",
         Commands.runOnce(() -> new ClimberPivotDefaultCommand(climberSubsystem, 21)));
+
+    climberController.x().whileTrue(new ClimberPivotDefaultCommand(climberSubsystem, 21));
   }
 
   public Command getPivotStartCommand() {

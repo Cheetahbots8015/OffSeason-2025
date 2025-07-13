@@ -1,6 +1,7 @@
 package frc.robot.commands.ClimberCommand;
 
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.constants.ClimberConstants;
 import frc.robot.subsystems.climber.ClimberSubsystem;
 
 public class ClimberPivotDefaultCommand extends Command {
@@ -30,6 +31,7 @@ public class ClimberPivotDefaultCommand extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return false;
+    return Math.abs(m_subsystem.getInput().PivotPositionDeg - m_position)
+        < ClimberConstants.PositionDeadband;
   }
 }
