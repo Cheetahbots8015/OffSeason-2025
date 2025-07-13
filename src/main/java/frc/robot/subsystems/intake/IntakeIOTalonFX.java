@@ -136,13 +136,13 @@ public class IntakeIOTalonFX implements IntakeIO {
     IndexerPosition = indexer.getPosition();
     IndexerVelocity = indexer.getVelocity();
     IndexerAppliedVolts = indexer.getMotorVoltage();
-    IndexerCurrent = indexer.getStatorCurrent();
+    IndexerCurrent = indexer.getTorqueCurrent();
 
     // Create Intake status signals
     IntakePosition = intake.getPosition();
     IntakeVelocity = intake.getVelocity();
     IntakeAppliedVolts = intake.getMotorVoltage();
-    IntakeCurrent = intake.getStatorCurrent();
+    IntakeCurrent = intake.getTorqueCurrent();
 
     // Create Arm status signals
     ArmPosition = arm.getPosition();

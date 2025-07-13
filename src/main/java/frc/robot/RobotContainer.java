@@ -18,6 +18,7 @@ import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.path.PathConstraints;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
@@ -266,20 +267,24 @@ public class RobotContainer {
     // Auto Test
     final DriverStation.Alliance alliance = DriverStation.getAlliance().orElse(Alliance.Red);
 
-    // // Climber Close Loop Test
-    // SmartDashboard.putData(
-    //     "Climber Default",
-    //     Commands.runOnce(() -> new ClimberPivotDefaultCommand(climberSubsystem, 21)));
-    // climberController.povUp().whileTrue((new ClimberClawCommand(climberSubsystem)));
-    // climberController
-    //     .leftTrigger()
-    //     .whileTrue(
-    //         new ClimberPivotDefaultCommand(climberSubsystem, 0)
-    //             .alongWith(new PivotSetPositionCommand(pivotSubsystem, 100)));
-    // climberController.rightTrigger().whileTrue(new ClimberPivotUpCommand(climberSubsystem));
+    Pose2d startPose = new Pose2d(new Translation2d(10.574, 6.607), Rotation2d.fromDegrees(180));
+    drive.setPose(startPose);
+    SmartDashboard.putData(
+        "Pathfind to Closest Reef",
+        Commands.runOnce(
+            () -> {
+              Pose2d currentPose = drive.getPose();
 
-    // climberController.x().whileTrue(new ClimberPivotDefaultCommand(climberSubsystem, 21));
+              Pose2d closestPose =
+                  FieldConstants.getClosestReefPose(currentPose.getTranslation(), 1, alliance);
 
+              AutoBuilder.pathfindToPose(
+                      closestPose,
+                      new PathConstraints(
+                          3.0, 2.0, Units.degreesToRadians(540), Units.degreesToRadians(360)),
+                      0.0)
+                  .schedule();
+            }));
   }
 
   public Command getPivotStartCommand() {

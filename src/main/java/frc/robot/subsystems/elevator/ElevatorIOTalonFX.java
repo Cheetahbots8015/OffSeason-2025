@@ -78,7 +78,7 @@ public class ElevatorIOTalonFX implements ElevatorIO {
     Position = elevator.getPosition();
     Velocity = elevator.getVelocity();
     AppliedVolts = elevator.getMotorVoltage();
-    Current = elevator.getStatorCurrent();
+    Current = elevator.getTorqueCurrent();
     Acceleration = elevator.getAcceleration();
 
     BaseStatusSignal.setUpdateFrequencyForAll(
