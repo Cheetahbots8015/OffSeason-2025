@@ -17,7 +17,6 @@ import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.path.PathConstraints;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
@@ -278,14 +277,15 @@ public class RobotContainer {
     // Auto Test
     final DriverStation.Alliance alliance = DriverStation.getAlliance().orElse(Alliance.Red);
 
-    Pose2d startPose = new Pose2d(new Translation2d(14.12, 7), Rotation2d.fromDegrees(180));
+    // Pose2d startPose = new Pose2d(new Translation2d(12, 1.5), Rotation2d.fromDegrees(14));
 
-    if (alliance == Alliance.Red) {
-      startPose =
-          FieldConstants.rotateAroundCenter(
-              startPose, FieldConstants.FieldCenter, Rotation2d.k180deg);
-    }
-    drive.setPose(startPose);
+    // // if (alliance == Alliance.Red) {
+    // //   startPose =
+    // //       FieldConstants.rotateAroundCenter(
+    // //           startPose, FieldConstants.FieldCenter, Rotation2d.k180deg);
+    // // }
+
+    // drive.setPose(startPose);
     SmartDashboard.putData(
         "Pathfind to Closest Reef",
         Commands.runOnce(
@@ -298,7 +298,7 @@ public class RobotContainer {
               AutoBuilder.pathfindToPose(
                       closestPose,
                       new PathConstraints(
-                          3.0, 2.0, Units.degreesToRadians(540), Units.degreesToRadians(360)),
+                          1, 1.0, Units.degreesToRadians(540), Units.degreesToRadians(360)),
                       0.0)
                   .schedule();
             }));
