@@ -267,15 +267,15 @@ public class Drive extends SubsystemBase {
           0);
       try {
 
-        LimelightHelpers.PoseEstimate mt2 =
-            LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2("limelight-left");
-        if (mt2.tagCount == 0) {
+        LimelightHelpers.PoseEstimate mt1 =
+            LimelightHelpers.getBotPoseEstimate_wpiBlue("limelight-left");
+        if (mt1.tagCount == 0) {
           doRejectUpdate = true;
         }
         // else if{mt2.avgTagArea}
         if (!doRejectUpdate) {
           poseEstimator.setVisionMeasurementStdDevs(VecBuilder.fill(.5, .5, 9999999));
-          poseEstimator.addVisionMeasurement(mt2.pose, mt2.timestampSeconds);
+          poseEstimator.addVisionMeasurement(mt1.pose, mt1.timestampSeconds);
         }
       } catch (Exception e) {
         // TODO: handle exception
@@ -290,14 +290,14 @@ public class Drive extends SubsystemBase {
             0,
             0,
             0);
-        LimelightHelpers.PoseEstimate mt2r =
-            LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2("limelight-right");
-        if (mt2r.tagCount == 0) {
+        LimelightHelpers.PoseEstimate mt1r =
+            LimelightHelpers.getBotPoseEstimate_wpiBlue("limelight-right");
+        if (mt1r.tagCount == 0) {
           doRejectUpdater = true;
         }
         if (!doRejectUpdater) {
           poseEstimator.setVisionMeasurementStdDevs(VecBuilder.fill(.5, .5, 9999999));
-          poseEstimator.addVisionMeasurement(mt2r.pose, mt2r.timestampSeconds);
+          poseEstimator.addVisionMeasurement(mt1r.pose, mt1r.timestampSeconds);
         }
       } catch (Exception e) {
         // TODO: handle exception

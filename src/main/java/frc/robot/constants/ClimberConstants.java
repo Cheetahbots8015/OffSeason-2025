@@ -15,7 +15,7 @@ public class ClimberConstants {
   public static final double clawkS = 0.0;
   public static final double clawkV = 0.0;
 
-  public static final double pivotkP = 1.0;
+  public static final double pivotkP = 2;
   public static final double pivotkI = 0.0;
   public static final double pivotkD = 0.0;
   public static final double pivotkA = 0.0;
@@ -36,6 +36,6 @@ public class ClimberConstants {
   // Close Loop Constants
   public static final double climberDefaultPosition = 0.0;
   public static final double climberFinalPosition = 0.0;
-  public static final double ReductionRatio = 1 / 32;
-  public static final double PositionDeadband = 0;
+  public static final double ReductionRatio = 1.0 / 32;
+  public static final double PositionDeadband = 3.0;
 }

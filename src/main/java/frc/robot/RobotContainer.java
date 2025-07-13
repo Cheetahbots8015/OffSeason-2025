@@ -18,11 +18,11 @@ import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.path.PathConstraints;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.GenericHID;
+import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -76,12 +76,11 @@ public class RobotContainer {
   private final IntakeSubsystem intakeSubsystem;
   private final ClimberSubsystem climberSubsystem;
 
-  private final RobotContainer robotContainer = this;
-
   // Controller
   private CommandXboxController controller = new CommandXboxController(0);
   private final CommandXboxController controller2 = new CommandXboxController(1);
   private final CommandXboxController climberController = new CommandXboxController(2);
+  Joystick keyboardJoystick = new Joystick(3);
 
   // Dashboard inputs
   private final LoggedDashboardChooser<Command> autoChooser;
@@ -267,31 +266,23 @@ public class RobotContainer {
 
     // controller2.y().whileTrue(new alignalage(drive));
 
-    // Climber Test
-    controller2.povUp().whileTrue((new ClimberClawCommand(climberSubsystem)));
-    controller2
-        .leftTrigger()
-        .whileTrue(
-            new ClimberPivotDefaultCommand(climberSubsystem, 0)
-                .alongWith(new PivotSetPositionCommand(pivotSubsystem, 100)));
-    controller2.rightTrigger().whileTrue(new ClimberPivotUpCommand(climberSubsystem));
-
     // Auto Test
     final DriverStation.Alliance alliance = DriverStation.getAlliance().orElse(Alliance.Red);
 
-    Pose2d startPose = new Pose2d(new Translation2d(14.12, 7), Rotation2d.fromDegrees(180));
+    // Pose2d startPose = new Pose2d(new Translation2d(5, 1), Rotation2d.fromDegrees(-180));
 
-    // if (alliance == Alliance.Red) {
-    //   startPose =
-    //       FieldConstants.rotateAroundCenter(
-    //           startPose, FieldConstants.FieldCenter, Rotation2d.k180deg);
-    // }
-    drive.setPose(startPose);
+    // drive.setPose(startPose);
     SmartDashboard.putData(
         "Pathfind to Closest Reef",
         Commands.runOnce(
             () -> {
               Pose2d currentPose = drive.getPose();
+
+              if (alliance == Alliance.Red) {
+                currentPose =
+                    FieldConstants.rotateAroundCenter(
+                        currentPose, FieldConstants.FieldCenter, Rotation2d.k180deg);
+              }
 
               Pose2d closestPose =
                   FieldConstants.getClosestReefPose(currentPose.getTranslation(), 1, alliance);
@@ -308,6 +299,13 @@ public class RobotContainer {
     SmartDashboard.putData(
         "Climber Default",
         Commands.runOnce(() -> new ClimberPivotDefaultCommand(climberSubsystem, 21)));
+    climberController.povUp().whileTrue((new ClimberClawCommand(climberSubsystem)));
+    climberController
+        .leftTrigger()
+        .whileTrue(
+            new ClimberPivotDefaultCommand(climberSubsystem, 0)
+                .alongWith(new PivotSetPositionCommand(pivotSubsystem, 100)));
+    climberController.rightTrigger().whileTrue(new ClimberPivotUpCommand(climberSubsystem));
 
     climberController.x().whileTrue(new ClimberPivotDefaultCommand(climberSubsystem, 21));
   }

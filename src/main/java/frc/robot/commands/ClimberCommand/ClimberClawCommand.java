@@ -1,5 +1,6 @@
 package frc.robot.commands.ClimberCommand;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.climber.ClimberSubsystem;
 
@@ -20,6 +21,7 @@ public class ClimberClawCommand extends Command {
   @Override
   public void execute() {
     m_subsystem.setClawVoltage(-2);
+    SmartDashboard.putBoolean("Climber Status", m_subsystem.getInput().lightTrigger >= 0.9);
   }
 
   // Called once the command ends or is interrupted.
@@ -31,6 +33,6 @@ public class ClimberClawCommand extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return false;
+    return m_subsystem.getInput().lightTrigger >= 0.9;
   }
 }
