@@ -51,11 +51,15 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.LimelightHelpers;
+import frc.robot.LimelightHelpers.RawFiducial;
 import frc.robot.constants.ContainerConstants;
 import frc.robot.constants.ContainerConstants.Mode;
 import frc.robot.constants.DriveConstants;
+import frc.robot.constants.FieldConstants;
 import frc.robot.generated.TunerConstants;
 import frc.robot.util.LocalADStarAK;
+
+import java.util.List;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 import org.littletonrobotics.junction.AutoLogOutput;
@@ -266,24 +270,16 @@ public class Drive extends SubsystemBase {
           0,
           0);
       try {
-<<<<<<< HEAD
-=======
-
->>>>>>> 4dbdabc3901e627093c98828323affbfbea58f8a
         LimelightHelpers.PoseEstimate mt1 =
             LimelightHelpers.getBotPoseEstimate_wpiBlue("limelight-left");
         if (mt1.tagCount == 0) {
           doRejectUpdate = true;
         }
-        // else if{mt1.avgTagArea}
         if (!doRejectUpdate) {
           poseEstimator.setVisionMeasurementStdDevs(VecBuilder.fill(.5, .5, 9999999));
           poseEstimator.addVisionMeasurement(mt1.pose, mt1.timestampSeconds);
-<<<<<<< HEAD
           Logger.recordOutput("left LL pose", mt1.pose);
           // this.setPose(mt1.pose);
-=======
->>>>>>> 4dbdabc3901e627093c98828323affbfbea58f8a
         }
       } catch (Exception e) {
         // TODO: handle exception
@@ -306,11 +302,8 @@ public class Drive extends SubsystemBase {
         if (!doRejectUpdater) {
           poseEstimator.setVisionMeasurementStdDevs(VecBuilder.fill(.5, .5, 9999999));
           poseEstimator.addVisionMeasurement(mt1r.pose, mt1r.timestampSeconds);
-<<<<<<< HEAD
           Logger.recordOutput("right LL pose", mt1r.pose);
           // this.setPose(mt1r.pose);
-=======
->>>>>>> 4dbdabc3901e627093c98828323affbfbea58f8a
         }
       } catch (Exception e) {
         // TODO: handle exception
