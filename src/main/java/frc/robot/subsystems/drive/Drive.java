@@ -55,10 +55,8 @@ import frc.robot.LimelightHelpers.RawFiducial;
 import frc.robot.constants.ContainerConstants;
 import frc.robot.constants.ContainerConstants.Mode;
 import frc.robot.constants.DriveConstants;
-import frc.robot.constants.FieldConstants;
 import frc.robot.generated.TunerConstants;
 import frc.robot.util.LocalADStarAK;
-
 import java.util.List;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
@@ -272,8 +270,27 @@ public class Drive extends SubsystemBase {
       try {
         LimelightHelpers.PoseEstimate mt1 =
             LimelightHelpers.getBotPoseEstimate_wpiBlue("limelight-left");
+        List<RawFiducial> validateFiducials = List.of();
         if (mt1.tagCount == 0) {
           doRejectUpdate = true;
+        } else {
+          doRejectUpdate = true;
+          int[] validateID = DriveConstants.blueTags;
+          if (DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Red) {
+            validateID = DriveConstants.redTags;
+          }
+          for (RawFiducial rawFiducial : mt1.rawFiducials) {
+            if (rawFiducial.ambiguity > DriveConstants.maxAmbiguity
+                && rawFiducial.distToCamera < DriveConstants.minCameraDist) {
+              for (int id : validateID) {
+                if (id == rawFiducial.id) {
+                  doRejectUpdate = false;
+                  validateFiducials.add(rawFiducial);
+                  break;
+                }
+              }
+            }
+          }
         }
         if (!doRejectUpdate) {
           poseEstimator.setVisionMeasurementStdDevs(VecBuilder.fill(.5, .5, 9999999));
@@ -296,8 +313,27 @@ public class Drive extends SubsystemBase {
             0);
         LimelightHelpers.PoseEstimate mt1r =
             LimelightHelpers.getBotPoseEstimate_wpiBlue("limelight-right");
+        List<RawFiducial> validateFiducials = List.of();
         if (mt1r.tagCount == 0) {
-          doRejectUpdater = true;
+          doRejectUpdate = true;
+        } else {
+          doRejectUpdate = true;
+          int[] validateID = DriveConstants.blueTags;
+          if (DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Red) {
+            validateID = DriveConstants.redTags;
+          }
+          for (RawFiducial rawFiducial : mt1r.rawFiducials) {
+            if (rawFiducial.ambiguity > DriveConstants.maxAmbiguity
+                && rawFiducial.distToCamera < DriveConstants.minCameraDist) {
+              for (int id : validateID) {
+                if (id == rawFiducial.id) {
+                  doRejectUpdate = false;
+                  validateFiducials.add(rawFiducial);
+                  break;
+                }
+              }
+            }
+          }
         }
         if (!doRejectUpdater) {
           poseEstimator.setVisionMeasurementStdDevs(VecBuilder.fill(.5, .5, 9999999));
