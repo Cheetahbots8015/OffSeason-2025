@@ -159,9 +159,9 @@ public class RobotContainer {
     // Configure the button bindings
     Commands.runOnce(() -> new PivotStartCommand(pivotSubsystem), pivotSubsystem)
         .ignoringDisable(true);
-    
+
     // Default Command to set intake arm position
-    intakeSubsystem.setDefaultCommand(new IntakeArmSetPositionCommand(intakeSubsystem,0));
+    intakeSubsystem.setDefaultCommand(new IntakeArmSetPositionCommand(intakeSubsystem, 0));
     configureButtonBindings();
   }
 
