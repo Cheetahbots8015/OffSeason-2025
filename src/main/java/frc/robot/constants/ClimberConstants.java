@@ -32,4 +32,10 @@ public class ClimberConstants {
   public static final double pivotUpDutyCycleOutValue = -0.2;
   public static final double pivotDownDutyCycleOutValue = 0.2;
   public static final double clawDutyCycleOutValue = 0.2;
+
+  // Close Loop Constants
+  public static final double climberDefaultPosition = 0.0;
+  public static final double climberFinalPosition = 0.0;
+  public static final double ReductionRatio = 1 / 32;
+  public static final double PositionDeadband = 0;
 }

@@ -272,7 +272,7 @@ public class RobotContainer {
     controller2
         .leftTrigger()
         .whileTrue(
-            new ClimberPivotDefaultCommand(climberSubsystem)
+            new ClimberPivotDefaultCommand(climberSubsystem, 0)
                 .alongWith(new PivotSetPositionCommand(pivotSubsystem, 100)));
     controller2.rightTrigger().whileTrue(new ClimberPivotUpCommand(climberSubsystem));
 
@@ -281,11 +281,11 @@ public class RobotContainer {
 
     Pose2d startPose = new Pose2d(new Translation2d(14.12, 7), Rotation2d.fromDegrees(180));
 
-    if (alliance == Alliance.Red) {
-      startPose =
-          FieldConstants.rotateAroundCenter(
-              startPose, FieldConstants.FieldCenter, Rotation2d.k180deg);
-    }
+    // if (alliance == Alliance.Red) {
+    //   startPose =
+    //       FieldConstants.rotateAroundCenter(
+    //           startPose, FieldConstants.FieldCenter, Rotation2d.k180deg);
+    // }
     drive.setPose(startPose);
     SmartDashboard.putData(
         "Pathfind to Closest Reef",
@@ -303,6 +303,11 @@ public class RobotContainer {
                       0.0)
                   .schedule();
             }));
+
+    // Climber Close Loop Test
+    SmartDashboard.putData(
+        "Climber → Default",
+        Commands.runOnce(() -> new ClimberPivotDefaultCommand(climberSubsystem, 21)));
   }
 
   public Command getPivotStartCommand() {

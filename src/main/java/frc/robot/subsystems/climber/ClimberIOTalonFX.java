@@ -2,9 +2,9 @@ package frc.robot.subsystems.climber;
 
 import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.StatusSignal;
-import com.ctre.phoenix6.configs.CANrangeConfiguration;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.DutyCycleOut;
+import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.hardware.CANrange;
 import com.ctre.phoenix6.hardware.ParentDevice;
 import com.ctre.phoenix6.hardware.TalonFX;
@@ -18,6 +18,7 @@ import edu.wpi.first.units.measure.Current;
 import edu.wpi.first.units.measure.Voltage;
 import edu.wpi.first.wpilibj.DigitalInput;
 import frc.robot.constants.ClimberConstants;
+import frc.robot.util.CheetahUtil;
 
 public class ClimberIOTalonFX implements ClimberIO {
   // Hardware objects
@@ -26,7 +27,6 @@ public class ClimberIOTalonFX implements ClimberIO {
   private final CANrange canrange;
   private TalonFXConfiguration clawConfigs = new TalonFXConfiguration();
   private TalonFXConfiguration pivotConfigs = new TalonFXConfiguration();
-  private CANrangeConfiguration canrangeConfigs = new CANrangeConfiguration();
   private final DigitalInput lightTrigger = new DigitalInput(3);
 
   // Voltage control requests
@@ -44,13 +44,16 @@ public class ClimberIOTalonFX implements ClimberIO {
   // Inputs from canrange
   private final StatusSignal<Boolean> Canrange;
 
+  // Torque Current Close Loop
+  final MotionMagicVoltage m_motorRequest = new MotionMagicVoltage(0);
+
   // Median filter for light trigger
   private final MedianFilter filter = new MedianFilter(30);
 
   public ClimberIOTalonFX() {
     claw = new TalonFX(ClimberConstants.clawID, "canivore");
     pivot = new TalonFX(ClimberConstants.pivotID, "canivore");
-    clawConfigs.MotorOutput.withNeutralMode(
+    pivotConfigs.MotorOutput.withNeutralMode(
         ClimberConstants.claw_neutralmode_Coast ? NeutralModeValue.Coast : NeutralModeValue.Brake);
     canrange = new CANrange(ClimberConstants.canrangID, "caniovre");
 
@@ -83,6 +86,13 @@ public class ClimberIOTalonFX implements ClimberIO {
     pivotConfigs.Slot0.kS = ClimberConstants.pivotkS;
     pivotConfigs.Slot0.kV = ClimberConstants.pivotkV;
 
+    pivotConfigs.SoftwareLimitSwitch.ReverseSoftLimitThreshold = 0.0;
+    pivotConfigs.SoftwareLimitSwitch.ForwardSoftLimitThreshold = 0.0;
+    pivotConfigs.SoftwareLimitSwitch.ReverseSoftLimitEnable = false;
+    pivotConfigs.SoftwareLimitSwitch.ForwardSoftLimitEnable = false;
+    pivotConfigs.MotionMagic.MotionMagicCruiseVelocity = 10;
+    pivotConfigs.MotionMagic.MotionMagicAcceleration = 10;
+
     // Apply the configuration to the motor
     claw.getConfigurator().apply(clawConfigs);
     pivot.getConfigurator().apply(pivotConfigs);
@@ -91,7 +101,7 @@ public class ClimberIOTalonFX implements ClimberIO {
     ClawPosition = claw.getPosition();
     ClawVelocity = claw.getVelocity();
     ClawAppliedVolts = claw.getMotorVoltage();
-    ClawCurrent = claw.getStatorCurrent();
+    ClawCurrent = claw.getTorqueCurrent();
     PivotPosition = pivot.getPosition();
     PivotVelocity = pivot.getVelocity();
     PivotAppliedVolts = pivot.getMotorVoltage();
@@ -132,12 +142,11 @@ public class ClimberIOTalonFX implements ClimberIO {
     inputs.ClawAppliedVolts = ClawAppliedVolts.getValueAsDouble();
     inputs.ClawCurrentAmps = ClawCurrent.getValueAsDouble();
 
-    inputs.PivotPositionRad = Units.rotationsToRadians(PivotPosition.getValueAsDouble());
+    inputs.PivotPositionDeg = CheetahUtil.pivotRotationToDegrees(PivotPosition.getValueAsDouble());
     inputs.PivotVelocityRadPerSec = Units.rotationsToRadians(PivotVelocity.getValueAsDouble());
     inputs.PivotAppliedVolts = PivotAppliedVolts.getValueAsDouble();
     inputs.PivotCurrentAmps = PivotCurrent.getValueAsDouble();
-    // Update canrange inputs
-    inputs.Canrange = Canrange.getValue();
+
     // Update light trigger input
     inputs.lightTrigger = filter.calculate((!lightTrigger.get()) ? 1.0 : 0.0);
   }
@@ -161,5 +170,11 @@ public class ClimberIOTalonFX implements ClimberIO {
   @Override
   public boolean getCanRange() {
     return Canrange.getValue();
+  }
+
+  @Override
+  public void setClimberPivotPosition(double degree) {
+    double rotation = CheetahUtil.pivotDegreesToRotation(degree);
+    pivot.setControl(m_motorRequest.withPosition(rotation));
   }
 }

@@ -91,4 +91,8 @@ public class ClimberSubsystem extends SubsystemBase {
   public ClimberIOInputs getInput() {
     return inputs;
   }
+
+  public void setClimberPivotPosition(double degrees) {
+    io.setClimberPivotPosition(degrees);
+  }
 }
