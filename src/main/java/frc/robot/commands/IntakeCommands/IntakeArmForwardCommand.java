@@ -23,7 +23,7 @@ public class IntakeArmForwardCommand extends Command {
     }
 
     m_subsystem.setIntakeVoltage(3);
-    m_subsystem.setIndexerVoltage(3);
+    m_subsystem.setIndexerVoltage(2);
   }
 
   @Override

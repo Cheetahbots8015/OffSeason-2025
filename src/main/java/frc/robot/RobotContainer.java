@@ -257,9 +257,9 @@ public class RobotContainer {
     // Sub Driver
 
     controller2.x().whileTrue(new IntakeRollerIndexerOutCommand(intakeSubsystem));
-    // controller2.a().whileTrue(new IntakeArmSetPositionCommand(intakeSubsystem, 0));
+    controller2.a().whileTrue(new IntakeArmReverseCommand(intakeSubsystem, 2));
 
-    controller2.a().whileTrue(new ElevatorSetPositionCommand(elevatorSubsystem, 0.382));
+    controller2.b().whileTrue(new ElevatorSetPositionCommand(elevatorSubsystem, 0.382));
     controller2.povLeft().whileTrue(new PivotSetPositionCommand(pivotSubsystem, 0));
 
     // Auto Allignment
@@ -277,6 +277,7 @@ public class RobotContainer {
             new ClimberPivotDefaultCommand(climberSubsystem)
                 .alongWith(new PivotSetPositionCommand(pivotSubsystem, 100)));
     controller2.rightTrigger().whileTrue(new ClimberPivotUpCommand(climberSubsystem));
+    controller2.rightBumper().whileTrue(new ElevatorSetPositionCommand(elevatorSubsystem, 1));
 
     // Claw Intake Command
     controller2
@@ -285,7 +286,7 @@ public class RobotContainer {
             new ElevatorSetPositionCommand(elevatorSubsystem, 0.90)
                 .alongWith(new PivotSetPositionCommand(pivotSubsystem, 177))
                 .andThen(
-                    new ElevatorSetPositionCommand(elevatorSubsystem, 0.80)
+                    new ElevatorSetPositionCommand(elevatorSubsystem, 0.82)
                         .alongWith(new ClawIntakeCommand(clawSubsystem, intakeSubsystem)))
                 .andThen(new ElevatorSetPositionCommand(elevatorSubsystem, 0.9))
                 .andThen(new PivotSetPositionCommand(pivotSubsystem, 0, 130))

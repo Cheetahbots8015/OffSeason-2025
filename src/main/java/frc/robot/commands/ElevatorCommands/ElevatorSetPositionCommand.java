@@ -23,7 +23,11 @@ public class ElevatorSetPositionCommand extends Command {
   }
 
   @Override
-  public void end(boolean interrupted) {}
+  public void end(boolean interrupted) {
+    if (m_subsystem.getInput().ElevatorHeightMeters < 0.385 + ElevatorConstants.PositionDeadband) {
+      m_subsystem.resetElevatorPosition();
+    }
+  }
 
   @Override
   public boolean isFinished() {

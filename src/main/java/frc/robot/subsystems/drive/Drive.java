@@ -254,54 +254,58 @@ public class Drive extends SubsystemBase {
         Twist2d twist = kinematics.toTwist2d(moduleDeltas);
         rawGyroRotation = rawGyroRotation.plus(new Rotation2d(twist.dtheta));
       }
-      doRejectUpdate = false;
       // Apply update
       poseEstimator.updateWithTime(sampleTimestamps[i], rawGyroRotation, modulePositions);
+    }
+    doRejectUpdate = false;
+
+    LimelightHelpers.SetRobotOrientation(
+        "limelight-left",
+        poseEstimator.getEstimatedPosition().getRotation().getDegrees(),
+        0,
+        0,
+        0,
+        0,
+        0);
+    try {
+
+      LimelightHelpers.PoseEstimate mt1 =
+          LimelightHelpers.getBotPoseEstimate_wpiBlue("limelight-left");
+      if (mt1.tagCount == 0) {
+        doRejectUpdate = true;
+      }
+      // else if{mt1.avgTagArea}
+      if (!doRejectUpdate) {
+        poseEstimator.setVisionMeasurementStdDevs(VecBuilder.fill(.5, .5, 9999999));
+        poseEstimator.addVisionMeasurement(mt1.pose, mt1.timestampSeconds);
+      }
+      Logger.recordOutput("LL-left-pose", mt1.pose);
+
+    } catch (Exception e) {
+      // TODO: handle exception
+    }
+    try {
+      doRejectUpdater = false;
       LimelightHelpers.SetRobotOrientation(
-          "limelight-left",
+          "limelight-right",
           poseEstimator.getEstimatedPosition().getRotation().getDegrees(),
           0,
           0,
           0,
           0,
           0);
-      try {
-
-        LimelightHelpers.PoseEstimate mt1 =
-            LimelightHelpers.getBotPoseEstimate_wpiBlue("limelight-left");
-        if (mt1.tagCount == 0) {
-          doRejectUpdate = true;
-        }
-        // else if{mt1.avgTagArea}
-        if (!doRejectUpdate) {
-          poseEstimator.setVisionMeasurementStdDevs(VecBuilder.fill(.5, .5, 9999999));
-          poseEstimator.addVisionMeasurement(mt1.pose, mt1.timestampSeconds);
-        }
-      } catch (Exception e) {
-        // TODO: handle exception
+      LimelightHelpers.PoseEstimate mt1r =
+          LimelightHelpers.getBotPoseEstimate_wpiBlue("limelight-right");
+      if (mt1r.tagCount == 0) {
+        doRejectUpdater = true;
       }
-      try {
-        doRejectUpdater = false;
-        LimelightHelpers.SetRobotOrientation(
-            "limelight-right",
-            poseEstimator.getEstimatedPosition().getRotation().getDegrees(),
-            0,
-            0,
-            0,
-            0,
-            0);
-        LimelightHelpers.PoseEstimate mt1r =
-            LimelightHelpers.getBotPoseEstimate_wpiBlue("limelight-right");
-        if (mt1r.tagCount == 0) {
-          doRejectUpdater = true;
-        }
-        if (!doRejectUpdater) {
-          poseEstimator.setVisionMeasurementStdDevs(VecBuilder.fill(.5, .5, 9999999));
-          poseEstimator.addVisionMeasurement(mt1r.pose, mt1r.timestampSeconds);
-        }
-      } catch (Exception e) {
-        // TODO: handle exception
+      if (!doRejectUpdater) {
+        poseEstimator.setVisionMeasurementStdDevs(VecBuilder.fill(.5, .5, 9999999));
+        poseEstimator.addVisionMeasurement(mt1r.pose, mt1r.timestampSeconds);
       }
+      Logger.recordOutput("LL-right-pose", mt1r.pose);
+    } catch (Exception e) {
+      // TODO: handle exception
     }
 
     // Update gyro alert
@@ -328,7 +332,6 @@ public class Drive extends SubsystemBase {
       modules[i].runSetpoint(setpointStates[i]);
     }
 
-    // Log optimized setpoints (runSetpoint mutates each state)
     Logger.recordOutput("SwerveStates/SetpointsOptimized", setpointStates);
   }
 

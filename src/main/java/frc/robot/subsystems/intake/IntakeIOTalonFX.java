@@ -237,4 +237,9 @@ public class IntakeIOTalonFX implements IntakeIO {
     double rotation = CheetahUtil.intakeArmDegreesToRotation(degrees);
     arm.setControl(m_motorRequest.withPosition(rotation));
   }
+
+  @Override
+  public void resetArmPosition() {
+    arm.setPosition(0.0);
+  }
 }

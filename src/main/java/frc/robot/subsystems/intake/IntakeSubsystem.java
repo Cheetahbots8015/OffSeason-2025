@@ -80,4 +80,8 @@ public class IntakeSubsystem extends SubsystemBase {
   public double getArmPosition() {
     return inputs.ArmPositionDeg;
   }
+
+  public void resetArmPosition() {
+    io.resetArmPosition();
+  }
 }

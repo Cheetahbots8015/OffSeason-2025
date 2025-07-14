@@ -68,7 +68,7 @@ public class ElevatorIOTalonFX implements ElevatorIO {
     motionMagicConfigs.MotionMagicCruiseVelocity = 90; // limited cruise velocity
     motionMagicConfigs.MotionMagicExpo_kV = 0.12;
     motionMagicConfigs.MotionMagicExpo_kA = 0.03; // Use a slower kA of 0.1 V/(rps/s)
-    elevatorConfigs.Voltage.PeakReverseVoltage = -12.0;
+    elevatorConfigs.Voltage.PeakReverseVoltage = -8;
     elevatorConfigs.Voltage.PeakForwardVoltage = 12.0;
 
     // Apply the configuration to the motor
@@ -117,5 +117,10 @@ public class ElevatorIOTalonFX implements ElevatorIO {
   public void setPosition(double position) {
     double rotation = CheetahUtil.elevatorMetersToRotation(position);
     elevator.setControl(m_ExpoVoltage.withPosition(rotation));
+  }
+
+  @Override
+  public void resetElevetorPosition() {
+    elevator.setPosition(0.0);
   }
 }
