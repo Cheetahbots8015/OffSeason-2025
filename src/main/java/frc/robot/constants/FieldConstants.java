@@ -102,7 +102,7 @@ public class FieldConstants {
     double minDistance = Double.MAX_VALUE;
     for (int i = _LRindex; i <= 12; i += 2) {
       Pose2d reefPose = generateReefPose(i);
-      if (_Alliance == DriverStation.Alliance.Blue) {
+      if (_Alliance == DriverStation.Alliance.Red) {
         reefPose =
             FieldConstants.rotateAroundCenter(
                 reefPose, FieldConstants.FieldCenter, Rotation2d.k180deg);
