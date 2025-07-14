@@ -62,6 +62,7 @@ public class ElevatorSubsystem extends SubsystemBase {
   }
 
   public ElevatorIOInputs getInput() {
+    io.updateInputs(inputs);
     return inputs;
   }
 

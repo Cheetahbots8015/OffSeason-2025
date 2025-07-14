@@ -24,9 +24,9 @@ public class ElevatorSetPositionCommand extends Command {
 
   @Override
   public void end(boolean interrupted) {
-    if (m_subsystem.getInput().ElevatorHeightMeters < 0.385 + ElevatorConstants.PositionDeadband) {
-      m_subsystem.resetElevatorPosition();
-    }
+    // if (m_position <= ElevatorConstants.ElevatorResetPosition) {
+    //   m_subsystem.resetElevatorPosition();
+    // }
   }
 
   @Override

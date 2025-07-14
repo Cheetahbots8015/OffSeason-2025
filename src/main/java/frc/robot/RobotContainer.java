@@ -286,7 +286,7 @@ public class RobotContainer {
             new ElevatorSetPositionCommand(elevatorSubsystem, 0.90)
                 .alongWith(new PivotSetPositionCommand(pivotSubsystem, 177))
                 .andThen(
-                    new ElevatorSetPositionCommand(elevatorSubsystem, 0.82)
+                    new ElevatorSetPositionCommand(elevatorSubsystem, 0.85)
                         .alongWith(new ClawIntakeCommand(clawSubsystem, intakeSubsystem)))
                 .andThen(new ElevatorSetPositionCommand(elevatorSubsystem, 0.9))
                 .andThen(new PivotSetPositionCommand(pivotSubsystem, 0, 130))
@@ -295,6 +295,7 @@ public class RobotContainer {
 
     // Auto Test
     // Pose2d visionPose = LimelightHelpers.getBotPose2d("limelight");
+    controller2.leftBumper().whileTrue(new ElevatorResetPositionCommand(elevatorSubsystem));
 
     final DriverStation.Alliance alliance = DriverStation.getAlliance().orElse(Alliance.Red);
     // Pose2d startPose = new Pose2d(new Translation2d(10.574, 6.607),
