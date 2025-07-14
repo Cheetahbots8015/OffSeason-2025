@@ -33,10 +33,10 @@ import frc.robot.commands.ClimberCommand.ClimberClawCommand;
 import frc.robot.commands.ClimberCommand.ClimberPivotDefaultCommand;
 import frc.robot.commands.ClimberCommand.ClimberPivotUpCommand;
 import frc.robot.commands.DriveCommands;
-import frc.robot.commands.alignreef;
 import frc.robot.commands.ElevatorCommands.*;
 import frc.robot.commands.IntakeCommands.*;
 import frc.robot.commands.PivotCommands.*;
+import frc.robot.commands.alignreef;
 import frc.robot.constants.ContainerConstants;
 import frc.robot.constants.FieldConstants;
 import frc.robot.generated.TunerConstants;
@@ -185,30 +185,21 @@ public class RobotContainer {
         .povUp()
         .onTrue(
             Commands.runOnce(
-                    () ->
-                        drive.setPose(
-                            new Pose2d(drive.getPose().getTranslation(), new Rotation2d())),
+                    () -> {
+                      Rotation2d heading =
+                          DriverStation.getAlliance().orElse(Alliance.Red) == Alliance.Red
+                              ? new Rotation2d(Math.PI)
+                              : new Rotation2d();
+
+                      drive.setPose(new Pose2d(drive.getPose().getTranslation(), heading));
+                    },
                     drive)
                 .ignoringDisable(true));
-
 
     // Main driver
 
     // Intake arm
     controller.leftTrigger().whileTrue(new IntakeArmForwardCommand(intakeSubsystem, 1));
-    // Claw Intake Command
-    controller
-        .y()
-        .whileTrue(
-            new ElevatorSetPositionCommand(elevatorSubsystem, 0.90)
-                .alongWith(new PivotSetPositionCommand(pivotSubsystem, 177))
-                .andThen(
-                    new ElevatorSetPositionCommand(elevatorSubsystem, 0.80)
-                        .alongWith(new ClawIntakeCommand(clawSubsystem, intakeSubsystem)))
-                .andThen(new ElevatorSetPositionCommand(elevatorSubsystem, 0.9))
-                .andThen(new PivotSetPositionCommand(pivotSubsystem, 0, 130))
-                .andThen(new ElevatorSetPositionCommand(elevatorSubsystem, 0.382))
-                .andThen(new ClawShootTimedBackCommand(clawSubsystem)));
 
     // L3 Command
     controller
@@ -220,9 +211,9 @@ public class RobotContainer {
                 .andThen(
                     new PivotSetPositionCommand(pivotSubsystem, 0)
                         .alongWith(new ElevatorSetPositionCommand(elevatorSubsystem, 0.382))));
-    
-        // L4 Command
-        controller
+
+    // L4 Command
+    controller
         .b()
         .whileTrue(
             new ElevatorSetPositionCommand(elevatorSubsystem, 1.50)
@@ -230,14 +221,22 @@ public class RobotContainer {
                 .andThen(new ClawShootCommand(clawSubsystem))
                 .andThen(new PivotSetPositionCommand(pivotSubsystem, 0))
                 .andThen(new ElevatorSetPositionCommand(elevatorSubsystem, 0.382)));
-        
+
     //  Alage Level1 Intake
     controller
-    .x()
-    .whileTrue(
-        new ElevatorSetPositionCommand(elevatorSubsystem, 1.198)
-            .andThen(new PivotSetPositionCommand(pivotSubsystem, 112.8))
-            .andThen(new ClawAlageInCommand(clawSubsystem)));
+        .x()
+        .whileTrue(
+            new ElevatorSetPositionCommand(elevatorSubsystem, 1.198)
+                .andThen(new PivotSetPositionCommand(pivotSubsystem, 112.8))
+                .andThen(new ClawAlageInCommand(clawSubsystem)));
+
+    //  Alage Level2 Intake
+    controller
+        .y()
+        .whileTrue(
+            new ElevatorSetPositionCommand(elevatorSubsystem, 1.604)
+                .andThen(new PivotSetPositionCommand(pivotSubsystem, 112.8))
+                .andThen(new ClawAlageInCommand(clawSubsystem)));
 
     // Alage Shoot
     controller
@@ -247,34 +246,30 @@ public class RobotContainer {
                 .andThen(new PivotSetPositionCommand(pivotSubsystem, 21.5))
                 .andThen(new ClawAlageShootCommand(clawSubsystem)));
 
-            
-    
-   
-    /* L2 Command
+    // L2 Command
     controller
-        .a()
+        .rightBumper()
         .whileTrue(
             new ElevatorSetPositionCommand(elevatorSubsystem, 0.382)
                 .alongWith(new PivotSetPositionCommand(pivotSubsystem, 27))
-                .andThen(new ClawTimedShootCommand(clawSubsystem)));
-    */
+                .andThen(new ClawShootCommand(clawSubsystem)));
 
     // Sub Driver
 
     controller2.x().whileTrue(new IntakeRollerIndexerOutCommand(intakeSubsystem));
     // controller2.a().whileTrue(new IntakeArmSetPositionCommand(intakeSubsystem, 0));
 
-    controller2.b().whileTrue(new ElevatorSetPositionCommand(elevatorSubsystem, 0.382));
+    controller2.a().whileTrue(new ElevatorSetPositionCommand(elevatorSubsystem, 0.382));
     controller2.povLeft().whileTrue(new PivotSetPositionCommand(pivotSubsystem, 0));
 
-    // // Auto Allignment
-    // controller2.leftBumper().whileTrue(new alignreef(false, drive));
+    // Auto Allignment
+    controller.povLeft().whileTrue(new alignreef(false, drive));
 
-    controller2.a().whileTrue(new alignreef(true, drive));
+    controller.povRight().whileTrue(new alignreef(true, drive));
 
-    // controller2.y().whileTrue(new alignalage(drive));
+    // controller.y().whileTrue(new alignalage(drive));
 
-    // Climber 
+    // Climber
     controller2.povUp().whileTrue((new ClimberClawCommand(climberSubsystem)));
     controller2
         .leftTrigger()
@@ -282,6 +277,20 @@ public class RobotContainer {
             new ClimberPivotDefaultCommand(climberSubsystem)
                 .alongWith(new PivotSetPositionCommand(pivotSubsystem, 100)));
     controller2.rightTrigger().whileTrue(new ClimberPivotUpCommand(climberSubsystem));
+
+    // Claw Intake Command
+    controller2
+        .y()
+        .whileTrue(
+            new ElevatorSetPositionCommand(elevatorSubsystem, 0.90)
+                .alongWith(new PivotSetPositionCommand(pivotSubsystem, 177))
+                .andThen(
+                    new ElevatorSetPositionCommand(elevatorSubsystem, 0.80)
+                        .alongWith(new ClawIntakeCommand(clawSubsystem, intakeSubsystem)))
+                .andThen(new ElevatorSetPositionCommand(elevatorSubsystem, 0.9))
+                .andThen(new PivotSetPositionCommand(pivotSubsystem, 0, 130))
+                .andThen(new ElevatorSetPositionCommand(elevatorSubsystem, 0.382))
+                .andThen(new ClawShootTimedBackCommand(clawSubsystem)));
 
     // Auto Test
     // Pose2d visionPose = LimelightHelpers.getBotPose2d("limelight");
