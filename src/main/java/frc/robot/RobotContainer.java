@@ -18,7 +18,6 @@ import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.path.PathConstraints;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
@@ -34,6 +33,7 @@ import frc.robot.commands.ClimberCommand.ClimberClawCommand;
 import frc.robot.commands.ClimberCommand.ClimberPivotDefaultCommand;
 import frc.robot.commands.ClimberCommand.ClimberPivotUpCommand;
 import frc.robot.commands.DriveCommands;
+import frc.robot.commands.alignreef;
 import frc.robot.commands.ElevatorCommands.*;
 import frc.robot.commands.IntakeCommands.*;
 import frc.robot.commands.PivotCommands.*;
@@ -191,15 +191,11 @@ public class RobotContainer {
                     drive)
                 .ignoringDisable(true));
 
-    // Intake Subsystem test
+
+    // Main driver
+
+    // Intake arm
     controller.leftTrigger().whileTrue(new IntakeArmForwardCommand(intakeSubsystem, 1));
-    // controller.rightTrigger().whileTrue(new IntakeArmReverseCommand(intakeSubsystem, 1));
-    controller2.x().whileTrue(new IntakeRollerIndexerOutCommand(intakeSubsystem));
-    controller2.a().whileTrue(new IntakeArmSetPositionCommand(intakeSubsystem, 0));
-
-    controller2.b().whileTrue(new ElevatorSetPositionCommand(elevatorSubsystem, 0.382));
-    controller2.povLeft().whileTrue(new PivotSetPositionCommand(pivotSubsystem, 0));
-
     // Claw Intake Command
     controller
         .y()
@@ -224,9 +220,9 @@ public class RobotContainer {
                 .andThen(
                     new PivotSetPositionCommand(pivotSubsystem, 0)
                         .alongWith(new ElevatorSetPositionCommand(elevatorSubsystem, 0.382))));
-
-    // L4 Command
-    controller
+    
+        // L4 Command
+        controller
         .b()
         .whileTrue(
             new ElevatorSetPositionCommand(elevatorSubsystem, 1.50)
@@ -234,23 +230,14 @@ public class RobotContainer {
                 .andThen(new ClawShootCommand(clawSubsystem))
                 .andThen(new PivotSetPositionCommand(pivotSubsystem, 0))
                 .andThen(new ElevatorSetPositionCommand(elevatorSubsystem, 0.382)));
-
-    /* L2 Command
-    controller
-        .a()
-        .whileTrue(
-            new ElevatorSetPositionCommand(elevatorSubsystem, 0.382)
-                .alongWith(new PivotSetPositionCommand(pivotSubsystem, 27))
-                .andThen(new ClawTimedShootCommand(clawSubsystem)));
-    */
-
+        
     //  Alage Level1 Intake
     controller
-        .x()
-        .whileTrue(
-            new ElevatorSetPositionCommand(elevatorSubsystem, 1.198)
-                .andThen(new PivotSetPositionCommand(pivotSubsystem, 112.8))
-                .andThen(new ClawAlageInCommand(clawSubsystem)));
+    .x()
+    .whileTrue(
+        new ElevatorSetPositionCommand(elevatorSubsystem, 1.198)
+            .andThen(new PivotSetPositionCommand(pivotSubsystem, 112.8))
+            .andThen(new ClawAlageInCommand(clawSubsystem)));
 
     // Alage Shoot
     controller
@@ -260,14 +247,34 @@ public class RobotContainer {
                 .andThen(new PivotSetPositionCommand(pivotSubsystem, 21.5))
                 .andThen(new ClawAlageShootCommand(clawSubsystem)));
 
+            
+    
+   
+    /* L2 Command
+    controller
+        .a()
+        .whileTrue(
+            new ElevatorSetPositionCommand(elevatorSubsystem, 0.382)
+                .alongWith(new PivotSetPositionCommand(pivotSubsystem, 27))
+                .andThen(new ClawTimedShootCommand(clawSubsystem)));
+    */
+
+    // Sub Driver
+
+    controller2.x().whileTrue(new IntakeRollerIndexerOutCommand(intakeSubsystem));
+    // controller2.a().whileTrue(new IntakeArmSetPositionCommand(intakeSubsystem, 0));
+
+    controller2.b().whileTrue(new ElevatorSetPositionCommand(elevatorSubsystem, 0.382));
+    controller2.povLeft().whileTrue(new PivotSetPositionCommand(pivotSubsystem, 0));
+
     // // Auto Allignment
     // controller2.leftBumper().whileTrue(new alignreef(false, drive));
 
-    // controller2.rightBumper().whileTrue(new alignreef(true, drive));
+    controller2.a().whileTrue(new alignreef(true, drive));
 
     // controller2.y().whileTrue(new alignalage(drive));
 
-    // Climber Test
+    // Climber 
     controller2.povUp().whileTrue((new ClimberClawCommand(climberSubsystem)));
     controller2
         .leftTrigger()
@@ -277,10 +284,13 @@ public class RobotContainer {
     controller2.rightTrigger().whileTrue(new ClimberPivotUpCommand(climberSubsystem));
 
     // Auto Test
-    final DriverStation.Alliance alliance = DriverStation.getAlliance().orElse(Alliance.Red);
+    // Pose2d visionPose = LimelightHelpers.getBotPose2d("limelight");
 
-    Pose2d startPose = new Pose2d(new Translation2d(10.574, 6.607), Rotation2d.fromDegrees(180));
-    drive.setPose(startPose);
+    final DriverStation.Alliance alliance = DriverStation.getAlliance().orElse(Alliance.Red);
+    // Pose2d startPose = new Pose2d(new Translation2d(10.574, 6.607),
+    // Rotation2d.fromDegrees(-180));
+    // drive.setPose(startPose);
+
     SmartDashboard.putData(
         "Pathfind to Closest Reef",
         Commands.runOnce(
@@ -293,7 +303,7 @@ public class RobotContainer {
               AutoBuilder.pathfindToPose(
                       closestPose,
                       new PathConstraints(
-                          3.0, 2.0, Units.degreesToRadians(540), Units.degreesToRadians(360)),
+                          1, 1.5, Units.degreesToRadians(540), Units.degreesToRadians(360)),
                       0.0)
                   .schedule();
             }));
