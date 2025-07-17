@@ -37,6 +37,7 @@ import frc.robot.commands.ElevatorCommands.*;
 import frc.robot.commands.IntakeCommands.*;
 import frc.robot.commands.PivotCommands.*;
 import frc.robot.commands.alignreef;
+import frc.robot.constants.AutoConstants;
 import frc.robot.constants.ContainerConstants;
 import frc.robot.constants.FieldConstants;
 import frc.robot.generated.TunerConstants;
@@ -302,22 +303,61 @@ public class RobotContainer {
     // Rotation2d.fromDegrees(-180));
     // drive.setPose(startPose);
 
+    SmartDashboard.putData("Pathfind to Closest Reef", findToClosestReefCommand(alliance));
+
+    SmartDashboard.putData("FirstL4", findToClosestReefCommand(alliance).andThen(getL4Command()));
+
     SmartDashboard.putData(
-        "Pathfind to Closest Reef",
-        Commands.runOnce(
-            () -> {
-              Pose2d currentPose = drive.getPose();
+        "AutoCycle",
+        getRightAutoCycleCommand(new Pose2d(3.7, 2.5, new Rotation2d(Math.toRadians(-120))), true)
+            .andThen(
+                getRightAutoCycleCommand(
+                    new Pose2d(3.7, 2.5, new Rotation2d(Math.toRadians(-120))), false)));
+  }
 
-              Pose2d closestPose =
-                  FieldConstants.getClosestReefPose(currentPose.getTranslation(), 1, alliance);
+  public Command getRightAutoCycleCommand(Pose2d nearReafPoint, boolean isRightReef) {
+    return AutoBuilder.pathfindToPose(
+            AutoConstants.rightPrepareToIntakePoint,
+            new PathConstraints(3, 6, Units.degreesToRadians(360), Units.degreesToRadians(540)),
+            0.5)
+        .withTimeout(2.0)
+        .andThen(
+            AutoBuilder.pathfindToPose(
+                    AutoConstants.rightStation,
+                    new PathConstraints(
+                        1, 2, Units.degreesToRadians(360), Units.degreesToRadians(540)),
+                    0)
+                .withTimeout(1.5)
+                .alongWith(new IntakeArmForwardCommand(intakeSubsystem, 1).withTimeout(2.0)))
+        .andThen(
+            AutoBuilder.pathfindToPose(
+                    nearReafPoint,
+                    new PathConstraints(
+                        3, 6, Units.degreesToRadians(360), Units.degreesToRadians(540)),
+                    0.5)
+                .withTimeout(2.0))
+        .andThen(new alignreef(isRightReef, drive).withTimeout(1.0))
+        .andThen(getL4Command().withTimeout(1.0));
+  }
 
-              AutoBuilder.pathfindToPose(
-                      closestPose,
-                      new PathConstraints(
-                          1, 1.5, Units.degreesToRadians(540), Units.degreesToRadians(360)),
-                      0.0)
-                  .schedule();
-            }));
+  public Command getL4Command() {
+    return new ElevatorSetPositionCommand(elevatorSubsystem, 1.50)
+        .andThen(new PivotSetPositionCommand(pivotSubsystem, 35))
+        .andThen(new ClawShootCommand(clawSubsystem))
+        .andThen(new PivotSetPositionCommand(pivotSubsystem, 0))
+        .andThen(new ElevatorSetPositionCommand(elevatorSubsystem, 0.382));
+  }
+
+  public Command findToClosestReefCommand(Alliance alliance) {
+    Pose2d currentPose = drive.getPose();
+
+    Pose2d closestPose =
+        FieldConstants.getClosestReefPose(currentPose.getTranslation(), 1, alliance);
+
+    return AutoBuilder.pathfindToPose(
+        closestPose,
+        new PathConstraints(1, 1.5, Units.degreesToRadians(360), Units.degreesToRadians(540)),
+        0.0);
   }
 
   public Command getPivotStartCommand() {

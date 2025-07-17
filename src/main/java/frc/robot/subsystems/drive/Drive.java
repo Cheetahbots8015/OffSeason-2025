@@ -51,6 +51,8 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.LimelightHelpers;
+import frc.robot.LimelightHelpers.PoseEstimate;
+import frc.robot.LimelightHelpers.RawFiducial;
 import frc.robot.constants.ContainerConstants;
 import frc.robot.constants.ContainerConstants.Mode;
 import frc.robot.constants.DriveConstants;
@@ -204,8 +206,24 @@ public class Drive extends SubsystemBase {
         });
   }
 
+  private boolean shouldReject(PoseEstimate mt1, int[] validateID) {
+    for (RawFiducial rawFiducial : mt1.rawFiducials) {
+      for (int i : validateID) {
+        if (rawFiducial.id == i) {
+          if (rawFiducial.ambiguity < DriveConstants.maxAmbiguity
+              && rawFiducial.distToCamera < DriveConstants.maxCameraDist
+              && rawFiducial.ta > DriveConstants.minArea) {
+            return false;
+          }
+        }
+      }
+    }
+    return true;
+  }
+
   @Override
   public void periodic() {
+    SmartDashboard.putData("Drive", this);
     odometryLock.lock(); // Prevents odometry updates while reading data
     gyroIO.updateInputs(gyroInputs);
     Logger.processInputs("Drive/Gyro", gyroInputs);
@@ -267,14 +285,20 @@ public class Drive extends SubsystemBase {
         0,
         0,
         0);
+    int[] validateID = DriveConstants.blueTags;
+    if (DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Red) {
+      validateID = DriveConstants.redTags;
+    }
     try {
-
+      doRejectUpdate = false;
+      LimelightHelpers.SetFiducialIDFiltersOverride("limelight-left", validateID);
       LimelightHelpers.PoseEstimate mt1 =
           LimelightHelpers.getBotPoseEstimate_wpiBlue("limelight-left");
       if (mt1.tagCount == 0) {
         doRejectUpdate = true;
+      } else {
+        doRejectUpdate = shouldReject(mt1, validateID);
       }
-      // else if{mt1.avgTagArea}
       if (!doRejectUpdate) {
         poseEstimator.setVisionMeasurementStdDevs(VecBuilder.fill(.5, .5, 9999999));
         poseEstimator.addVisionMeasurement(mt1.pose, mt1.timestampSeconds);
@@ -294,10 +318,13 @@ public class Drive extends SubsystemBase {
           0,
           0,
           0);
+      LimelightHelpers.SetFiducialIDFiltersOverride("limelight-right", validateID);
       LimelightHelpers.PoseEstimate mt1r =
           LimelightHelpers.getBotPoseEstimate_wpiBlue("limelight-right");
       if (mt1r.tagCount == 0) {
         doRejectUpdater = true;
+      } else {
+        doRejectUpdater = shouldReject(mt1r, validateID);
       }
       if (!doRejectUpdater) {
         poseEstimator.setVisionMeasurementStdDevs(VecBuilder.fill(.5, .5, 9999999));
