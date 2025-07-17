@@ -23,7 +23,7 @@ public class DriveConstants {
   public static final int[] redTags = new int[] {6, 7, 8, 9, 10, 11};
   public static final int[] blueTags = new int[] {17, 18, 19, 20, 21, 22};
 
-  public static final double maxAmbiguity = 0.0;
+  public static final double maxAmbiguity = 999;
   public static final double maxCameraDist = 2.0;
   public static final double minArea = 0.0;
 }

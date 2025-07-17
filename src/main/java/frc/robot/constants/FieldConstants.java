@@ -141,4 +141,15 @@ public class FieldConstants {
     }
     return generateAlgaePose(closest);
   }
+
+  public static Pose2d inversePose2dUsingAlliance(
+      Pose2d pose, DriverStation.Alliance allianceColor) {
+    if (allianceColor != DriverStation.getAlliance().get()) {
+      return new Pose2d(
+          AutoConstants.fieldLength - pose.getX(),
+          AutoConstants.filedWidth - pose.getY(),
+          new Rotation2d(Math.PI).plus(pose.getRotation()));
+    }
+    return pose;
+  }
 }
