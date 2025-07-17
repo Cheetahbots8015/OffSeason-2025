@@ -339,26 +339,26 @@ public class RobotContainer {
     nearReafPoint = FieldConstants.inversePose2dUsingAlliance(nearReafPoint, Alliance.Blue);
     return AutoBuilder.pathfindToPose(
             AutoConstants.leftPrepareToIntakePoint,
-            new PathConstraints(3, 6, Units.degreesToRadians(360), Units.degreesToRadians(540)),
+            new PathConstraints(2, 4, Units.degreesToRadians(360), Units.degreesToRadians(540)),
             0.5)
-        .withTimeout(2.0)
+        .withTimeout(15.0)
         .andThen(
             AutoBuilder.pathfindToPose(
                     AutoConstants.leftStation,
                     new PathConstraints(
                         0.8, 2, Units.degreesToRadians(360), Units.degreesToRadians(540)),
                     0)
-                .withTimeout(1.5)
-                .alongWith(new IntakeArmForwardCommand(intakeSubsystem, 1).withTimeout(1.5)))
+                .withTimeout(15)
+                .alongWith(new IntakeArmForwardCommand(intakeSubsystem, 1).withTimeout(15)))
         .andThen(
             AutoBuilder.pathfindToPose(
                     nearReafPoint,
                     new PathConstraints(
-                        3, 6, Units.degreesToRadians(360), Units.degreesToRadians(540)),
+                        2, 4, Units.degreesToRadians(360), Units.degreesToRadians(540)),
                     0.5)
-                .withTimeout(2.0))
-        .andThen(new alignreef(isRightReef, drive).withTimeout(1.0))
-        .andThen(getL4Command().withTimeout(1.0));
+                .withTimeout(15))
+        .andThen(new alignreef(isRightReef, drive).withTimeout(15))
+        .andThen(getL4Command().withTimeout(1));
   }
 
   public Command getL4Command() {
