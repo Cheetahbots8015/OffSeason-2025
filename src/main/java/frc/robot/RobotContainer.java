@@ -36,6 +36,7 @@ import frc.robot.commands.DriveCommands;
 import frc.robot.commands.ElevatorCommands.*;
 import frc.robot.commands.IntakeCommands.*;
 import frc.robot.commands.PivotCommands.*;
+import frc.robot.commands.alignalage;
 import frc.robot.commands.alignreef;
 import frc.robot.constants.AutoConstants;
 import frc.robot.constants.ContainerConstants;
@@ -201,6 +202,20 @@ public class RobotContainer {
 
     // Intake arm
     controller.leftTrigger().whileTrue(new IntakeArmForwardCommand(intakeSubsystem, 1));
+    // controller
+    //     .leftTrigger()
+    //     .whileTrue(
+    //         new IntakeArmForwardCommand(intakeSubsystem, 1)
+    //             .alongWith((new ElevatorSetPositionCommand(elevatorSubsystem, 0.90))
+    //             .alongWith(new PivotSetPositionCommand(pivotSubsystem, 177))
+    //             .andThen(new ElevatorSetPositionCommand(elevatorSubsystem, 0.90))
+    //             .andThen(new WaitUntilCommand(() -> intakeSubsystem.getCanRange()))
+    //             .andThen(new ElevatorSetPositionCommand(elevatorSubsystem, 0.85))
+    //             .andThen(new ClawIntakeCommand(clawSubsystem, intakeSubsystem))
+    //             .andThen(new ElevatorSetPositionCommand(elevatorSubsystem, 0.9))
+    //             .andThen(new PivotSetPositionCommand(pivotSubsystem, 0, 130))
+    //             .andThen(new ElevatorSetPositionCommand(elevatorSubsystem, 0.382))
+    //             .andThen(new ClawShootTimedBackCommand(clawSubsystem))));
 
     // L3 Command
     controller
@@ -268,7 +283,7 @@ public class RobotContainer {
 
     controller.povRight().whileTrue(new alignreef(true, drive));
 
-    // controller.y().whileTrue(new alignalage(drive));
+    controller.povDown().whileTrue(new alignalage(drive));
 
     // Climber
     controller2.povUp().whileTrue((new ClimberClawCommand(climberSubsystem)));
@@ -294,14 +309,27 @@ public class RobotContainer {
                 .andThen(new ElevatorSetPositionCommand(elevatorSubsystem, 0.382))
                 .andThen(new ClawShootTimedBackCommand(clawSubsystem)));
 
-    // Auto Test
-    // Pose2d visionPose = LimelightHelpers.getBotPose2d("limelight");
+    // controller2
+    // .y()
+    // .whileTrue(
+    //     new ElevatorSetPositionCommand(elevatorSubsystem, 0.90)
+    //         .alongWith(new PivotSetPositionCommand(pivotSubsystem, 177))
+    //         .andThen(new WaitUntilCommand(() -> intakeSubsystem.getCanRange()))
+    //         .andThen(
+    //             new ElevatorSetPositionCommand(elevatorSubsystem, 0.85)
+    //                 .alongWith(new ClawIntakeCommand(clawSubsystem, intakeSubsystem))
+    //         )
+    //         .andThen(new ElevatorSetPositionCommand(elevatorSubsystem, 0.9))
+    //         .andThen(new PivotSetPositionCommand(pivotSubsystem, 0, 130))
+    //         .andThen(new ElevatorSetPositionCommand(elevatorSubsystem, 0.382))
+    //         .andThen(new ClawShootTimedBackCommand(clawSubsystem))
+    // );
+
     controller2.leftBumper().whileTrue(new ElevatorResetPositionCommand(elevatorSubsystem));
 
+    // Auto Test
+
     final DriverStation.Alliance alliance = DriverStation.getAlliance().orElse(Alliance.Red);
-    // Pose2d startPose = new Pose2d(new Translation2d(10.574, 6.607),
-    // Rotation2d.fromDegrees(-180));
-    // drive.setPose(startPose);
 
     SmartDashboard.putData("Pathfind to Closest Reef", findToClosestReefCommand(alliance));
 

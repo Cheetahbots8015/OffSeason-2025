@@ -2,6 +2,7 @@ package frc.robot.subsystems.intake;
 
 import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.StatusSignal;
+import com.ctre.phoenix6.configs.CANrangeConfiguration;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.DutyCycleOut;
 import com.ctre.phoenix6.controls.MotionMagicTorqueCurrentFOC;
@@ -29,6 +30,7 @@ public class IntakeIOTalonFX implements IntakeIO {
   private TalonFXConfiguration indexerConfigs = new TalonFXConfiguration();
   private TalonFXConfiguration intakeConfigs = new TalonFXConfiguration();
   private TalonFXConfiguration armConfigs = new TalonFXConfiguration();
+  private final CANrangeConfiguration canRangeConfigs = new CANrangeConfiguration();
 
   // Inputs from indexer
   private final StatusSignal<Angle> IndexerPosition;
@@ -69,6 +71,13 @@ public class IntakeIOTalonFX implements IntakeIO {
         IntakeConstants.indexer_inverted_CounterClockwisePositive
             ? InvertedValue.CounterClockwise_Positive
             : InvertedValue.Clockwise_Positive);
+
+    // Set Canrange constants
+    // config canRange
+    canRangeConfigs.ProximityParams.ProximityThreshold = IntakeConstants.canRangeThreshold;
+    canRangeConfigs.ProximityParams.MinSignalStrengthForValidMeasurement =
+        IntakeConstants.minSignalStrength;
+    canRangeConfigs.ProximityParams.ProximityHysteresis = IntakeConstants.canRangeHysteresis;
 
     // Set PID and feedforward constants from constants file
     indexerConfigs.Slot0.kP = IntakeConstants.indexer_kP;
@@ -131,6 +140,7 @@ public class IntakeIOTalonFX implements IntakeIO {
     indexer.getConfigurator().apply(indexerConfigs);
     intake.getConfigurator().apply(intakeConfigs);
     arm.getConfigurator().apply(armConfigs);
+    canrange.getConfigurator().apply(canRangeConfigs);
 
     // Create Indexer status signals
     IndexerPosition = indexer.getPosition();
@@ -229,7 +239,8 @@ public class IntakeIOTalonFX implements IntakeIO {
 
   @Override
   public boolean getCanRange() {
-    return Canrange.getValue();
+    canrange.getIsDetected().refresh();
+    return canrange.getIsDetected().getValue();
   }
 
   @Override
