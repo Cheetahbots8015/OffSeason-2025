@@ -2,7 +2,6 @@ package frc.robot.subsystems.climber;
 
 import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.StatusSignal;
-import com.ctre.phoenix6.configs.CANrangeConfiguration;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.DutyCycleOut;
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
@@ -28,8 +27,7 @@ public class ClimberIOTalonFX implements ClimberIO {
   private final CANrange canrange;
   private TalonFXConfiguration clawConfigs = new TalonFXConfiguration();
   private TalonFXConfiguration pivotConfigs = new TalonFXConfiguration();
-  private CANrangeConfiguration canrangeConfigs = new CANrangeConfiguration();
-  private final DigitalInput lightTrigger = new DigitalInput(3);
+  private final DigitalInput lightTrigger2 = new DigitalInput(3);
 
   // Voltage control requests
   final MotionMagicVoltage m_motorRequest = new MotionMagicVoltage(0);
@@ -43,9 +41,6 @@ public class ClimberIOTalonFX implements ClimberIO {
   private final StatusSignal<AngularVelocity> PivotVelocity;
   private final StatusSignal<Voltage> PivotAppliedVolts;
   private final StatusSignal<Current> PivotCurrent;
-
-  // Inputs from canrange
-  private final StatusSignal<Boolean> Canrange;
 
   // Median filter for light trigger
   private final MedianFilter filter = new MedianFilter(30);
@@ -86,19 +81,19 @@ public class ClimberIOTalonFX implements ClimberIO {
     pivotConfigs.Slot0.kS = ClimberConstants.pivotkS;
     pivotConfigs.Slot0.kV = ClimberConstants.pivotkV;
 
-    pivotConfigs.Slot1.kP = ClimberConstants.pivotkP;
-    pivotConfigs.Slot1.kI = ClimberConstants.pivotkI;
-    pivotConfigs.Slot1.kD = ClimberConstants.pivotkD;
-    pivotConfigs.Slot1.kA = ClimberConstants.pivotkA;
-    pivotConfigs.Slot1.kS = ClimberConstants.pivotkS;
-    pivotConfigs.Slot1.kV = ClimberConstants.pivotkV;
+    pivotConfigs.Slot1.kP = ClimberConstants.pivotClimbkP;
+    pivotConfigs.Slot1.kI = ClimberConstants.pivotClimbkI;
+    pivotConfigs.Slot1.kD = ClimberConstants.pivotClimbkD;
+    pivotConfigs.Slot1.kA = ClimberConstants.pivotClimbkA;
+    pivotConfigs.Slot1.kS = ClimberConstants.pivotClimbkS;
+    pivotConfigs.Slot1.kV = ClimberConstants.pivotClimbkV;
 
     pivotConfigs.SoftwareLimitSwitch.ReverseSoftLimitThreshold = 0.0;
     pivotConfigs.SoftwareLimitSwitch.ForwardSoftLimitThreshold = 0.0;
     pivotConfigs.SoftwareLimitSwitch.ReverseSoftLimitEnable = false;
     pivotConfigs.SoftwareLimitSwitch.ForwardSoftLimitEnable = false;
-    pivotConfigs.MotionMagic.MotionMagicCruiseVelocity = 10;
-    pivotConfigs.MotionMagic.MotionMagicAcceleration = 10;
+    pivotConfigs.MotionMagic.MotionMagicCruiseVelocity = 100;
+    pivotConfigs.MotionMagic.MotionMagicAcceleration = 100;
 
     // Apply the configuration to the motor
     claw.getConfigurator().apply(clawConfigs);
@@ -114,9 +109,6 @@ public class ClimberIOTalonFX implements ClimberIO {
     PivotAppliedVolts = pivot.getMotorVoltage();
     PivotCurrent = pivot.getTorqueCurrent();
 
-    // Create canrange status signals
-    Canrange = canrange.getIsDetected();
-
     BaseStatusSignal.setUpdateFrequencyForAll(
         ClimberConstants.statusUpdateFrequency,
         ClawPosition,
@@ -126,8 +118,7 @@ public class ClimberIOTalonFX implements ClimberIO {
         PivotPosition,
         PivotVelocity,
         PivotAppliedVolts,
-        PivotCurrent,
-        Canrange);
+        PivotCurrent);
     ParentDevice.optimizeBusUtilizationForAll(claw, pivot);
   }
 
@@ -141,8 +132,7 @@ public class ClimberIOTalonFX implements ClimberIO {
         PivotPosition,
         PivotVelocity,
         PivotAppliedVolts,
-        PivotCurrent,
-        Canrange);
+        PivotCurrent);
     // Update claw inputs
     inputs.ClawPositionRad = Units.rotationsToRadians(ClawPosition.getValueAsDouble());
     inputs.ClawVelocityRadPerSec = Units.rotationsToRadians(ClawVelocity.getValueAsDouble());
@@ -154,10 +144,8 @@ public class ClimberIOTalonFX implements ClimberIO {
     inputs.PivotVelocityRadPerSec = Units.rotationsToRadians(PivotVelocity.getValueAsDouble());
     inputs.PivotAppliedVolts = PivotAppliedVolts.getValueAsDouble();
     inputs.PivotCurrentAmps = PivotCurrent.getValueAsDouble();
-    // Update canrange inputs
-    inputs.Canrange = Canrange.getValue();
     // Update light trigger input
-    inputs.lightTrigger = filter.calculate((!lightTrigger.get()) ? 1.0 : 0.0);
+    inputs.lightTrigger2 = filter.calculate((!lightTrigger2.get()) ? 1.0 : 0.0);
   }
 
   @Override
@@ -174,11 +162,6 @@ public class ClimberIOTalonFX implements ClimberIO {
   @Override
   public void setPivotVoltage(double volts) {
     pivot.setVoltage(volts);
-  }
-
-  @Override
-  public boolean getCanRange() {
-    return Canrange.getValue();
   }
 
   @Override

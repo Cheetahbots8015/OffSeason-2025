@@ -31,8 +31,7 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.commands.ClawCommands.*;
 import frc.robot.commands.ClimberCommand.ClimberClawCommand;
-import frc.robot.commands.ClimberCommand.ClimberPivotDefaultCommand;
-import frc.robot.commands.ClimberCommand.ClimberPivotUpCommand;
+import frc.robot.commands.ClimberCommand.ClimberSetPositionCommand;
 import frc.robot.commands.DriveCommands;
 import frc.robot.commands.ElevatorCommands.*;
 import frc.robot.commands.IntakeCommands.*;
@@ -222,7 +221,7 @@ public class RobotContainer {
     // L3 Command
     controller
         .a()
-        .whileTrue(
+        .onTrue(
             new ElevatorSetPositionCommand(elevatorSubsystem, 0.879)
                 .andThen(new PivotSetPositionCommand(pivotSubsystem, 43))
                 .andThen(new ClawShootCommand(clawSubsystem))
@@ -233,7 +232,7 @@ public class RobotContainer {
     // L4 Command
     controller
         .b()
-        .whileTrue(
+        .onTrue(
             new ElevatorSetPositionCommand(elevatorSubsystem, 1.50)
                 .andThen(new PivotSetPositionCommand(pivotSubsystem, 35))
                 .andThen(new ClawShootCommand(clawSubsystem))
@@ -267,7 +266,7 @@ public class RobotContainer {
     // L2 Command
     controller
         .povRight()
-        .whileTrue(
+        .onTrue(
             new ElevatorSetPositionCommand(elevatorSubsystem, 0.382)
                 .alongWith(new PivotSetPositionCommand(pivotSubsystem, 27))
                 .andThen(new ClawShootCommand(clawSubsystem)));
@@ -291,10 +290,22 @@ public class RobotContainer {
     controller2.povUp().whileTrue((new ClimberClawCommand(climberSubsystem)));
     controller2
         .leftTrigger()
-        .whileTrue(
-            new ClimberPivotDefaultCommand(climberSubsystem)
+        .onTrue(
+            new ClimberSetPositionCommand(climberSubsystem, -420)
                 .alongWith(new PivotSetPositionCommand(pivotSubsystem, 100)));
-    controller2.rightTrigger().whileTrue(new ClimberPivotUpCommand(climberSubsystem));
+
+    controller2
+        .rightTrigger()
+        .onTrue(
+            new ClimberSetPositionCommand(climberSubsystem, 340)
+                .alongWith(new PivotSetPositionCommand(pivotSubsystem, 100)));
+
+    // controller2
+    //     .leftTrigger()
+    //     .whileTrue(
+    //         new ClimberPivotDefaultCommand(climberSubsystem)
+    //             .alongWith(new PivotSetPositionCommand(pivotSubsystem, 100)));
+    // controller2.rightTrigger().whileTrue(new ClimberPivotUpCommand(climberSubsystem));
     controller2.rightBumper().whileTrue(new ElevatorSetPositionCommand(elevatorSubsystem, 1));
 
     // Claw Intake Command

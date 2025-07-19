@@ -4,6 +4,7 @@ package frc.robot.subsystems.climber;
 
 import static edu.wpi.first.units.Units.Volt;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.constants.ClimberConstants;
@@ -58,6 +59,7 @@ public class ClimberSubsystem extends SubsystemBase {
     //         "Climber's pivot Down Duty Cycle Out Value", pivotDownDutyCycleOutValue);
     // clawDutyCycleOutValue =
     //     SmartDashboard.getNumber("Climber's claw Duty Cycle Out Value", clawDutyCycleOutValue);
+    SmartDashboard.putBoolean("Climber Claw Status", inputs.lightTrigger2 >= 0.9);
   }
 
   public double getPivotUpDutyCycleOutValue() {

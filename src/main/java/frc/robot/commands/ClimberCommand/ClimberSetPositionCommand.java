@@ -1,14 +1,16 @@
 package frc.robot.commands.ClimberCommand;
 
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.constants.ClimberConstants;
 import frc.robot.subsystems.climber.ClimberSubsystem;
 
-public class ClimberPivotUpCommand extends Command {
+public class ClimberSetPositionCommand extends Command {
   private final ClimberSubsystem m_subsystem;
+  private final double m_position;
 
-  public ClimberPivotUpCommand(ClimberSubsystem subsystem) {
+  public ClimberSetPositionCommand(ClimberSubsystem subsystem, double position) {
     m_subsystem = subsystem;
+    m_position = position;
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(subsystem);
   }
@@ -20,7 +22,12 @@ public class ClimberPivotUpCommand extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    m_subsystem.setPivotVoltage(2);
+    if (m_position < -100) {
+      m_subsystem.setClimberPivotDefaultPosition(-420);
+
+    } else {
+      m_subsystem.setClimberPivotFinalPosition(360);
+    }
   }
 
   // Called once the command ends or is interrupted.
@@ -32,7 +39,7 @@ public class ClimberPivotUpCommand extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    SmartDashboard.putBoolean("Climber Status", m_subsystem.getInput().lightTrigger2 >= 0.9);
-    return m_subsystem.getInput().lightTrigger2 >= 0.9;
+    return Math.abs(m_position - m_subsystem.getInput().PivotPositionDeg)
+        < ClimberConstants.allowableError;
   }
 }
