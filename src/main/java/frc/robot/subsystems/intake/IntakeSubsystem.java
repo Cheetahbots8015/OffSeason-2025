@@ -53,10 +53,6 @@ public class IntakeSubsystem extends SubsystemBase {
     io.setIndexerVoltage(volts);
   }
 
-  public boolean getCanRange() {
-    return io.getCanRange();
-  }
-
   public void setArmToDegrees(double degrees) {
     io.setArmToDegrees(degrees);
   }
@@ -83,5 +79,9 @@ public class IntakeSubsystem extends SubsystemBase {
 
   public void resetArmPosition() {
     io.resetArmPosition();
+  }
+
+  public boolean getCanRange() {
+    return io.getCanRange();
   }
 }

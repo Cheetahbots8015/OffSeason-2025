@@ -15,6 +15,7 @@ package frc.robot;
 
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
+import com.pathplanner.lib.commands.PathPlannerAuto;
 import com.pathplanner.lib.path.PathConstraints;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -36,6 +37,7 @@ import frc.robot.commands.DriveCommands;
 import frc.robot.commands.ElevatorCommands.*;
 import frc.robot.commands.IntakeCommands.*;
 import frc.robot.commands.PivotCommands.*;
+import frc.robot.commands.alignalage;
 import frc.robot.commands.alignreef;
 import frc.robot.constants.AutoConstants;
 import frc.robot.constants.ContainerConstants;
@@ -201,6 +203,20 @@ public class RobotContainer {
 
     // Intake arm
     controller.leftTrigger().whileTrue(new IntakeArmForwardCommand(intakeSubsystem, 1));
+    // controller
+    //     .leftTrigger()
+    //     .whileTrue(
+    //         new IntakeArmForwardCommand(intakeSubsystem, 1)
+    //             .alongWith((new ElevatorSetPositionCommand(elevatorSubsystem, 0.90))
+    //             .alongWith(new PivotSetPositionCommand(pivotSubsystem, 177))
+    //             .andThen(new ElevatorSetPositionCommand(elevatorSubsystem, 0.90))
+    //             .andThen(new WaitUntilCommand(() -> intakeSubsystem.getCanRange()))
+    //             .andThen(new ElevatorSetPositionCommand(elevatorSubsystem, 0.85))
+    //             .andThen(new ClawIntakeCommand(clawSubsystem, intakeSubsystem))
+    //             .andThen(new ElevatorSetPositionCommand(elevatorSubsystem, 0.9))
+    //             .andThen(new PivotSetPositionCommand(pivotSubsystem, 0, 130))
+    //             .andThen(new ElevatorSetPositionCommand(elevatorSubsystem, 0.382))
+    //             .andThen(new ClawShootTimedBackCommand(clawSubsystem))));
 
     // L3 Command
     controller
@@ -268,7 +284,7 @@ public class RobotContainer {
 
     controller.povRight().whileTrue(new alignreef(true, drive));
 
-    // controller.y().whileTrue(new alignalage(drive));
+    controller.povDown().whileTrue(new alignalage(drive));
 
     // Climber
     controller2.povUp().whileTrue((new ClimberClawCommand(climberSubsystem)));
@@ -294,28 +310,35 @@ public class RobotContainer {
                 .andThen(new ElevatorSetPositionCommand(elevatorSubsystem, 0.382))
                 .andThen(new ClawShootTimedBackCommand(clawSubsystem)));
 
-    // Auto Test
-    // Pose2d visionPose = LimelightHelpers.getBotPose2d("limelight");
+    // controller2
+    // .y()
+    // .whileTrue(
+    //     new ElevatorSetPositionCommand(elevatorSubsystem, 0.90)
+    //         .alongWith(new PivotSetPositionCommand(pivotSubsystem, 177))
+    //         .andThen(new WaitUntilCommand(() -> intakeSubsystem.getCanRange()))
+    //         .andThen(
+    //             new ElevatorSetPositionCommand(elevatorSubsystem, 0.85)
+    //                 .alongWith(new ClawIntakeCommand(clawSubsystem, intakeSubsystem))
+    //         )
+    //         .andThen(new ElevatorSetPositionCommand(elevatorSubsystem, 0.9))
+    //         .andThen(new PivotSetPositionCommand(pivotSubsystem, 0, 130))
+    //         .andThen(new ElevatorSetPositionCommand(elevatorSubsystem, 0.382))
+    //         .andThen(new ClawShootTimedBackCommand(clawSubsystem))
+    // );
+
     controller2.leftBumper().whileTrue(new ElevatorResetPositionCommand(elevatorSubsystem));
 
+    // Auto Test
+
     final DriverStation.Alliance alliance = DriverStation.getAlliance().orElse(Alliance.Red);
-    // Pose2d startPose = new Pose2d(new Translation2d(10.574, 6.607),
-    // Rotation2d.fromDegrees(-180));
-    // drive.setPose(startPose);
 
     SmartDashboard.putData("Pathfind to Closest Reef", findToClosestReefCommand(alliance));
 
     SmartDashboard.putData("FirstL4", findToClosestReefCommand(alliance).andThen(getL4Command()));
-
-    SmartDashboard.putData(
-        "AutoCycle",
-        getRightAutoCycleCommand(new Pose2d(3.7, 2.5, new Rotation2d(Math.toRadians(-120))), true)
-            .andThen(
-                getRightAutoCycleCommand(
-                    new Pose2d(3.7, 2.5, new Rotation2d(Math.toRadians(-120))), false)));
   }
 
   public Command getRightAutoCycleCommand(Pose2d nearReafPoint, boolean isRightReef) {
+    nearReafPoint = FieldConstants.inversePose2dUsingAlliance(nearReafPoint, Alliance.Blue);
     return AutoBuilder.pathfindToPose(
             AutoConstants.rightPrepareToIntakePoint,
             new PathConstraints(3, 6, Units.degreesToRadians(360), Units.degreesToRadians(540)),
@@ -325,10 +348,10 @@ public class RobotContainer {
             AutoBuilder.pathfindToPose(
                     AutoConstants.rightStation,
                     new PathConstraints(
-                        1, 2, Units.degreesToRadians(360), Units.degreesToRadians(540)),
+                        0.8, 2, Units.degreesToRadians(360), Units.degreesToRadians(540)),
                     0)
                 .withTimeout(1.5)
-                .alongWith(new IntakeArmForwardCommand(intakeSubsystem, 1).withTimeout(2.0)))
+                .alongWith(new IntakeArmForwardCommand(intakeSubsystem, 1).withTimeout(1.5)))
         .andThen(
             AutoBuilder.pathfindToPose(
                     nearReafPoint,
@@ -338,6 +361,32 @@ public class RobotContainer {
                 .withTimeout(2.0))
         .andThen(new alignreef(isRightReef, drive).withTimeout(1.0))
         .andThen(getL4Command().withTimeout(1.0));
+  }
+
+  public Command getLeftAutoCycleCommand(Pose2d nearReafPoint, boolean isRightReef) {
+    nearReafPoint = FieldConstants.inversePose2dUsingAlliance(nearReafPoint, Alliance.Blue);
+    return AutoBuilder.pathfindToPose(
+            AutoConstants.leftPrepareToIntakePoint,
+            new PathConstraints(2, 4, Units.degreesToRadians(360), Units.degreesToRadians(540)),
+            0.5)
+        .withTimeout(15.0)
+        .andThen(
+            AutoBuilder.pathfindToPose(
+                    AutoConstants.leftStation,
+                    new PathConstraints(
+                        0.8, 2, Units.degreesToRadians(360), Units.degreesToRadians(540)),
+                    0)
+                .withTimeout(15)
+                .alongWith(new IntakeArmForwardCommand(intakeSubsystem, 1).withTimeout(15)))
+        .andThen(
+            AutoBuilder.pathfindToPose(
+                    nearReafPoint,
+                    new PathConstraints(
+                        2, 4, Units.degreesToRadians(360), Units.degreesToRadians(540)),
+                    0.5)
+                .withTimeout(15))
+        .andThen(new alignreef(isRightReef, drive).withTimeout(15))
+        .andThen(getL4Command().withTimeout(1));
   }
 
   public Command getL4Command() {
@@ -370,6 +419,20 @@ public class RobotContainer {
    * @return the command to run in autonomous
    */
   public Command getAutonomousCommand() {
-    return autoChooser.get();
+    // return new PathPlannerAuto("test 1m")
+    //     .andThen(
+    //         getRightAutoCycleCommand(
+    //             new Pose2d(3.7, 2.5, new Rotation2d(Math.toRadians(-120))), true))
+    //     .andThen(
+    //         getRightAutoCycleCommand(
+    //             new Pose2d(3.7, 2.5, new Rotation2d(Math.toRadians(-120))), false));
+
+    return new PathPlannerAuto("test 1m")
+        .andThen(
+            getLeftAutoCycleCommand(
+                new Pose2d(3.7, 5.5, new Rotation2d(Math.toRadians(120))), true))
+        .andThen(
+            getLeftAutoCycleCommand(
+                new Pose2d(3.7, 5.5, new Rotation2d(Math.toRadians(120))), false));
   }
 }

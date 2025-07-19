@@ -144,7 +144,7 @@ public class Drive extends SubsystemBase {
         this::getChassisSpeeds,
         this::runVelocity,
         new PPHolonomicDriveController(
-            new PIDConstants(0.8, 0.0, 0.1), new PIDConstants(5, 0.0, 0.0)),
+            new PIDConstants(10.0, 0.0, 0.1), new PIDConstants(5, 0.0, 0.0)),
         PP_CONFIG,
         () -> DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Red,
         this);
@@ -310,7 +310,7 @@ public class Drive extends SubsystemBase {
       doRejectUpdate = false;
       LimelightHelpers.SetFiducialIDFiltersOverride("limelight-left", validateID);
       LimelightHelpers.PoseEstimate mt1 =
-          LimelightHelpers.getBotPoseEstimate_wpiBlue("limelight-left");
+          LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2("limelight-left");
       if (mt1.tagCount == 0) {
         doRejectUpdate = true;
       } else {
@@ -340,7 +340,7 @@ public class Drive extends SubsystemBase {
           0);
       LimelightHelpers.SetFiducialIDFiltersOverride("limelight-right", validateID);
       LimelightHelpers.PoseEstimate mt1r =
-          LimelightHelpers.getBotPoseEstimate_wpiBlue("limelight-right");
+          LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2("limelight-right");
       if (mt1r.tagCount == 0) {
         doRejectUpdater = true;
       } else {
