@@ -24,7 +24,7 @@ public class ClawIOTalonFX implements ClawIO {
   private final TalonFX shooter;
   private TalonFXConfiguration intakeConfigs = new TalonFXConfiguration();
   private TalonFXConfiguration shooterConfigs = new TalonFXConfiguration();
-  private final DigitalInput lightTrigger = new DigitalInput(0);
+  private final DigitalInput lightTrigger = new DigitalInput(1);
   // Voltage control requests
   final VelocityVoltage m_velocity = new VelocityVoltage(0).withSlot(0);
   // Inputs from intake

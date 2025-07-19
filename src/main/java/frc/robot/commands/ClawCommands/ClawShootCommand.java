@@ -28,6 +28,6 @@ public class ClawShootCommand extends Command {
 
   @Override
   public boolean isFinished() {
-    return m_subsystem.getInput().lightTrigger <= 0.1;
+    return false;
   }
 }

@@ -13,10 +13,14 @@ public class pivotElevatorSetPositionCommand extends Command {
   private final double elevatorPosition;
   private final double pivotPosition;
 
-  private  boolean keepPivot = false;
-  private  boolean keepElevator = false;
+  private boolean keepPivot = false;
+  private boolean keepElevator = false;
 
-  public pivotElevatorSetPositionCommand(ElevatorSubsystem elevator, double elevatorPosition, PivotSubsystem pivot, double pivotPosition) {
+  public pivotElevatorSetPositionCommand(
+      ElevatorSubsystem elevator,
+      double elevatorPosition,
+      PivotSubsystem pivot,
+      double pivotPosition) {
     m_elevator = elevator;
     m_pivot = pivot;
     this.elevatorPosition = elevatorPosition;
@@ -24,7 +28,8 @@ public class pivotElevatorSetPositionCommand extends Command {
     addRequirements(m_elevator, m_pivot);
   }
 
-  public pivotElevatorSetPositionCommand(ElevatorSubsystem elevator, double elevatorPosition, PivotSubsystem pivot) {
+  public pivotElevatorSetPositionCommand(
+      ElevatorSubsystem elevator, double elevatorPosition, PivotSubsystem pivot) {
     m_elevator = elevator;
     m_pivot = pivot;
     this.elevatorPosition = elevatorPosition;
@@ -33,7 +38,8 @@ public class pivotElevatorSetPositionCommand extends Command {
     addRequirements(m_elevator, m_pivot);
   }
 
-  public pivotElevatorSetPositionCommand(ElevatorSubsystem elevator, PivotSubsystem pivot, double pivotPosition) {
+  public pivotElevatorSetPositionCommand(
+      ElevatorSubsystem elevator, PivotSubsystem pivot, double pivotPosition) {
     m_elevator = elevator;
     m_pivot = pivot;
     this.elevatorPosition = elevator.getInput().ElevatorHeightMeters;
@@ -48,26 +54,27 @@ public class pivotElevatorSetPositionCommand extends Command {
 
   @Override
   public void execute() {
-    if(!keepElevator){
-    m_elevator.setPosition(elevatorPosition);
+    if (!keepElevator) {
+      m_elevator.setPosition(elevatorPosition);
     }
-    if(!keepPivot){
+    if (!keepPivot) {
       m_pivot.setPosition(pivotPosition);
     }
   }
 
   @Override
-  public void end(boolean interrupted) {
+  public void end(boolean interrupted) {}
+
+  private boolean isElevatorAtGoal() {
+    return (keepElevator)
+        || (Math.abs(m_elevator.getInput().ElevatorHeightMeters - elevatorPosition)
+            < ElevatorConstants.PositionDeadband);
   }
 
-  private boolean isElevatorAtGoal(){
-    return (keepElevator) ||
-        (Math.abs(m_elevator.getInput().ElevatorHeightMeters - elevatorPosition) < ElevatorConstants.PositionDeadband);
-  }
-
-  private boolean isPivotAtGoal(){
+  private boolean isPivotAtGoal() {
     return (keepPivot)
-        || (Math.abs(m_pivot.getInput().PivotPositionDegree - pivotPosition) < PivotConstants.PositionDeadband);
+        || (Math.abs(m_pivot.getInput().PivotPositionDegree - pivotPosition)
+            < PivotConstants.PositionDeadband);
   }
 
   @Override

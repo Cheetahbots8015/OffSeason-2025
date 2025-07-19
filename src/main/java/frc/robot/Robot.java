@@ -143,7 +143,9 @@ public class Robot extends LoggedRobot {
     autonomousCommand = robotContainer.getAutonomousCommand();
 
     // schedule the autonomous command (example)
+
     if (autonomousCommand != null) {
+      robotContainer.getPivotStartCommand().schedule();
       autonomousCommand.schedule();
     }
   }

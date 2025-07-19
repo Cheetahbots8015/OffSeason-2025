@@ -46,14 +46,12 @@ import edu.wpi.first.wpilibj.Alert;
 import edu.wpi.first.wpilibj.Alert.AlertType;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
-import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.LimelightHelpers;
 import frc.robot.LimelightHelpers.PoseEstimate;
-import frc.robot.LimelightHelpers.RawFiducial;
 import frc.robot.constants.ContainerConstants;
 import frc.robot.constants.ContainerConstants.Mode;
 import frc.robot.constants.DriveConstants;
@@ -208,34 +206,32 @@ public class Drive extends SubsystemBase {
   }
 
   private boolean shouldReject(PoseEstimate mt1, int[] validateID) {
-    //ambiguity check
-    if(mt1.tagCount == 0){
+    // ambiguity check
+    if (mt1.tagCount == 0) {
       return false;
-    }
-    else if(mt1.tagCount == 1 && mt1.rawFiducials.length == 1){
-      if(mt1.rawFiducials[0].ambiguity > 0.5){
+    } else if (mt1.tagCount == 1 && mt1.rawFiducials.length == 1) {
+      if (mt1.rawFiducials[0].ambiguity > 0.5) {
         return true;
       }
-      //check distance
-      if(mt1.rawFiducials[0].distToCamera > 2.0){
+      // check distance
+      if (mt1.rawFiducials[0].distToCamera > 2.0) {
         return true;
       }
-      //check if allowed
-      else{
+      // check if allowed
+      else {
         boolean allowed = false;
-        for(int i : validateID){
-          if(mt1.rawFiducials[0].id == i){
+        for (int i : validateID) {
+          if (mt1.rawFiducials[0].id == i) {
             allowed = true;
           }
         }
         return !allowed;
       }
     }
-    //if multiple tags
-    else{
-      return mt1.avgTagDist>2.0;
+    // if multiple tags
+    else {
+      return mt1.avgTagDist > 2.0;
     }
-  
   }
 
   @Override
@@ -310,7 +306,7 @@ public class Drive extends SubsystemBase {
       doRejectUpdate = false;
       LimelightHelpers.SetFiducialIDFiltersOverride("limelight-left", validateID);
       LimelightHelpers.PoseEstimate mt1 =
-          LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2("limelight-left");
+          LimelightHelpers.getBotPoseEstimate_wpiBlue("limelight-left");
       if (mt1.tagCount == 0) {
         doRejectUpdate = true;
       } else {
@@ -340,7 +336,7 @@ public class Drive extends SubsystemBase {
           0);
       LimelightHelpers.SetFiducialIDFiltersOverride("limelight-right", validateID);
       LimelightHelpers.PoseEstimate mt1r =
-          LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2("limelight-right");
+          LimelightHelpers.getBotPoseEstimate_wpiBlue("limelight-right");
       if (mt1r.tagCount == 0) {
         doRejectUpdater = true;
       } else {

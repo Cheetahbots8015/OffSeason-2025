@@ -5,6 +5,12 @@
     "data": {
       "commands": [
         {
+          "type": "named",
+          "data": {
+            "name": "PivotLocked"
+          }
+        },
+        {
           "type": "path",
           "data": {
             "pathName": "First L4"

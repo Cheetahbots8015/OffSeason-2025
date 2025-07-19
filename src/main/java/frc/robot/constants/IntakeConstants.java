@@ -34,7 +34,7 @@ public class IntakeConstants {
   // canRange can ID, name and configs
   public static final int canRangeID = 60;
   public static final String canName = "canivore";
-  public static final double canRangeThreshold = 0.03;
+  public static final double canRangeThreshold = 0.06;
   public static final double canRangeHysteresis = 0.005;
   public static final int minSignalStrength = 2500;
   public static final double statusUpdateFrequency = 50.0;

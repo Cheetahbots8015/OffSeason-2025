@@ -17,6 +17,9 @@ public class IntakeRollerIndexerOutCommand extends Command {
   @Override
   public void execute() {
     // Set both intake roller and indexer voltages
+    if (m_subsystem.getArmPosition() <= 40) {
+      m_subsystem.setArmVoltage(1);
+    }
     m_subsystem.setIntakeVoltage(-3);
     m_subsystem.setIndexerVoltage(-3);
   }
@@ -26,6 +29,7 @@ public class IntakeRollerIndexerOutCommand extends Command {
     // Stop both intake roller and indexer
     m_subsystem.setIntakeVoltage(0.0);
     m_subsystem.setIndexerVoltage(0.0);
+    m_subsystem.setArmVoltage(0.0);
   }
 
   @Override

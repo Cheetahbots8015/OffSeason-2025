@@ -9,7 +9,7 @@ public interface ClimberIO {
     public double ClawVelocityRadPerSec = 0.0;
     public double ClawAppliedVolts = 0.0;
     public double ClawCurrentAmps = 0.0;
-    public double PivotPositionRad = 0.0;
+    public double PivotPositionDeg = 0.0;
     public double PivotVelocityRadPerSec = 0.0;
     public double PivotAppliedVolts = 0.0;
     public double PivotCurrentAmps = 0.0;
@@ -33,5 +33,7 @@ public interface ClimberIO {
     return false;
   }
 
-  public default void setClimberPosition() {}
+  public default void setClimberPivotFinalPosition(double degeree) {}
+
+  public default void setClimberPivotDefaultPosition(double degeree) {}
 }

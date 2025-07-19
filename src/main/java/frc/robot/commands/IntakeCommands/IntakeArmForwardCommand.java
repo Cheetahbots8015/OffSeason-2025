@@ -22,7 +22,7 @@ public class IntakeArmForwardCommand extends Command {
       m_subsystem.setArmVoltage(m_volts);
     }
 
-    m_subsystem.setIntakeVoltage(3);
+    m_subsystem.setIntakeVoltage(5);
     m_subsystem.setIndexerVoltage(2);
   }
 
@@ -35,6 +35,6 @@ public class IntakeArmForwardCommand extends Command {
 
   @Override
   public boolean isFinished() {
-    return false;
+    return m_subsystem.getCanRange();
   }
 }

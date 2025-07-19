@@ -1,5 +1,6 @@
 package frc.robot.util;
 
+import frc.robot.constants.ClimberConstants;
 import frc.robot.constants.IntakeConstants;
 import frc.robot.constants.PivotConstants;
 import java.util.function.DoubleSupplier;
@@ -138,5 +139,13 @@ public class CheetahUtil {
 
   public static double intakeArmDegreesToRotation(double degrees) {
     return degrees / 360.0 / IntakeConstants.ReductionRatio;
+  }
+
+  public static double climberPivotRotationToDegrees(double rotations) {
+    return rotations * 360.0 * ClimberConstants.ReductionRatio;
+  }
+
+  public static double climberPivotDegreesToRotation(double degrees) {
+    return degrees / 360.0 / ClimberConstants.ReductionRatio;
   }
 }
