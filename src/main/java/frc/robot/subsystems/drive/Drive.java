@@ -46,6 +46,7 @@ import edu.wpi.first.wpilibj.Alert;
 import edu.wpi.first.wpilibj.Alert.AlertType;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -207,18 +208,34 @@ public class Drive extends SubsystemBase {
   }
 
   private boolean shouldReject(PoseEstimate mt1, int[] validateID) {
-    for (RawFiducial rawFiducial : mt1.rawFiducials) {
-      for (int i : validateID) {
-        if (rawFiducial.id == i) {
-          if (rawFiducial.ambiguity < DriveConstants.maxAmbiguity
-              && rawFiducial.distToCamera < DriveConstants.maxCameraDist
-              && rawFiducial.ta > DriveConstants.minArea) {
-            return false;
+    //ambiguity check
+    if(mt1.tagCount == 0){
+      return false;
+    }
+    else if(mt1.tagCount == 1 && mt1.rawFiducials.length == 1){
+      if(mt1.rawFiducials[0].ambiguity > 0.5){
+        return true;
+      }
+      //check distance
+      if(mt1.rawFiducials[0].distToCamera > 2.0){
+        return true;
+      }
+      //check if allowed
+      else{
+        boolean allowed = false;
+        for(int i : validateID){
+          if(mt1.rawFiducials[0].id == i){
+            allowed = true;
           }
         }
+        return !allowed;
       }
     }
-    return true;
+    //if multiple tags
+    else{
+      return mt1.avgTagDist>2.0;
+    }
+  
   }
 
   @Override
@@ -303,7 +320,10 @@ public class Drive extends SubsystemBase {
         poseEstimator.setVisionMeasurementStdDevs(VecBuilder.fill(.5, .5, 9999999));
         poseEstimator.addVisionMeasurement(mt1.pose, mt1.timestampSeconds);
       }
-      Logger.recordOutput("LL-left-pose", mt1.pose);
+      Logger.recordOutput("LL/left-pose", mt1.pose);
+      Logger.recordOutput("LL/left-timestamp", mt1.timestampSeconds);
+      Logger.recordOutput("LL/avgdist", mt1.avgTagDist);
+      Logger.recordOutput("LL/latency", mt1.latency);
 
     } catch (Exception e) {
       // TODO: handle exception
@@ -330,7 +350,7 @@ public class Drive extends SubsystemBase {
         poseEstimator.setVisionMeasurementStdDevs(VecBuilder.fill(.5, .5, 9999999));
         poseEstimator.addVisionMeasurement(mt1r.pose, mt1r.timestampSeconds);
       }
-      Logger.recordOutput("LL-right-pose", mt1r.pose);
+      Logger.recordOutput("LL/right-pose", mt1r.pose);
     } catch (Exception e) {
       // TODO: handle exception
     }
