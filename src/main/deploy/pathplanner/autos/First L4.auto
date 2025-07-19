@@ -7,7 +7,13 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Copy of test 1m"
+            "pathName": "First L4"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "L4 Command"
           }
         }
       ]

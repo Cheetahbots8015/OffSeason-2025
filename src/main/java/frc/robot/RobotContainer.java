@@ -166,6 +166,7 @@ public class RobotContainer {
     intakeSubsystem.setDefaultCommand(new IntakeArmSetPositionCommand(intakeSubsystem, 0));
 
     NamedCommands.registerCommand("PivotLocked", new PivotSetPositionCommand(pivotSubsystem, 0));
+    NamedCommands.registerCommand("L4 Command", getL4Command().withTimeout(1.5));
     configureButtonBindings();
   }
 
@@ -303,7 +304,7 @@ public class RobotContainer {
             new ElevatorSetPositionCommand(elevatorSubsystem, 0.90)
                 .alongWith(new PivotSetPositionCommand(pivotSubsystem, 177))
                 .andThen(
-                    new ElevatorSetPositionCommand(elevatorSubsystem, 0.85)
+                    new ElevatorSetPositionCommand(elevatorSubsystem, 0.83)
                         .alongWith(new ClawIntakeCommand(clawSubsystem, intakeSubsystem)))
                 .andThen(new ElevatorSetPositionCommand(elevatorSubsystem, 0.9))
                 .andThen(new PivotSetPositionCommand(pivotSubsystem, 0, 130))
@@ -317,7 +318,7 @@ public class RobotContainer {
     //         .alongWith(new PivotSetPositionCommand(pivotSubsystem, 177))
     //         .andThen(new WaitUntilCommand(() -> intakeSubsystem.getCanRange()))
     //         .andThen(
-    //             new ElevatorSetPositionCommand(elevatorSubsystem, 0.85)
+    //             new ElevatorSetPositionCommand(elevatorSubsystem, 0.83)
     //                 .alongWith(new ClawIntakeCommand(clawSubsystem, intakeSubsystem))
     //         )
     //         .andThen(new ElevatorSetPositionCommand(elevatorSubsystem, 0.9))
@@ -351,7 +352,7 @@ public class RobotContainer {
                         0.8, 2, Units.degreesToRadians(360), Units.degreesToRadians(540)),
                     0)
                 .withTimeout(1.5)
-                .alongWith(new IntakeArmForwardCommand(intakeSubsystem, 1).withTimeout(1.5)))
+                .alongWith(new IntakeArmForwardCommand(intakeSubsystem, 1).withTimeout(3)))
         .andThen(
             AutoBuilder.pathfindToPose(
                     nearReafPoint,
@@ -369,23 +370,23 @@ public class RobotContainer {
             AutoConstants.leftPrepareToIntakePoint,
             new PathConstraints(2, 4, Units.degreesToRadians(360), Units.degreesToRadians(540)),
             0.5)
-        .withTimeout(15.0)
+        .withTimeout(5)
         .andThen(
             AutoBuilder.pathfindToPose(
                     AutoConstants.leftStation,
                     new PathConstraints(
                         0.8, 2, Units.degreesToRadians(360), Units.degreesToRadians(540)),
                     0)
-                .withTimeout(15)
-                .alongWith(new IntakeArmForwardCommand(intakeSubsystem, 1).withTimeout(15)))
+                .withTimeout(5)
+                .alongWith(new IntakeArmForwardCommand(intakeSubsystem, 1).withTimeout(3)))
         .andThen(
             AutoBuilder.pathfindToPose(
                     nearReafPoint,
                     new PathConstraints(
                         2, 4, Units.degreesToRadians(360), Units.degreesToRadians(540)),
                     0.5)
-                .withTimeout(15))
-        .andThen(new alignreef(isRightReef, drive).withTimeout(15))
+                .withTimeout(5))
+        .andThen(new alignreef(isRightReef, drive).withTimeout(2))
         .andThen(getL4Command().withTimeout(1));
   }
 
