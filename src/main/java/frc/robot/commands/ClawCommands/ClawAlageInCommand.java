@@ -16,7 +16,7 @@ public class ClawAlageInCommand extends Command {
 
   @Override
   public void execute() {
-    m_subsystem.setIntakeVoltage(8);
+    m_subsystem.ClawIntakeTorqueCurrent(60);
   }
 
   @Override
