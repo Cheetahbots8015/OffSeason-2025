@@ -71,4 +71,8 @@ public class ClawSubsystem extends SubsystemBase {
   public void IntakeVelocityVoltage(double velocity) {
     io.IntakeVelocityVoltage(velocity);
   }
+
+  public void ClawIntakeTorqueCurrent(double current) {
+    io.ClawIntakeTorqueCurrent(current);
+  }
 }

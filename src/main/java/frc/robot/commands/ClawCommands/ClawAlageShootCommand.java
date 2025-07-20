@@ -16,12 +16,12 @@ public class ClawAlageShootCommand extends Command {
 
   @Override
   public void execute() {
-    m_subsystem.setIntakeVoltage(-10);
+    m_subsystem.ClawIntakeTorqueCurrent(-60);
   }
 
   @Override
   public void end(boolean interrupted) {
-    m_subsystem.IntakeVelocityVoltage(0);
+    m_subsystem.ClawIntakeTorqueCurrent(0);
   }
 
   @Override

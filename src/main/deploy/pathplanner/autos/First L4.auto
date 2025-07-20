@@ -19,6 +19,12 @@
         {
           "type": "named",
           "data": {
+            "name": "Auto Allign"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
             "name": "L4 Command"
           }
         }

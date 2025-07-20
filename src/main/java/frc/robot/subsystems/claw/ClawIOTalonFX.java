@@ -4,6 +4,7 @@ import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.DutyCycleOut;
+import com.ctre.phoenix6.controls.TorqueCurrentFOC;
 import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.hardware.ParentDevice;
 import com.ctre.phoenix6.hardware.TalonFX;
@@ -27,6 +28,8 @@ public class ClawIOTalonFX implements ClawIO {
   private final DigitalInput lightTrigger = new DigitalInput(1);
   // Voltage control requests
   final VelocityVoltage m_velocity = new VelocityVoltage(0).withSlot(0);
+
+  final TorqueCurrentFOC m_TorqueCurrentFOC = new TorqueCurrentFOC(0);
   // Inputs from intake
   private final StatusSignal<Angle> IntakePosition;
   private final StatusSignal<AngularVelocity> IntakeVelocity;
@@ -147,6 +150,11 @@ public class ClawIOTalonFX implements ClawIO {
 
   @Override
   public void IntakeVelocityVoltage(double velocity) {
-    intake.setControl(m_velocity.withVelocity(velocity).withFeedForward(1));
+    intake.setControl(m_velocity.withVelocity(velocity).withFeedForward(3.5));
+  }
+
+  @Override
+  public void ClawIntakeTorqueCurrent(double current) {
+    intake.setControl(m_TorqueCurrentFOC.withOutput(current));
   }
 }

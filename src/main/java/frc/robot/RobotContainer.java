@@ -28,6 +28,7 @@ import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.commands.ClawCommands.*;
@@ -169,6 +170,7 @@ public class RobotContainer {
     NamedCommands.registerCommand("PivotLocked", new PivotSetPositionCommand(pivotSubsystem, 0));
     NamedCommands.registerCommand("L4 Command", getL4Command().withTimeout(3.5));
     NamedCommands.registerCommand("Auto Allign", new alignreef(false, drive));
+    NamedCommands.registerCommand("Wait 3s", new WaitCommand(3));
 
     configureButtonBindings();
   }
@@ -247,8 +249,8 @@ public class RobotContainer {
     controller
         .x()
         .whileTrue(
-            new ElevatorSetPositionCommand(elevatorSubsystem, 1.198)
-                .andThen(new PivotSetPositionCommand(pivotSubsystem, 112.8))
+            new ElevatorSetPositionCommand(elevatorSubsystem, 1.38)
+                .andThen(new PivotSetPositionCommand(pivotSubsystem, 120.8))
                 .andThen(new ClawAlageInCommand(clawSubsystem)));
 
     //  Alage Level2 Intake
@@ -266,7 +268,7 @@ public class RobotContainer {
             new ElevatorSetPositionCommand(elevatorSubsystem, 1.615)
                 .andThen(
                     new PivotSetPositionCommand(pivotSubsystem, 21.5)
-                        .alongWith(new ClawAlageShootCommand(clawSubsystem))));
+                        .andThen(new ClawAlageShootCommand(clawSubsystem))));
 
     // L2 Command
     controller
@@ -276,9 +278,11 @@ public class RobotContainer {
                 .alongWith(new PivotSetPositionCommand(pivotSubsystem, 27))
                 .andThen(new ClawShootCommand(clawSubsystem)));
 
+    controller.rightTrigger().whileTrue(new IntakeRollerIndexerOutCommand(intakeSubsystem));
+
     // Sub Driver
 
-    controller2.x().whileTrue(new IntakeRollerIndexerOutCommand(intakeSubsystem));
+    // controller2.x().whileTrue(new IntakeRollerIndexerOutCommand(intakeSubsystem));
     controller2.a().whileTrue(new IntakeArmReverseCommand(intakeSubsystem, 2));
 
     controller2.b().whileTrue(new ElevatorSetPositionCommand(elevatorSubsystem, 0.382));
