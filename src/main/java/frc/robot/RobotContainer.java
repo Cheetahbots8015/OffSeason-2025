@@ -17,6 +17,7 @@ import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.commands.PathPlannerAuto;
 import com.pathplanner.lib.path.PathConstraints;
+import edu.wpi.first.math.filter.Debouncer.DebounceType;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.util.Units;
@@ -49,6 +50,7 @@ import frc.robot.subsystems.climber.ClimberIOTalonFX;
 import frc.robot.subsystems.climber.ClimberSubsystem;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.drive.GyroIO;
+import frc.robot.subsystems.drive.GyroIOPigeon2;
 import frc.robot.subsystems.drive.ModuleIO;
 import frc.robot.subsystems.drive.ModuleIOSim;
 import frc.robot.subsystems.drive.ModuleIOTalonFX;
@@ -95,7 +97,7 @@ public class RobotContainer {
         // Real robot, instantiate hardware IO implementations
         drive =
             new Drive(
-                new GyroIO() {},
+                new GyroIOPigeon2() {},
                 new ModuleIOTalonFX(TunerConstants.FrontLeft),
                 new ModuleIOTalonFX(TunerConstants.FrontRight),
                 new ModuleIOTalonFX(TunerConstants.BackLeft),
@@ -166,6 +168,7 @@ public class RobotContainer {
 
     NamedCommands.registerCommand("PivotLocked", new PivotSetPositionCommand(pivotSubsystem, 0));
     NamedCommands.registerCommand("L4 Command", getL4Command().withTimeout(3.5));
+    NamedCommands.registerCommand("Auto Allign", new alignreef(false, drive));
 
     configureButtonBindings();
   }
@@ -205,7 +208,8 @@ public class RobotContainer {
     // Intake arm
     // controller.leftTrigger().whileTrue(new IntakeArmForwardCommand(intakeSubsystem, 1));
     controller
-        .leftTrigger()
+        .leftTrigger(0.2)
+        .debounce(0.5, DebounceType.kFalling)
         .whileTrue(
             new IntakeArmForwardCommand(intakeSubsystem, 1)
                 .alongWith(
@@ -260,8 +264,9 @@ public class RobotContainer {
         .povLeft()
         .whileTrue(
             new ElevatorSetPositionCommand(elevatorSubsystem, 1.615)
-                .andThen(new PivotSetPositionCommand(pivotSubsystem, 21.5))
-                .andThen(new ClawAlageShootCommand(clawSubsystem)));
+                .andThen(
+                    new PivotSetPositionCommand(pivotSubsystem, 21.5)
+                        .alongWith(new ClawAlageShootCommand(clawSubsystem))));
 
     // L2 Command
     controller
