@@ -239,7 +239,7 @@ public class RobotContainer {
     controller
         .b()
         .onTrue(
-            new ElevatorSetPositionCommand(elevatorSubsystem, 1.50)
+            new ElevatorSetPositionCommand(elevatorSubsystem, 1.47)
                 .andThen(new PivotSetPositionCommand(pivotSubsystem, 35))
                 .andThen(new ClawShootCommand(clawSubsystem))
                 .andThen(new PivotSetPositionCommand(pivotSubsystem, 0))
@@ -274,7 +274,7 @@ public class RobotContainer {
     controller
         .povRight()
         .onTrue(
-            new ElevatorSetPositionCommand(elevatorSubsystem, 0.382)
+            new ElevatorSetPositionCommand(elevatorSubsystem, 0.352)
                 .alongWith(new PivotSetPositionCommand(pivotSubsystem, 27))
                 .andThen(new ClawShootCommand(clawSubsystem)));
 
@@ -308,6 +308,8 @@ public class RobotContainer {
         .onTrue(
             new ClimberSetPositionCommand(climberSubsystem, 340)
                 .alongWith(new PivotSetPositionCommand(pivotSubsystem, 100)));
+
+    // controller2.povDown().whileTrue(new IntakeArmSetPositionCommand(intakeSubsystem, 0));
 
     // controller2
     //     .leftTrigger()
@@ -410,7 +412,7 @@ public class RobotContainer {
   }
 
   public Command getL4Command() {
-    return new ElevatorSetPositionCommand(elevatorSubsystem, 1.50)
+    return new ElevatorSetPositionCommand(elevatorSubsystem, 1.47)
         .andThen(new PivotSetPositionCommand(pivotSubsystem, 35))
         .andThen(new ClawShootCommand(clawSubsystem))
         .andThen(new PivotSetPositionCommand(pivotSubsystem, 0))
@@ -438,6 +440,7 @@ public class RobotContainer {
    *
    * @return the command to run in autonomous
    */
+  
   public Command getAutonomousCommand() {
     // return new PathPlannerAuto("test 1m")
     //     .andThen(
@@ -447,7 +450,7 @@ public class RobotContainer {
     //         getRightAutoCycleCommand(
     //             new Pose2d(3.7, 2.5, new Rotation2d(Math.toRadians(-120))), false));
 
-    return new PathPlannerAuto("First L4");
+    return new PathPlannerAuto("L4(2)");
     // .andThen(
     //     getLeftAutoCycleCommand(
     //         new Pose2d(3.7, 5.5, new Rotation2d(Math.toRadians(120))), true))

@@ -5,7 +5,6 @@ import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.DutyCycleOut;
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
-import com.ctre.phoenix6.hardware.CANrange;
 import com.ctre.phoenix6.hardware.ParentDevice;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.InvertedValue;
@@ -24,7 +23,7 @@ public class ClimberIOTalonFX implements ClimberIO {
   // Hardware objects
   private final TalonFX claw;
   private final TalonFX pivot;
-  private final CANrange canrange;
+
   private TalonFXConfiguration clawConfigs = new TalonFXConfiguration();
   private TalonFXConfiguration pivotConfigs = new TalonFXConfiguration();
   private final DigitalInput lightTrigger2 = new DigitalInput(3);
@@ -50,7 +49,6 @@ public class ClimberIOTalonFX implements ClimberIO {
     pivot = new TalonFX(ClimberConstants.pivotID, "canivore");
     clawConfigs.MotorOutput.withNeutralMode(
         ClimberConstants.claw_neutralmode_Coast ? NeutralModeValue.Coast : NeutralModeValue.Brake);
-    canrange = new CANrange(ClimberConstants.canrangID, "caniovre");
 
     // Set motor inversion based on desired rotation direction
     clawConfigs.MotorOutput.withInverted(

@@ -11,22 +11,15 @@
           }
         },
         {
-          "type": "parallel",
+          "type": "path",
           "data": {
-            "commands": [
-              {
-                "type": "path",
-                "data": {
-                  "pathName": "L4(2)"
-                }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "Auto Allign"
-                }
-              }
-            ]
+            "pathName": "L4(2)"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Auto Allign"
           }
         },
         {
