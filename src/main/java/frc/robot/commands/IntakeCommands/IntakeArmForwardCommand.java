@@ -35,6 +35,6 @@ public class IntakeArmForwardCommand extends Command {
 
   @Override
   public boolean isFinished() {
-    return m_subsystem.getCanRange();
+    return false;
   }
 }

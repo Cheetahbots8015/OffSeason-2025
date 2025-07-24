@@ -213,16 +213,16 @@ public class RobotContainer {
         .leftTrigger(0.2)
         .debounce(0.5, DebounceType.kFalling)
         .whileTrue(
-            new IntakeArmForwardCommand(intakeSubsystem, 1)
+            new IntakeArmForwardCommand(intakeSubsystem, 1.5)
                 .alongWith(
                     (new ElevatorSetPositionCommand(elevatorSubsystem, 0.95))
-                        .alongWith(new PivotSetPositionCommand(pivotSubsystem, 177)))
-                .andThen(new ElevatorSetPositionCommand(elevatorSubsystem, 0.83))
-                .andThen(new ClawIntakeCommand(clawSubsystem, intakeSubsystem).withTimeout(0.8))
-                .andThen(new ElevatorSetPositionCommand(elevatorSubsystem, 0.9))
-                .andThen(new PivotSetPositionCommand(pivotSubsystem, 0, 130))
-                .andThen(new ElevatorSetPositionCommand(elevatorSubsystem, 0.382))
-                .andThen(new ClawShootTimedBackCommand(clawSubsystem)));
+                        .alongWith(new PivotSetPositionCommand(pivotSubsystem, 177))));
+    // .andThen(new ElevatorSetPositionCommand(elevatorSubsystem, 0.83))
+    // .andThen(new ClawIntakeCommand(clawSubsystem, intakeSubsystem).withTimeout(0.8))
+    // .andThen(new ElevatorSetPositionCommand(elevatorSubsystem, 0.9))
+    // .andThen(new PivotSetPositionCommand(pivotSubsystem, 0, 130))
+    // .andThen(new ElevatorSetPositionCommand(elevatorSubsystem, 0.382))
+    // .andThen(new ClawShootTimedBackCommand(clawSubsystem)));
 
     // L3 Command
     controller
@@ -294,6 +294,8 @@ public class RobotContainer {
     controller.rightBumper().whileTrue(new alignreef(true, drive));
 
     controller.povDown().whileTrue(new alignalage(drive));
+
+    // Station Intake
 
     // Climber
     controller2.povUp().whileTrue((new ClimberClawCommand(climberSubsystem)));
@@ -440,7 +442,6 @@ public class RobotContainer {
    *
    * @return the command to run in autonomous
    */
-  
   public Command getAutonomousCommand() {
     // return new PathPlannerAuto("test 1m")
     //     .andThen(
@@ -450,7 +451,7 @@ public class RobotContainer {
     //         getRightAutoCycleCommand(
     //             new Pose2d(3.7, 2.5, new Rotation2d(Math.toRadians(-120))), false));
 
-    return new PathPlannerAuto("L4(2)");
+    return new PathPlannerAuto("L4(3)");
     // .andThen(
     //     getLeftAutoCycleCommand(
     //         new Pose2d(3.7, 5.5, new Rotation2d(Math.toRadians(120))), true))

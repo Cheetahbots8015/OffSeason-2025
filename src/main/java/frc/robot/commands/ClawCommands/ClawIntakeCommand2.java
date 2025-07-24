@@ -30,6 +30,6 @@ public class ClawIntakeCommand2 extends Command {
 
   @Override
   public boolean isFinished() {
-    return false;
+    return claw.getInput().lightTrigger >= 0.9;
   }
 }

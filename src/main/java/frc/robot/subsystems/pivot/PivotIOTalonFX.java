@@ -47,7 +47,8 @@ public class PivotIOTalonFX implements PivotIO {
     pivotConfigs.Slot1.kG = PivotConstants.kGMM;
     pivotConfigs.Slot1.kV = PivotConstants.kVMM;
 
-    pivotConfigs.SoftwareLimitSwitch.ReverseSoftLimitThreshold = 0.0;
+    pivotConfigs.SoftwareLimitSwitch.ReverseSoftLimitThreshold =
+        -0.075 / PivotConstants.ReductionRatio;
     pivotConfigs.SoftwareLimitSwitch.ForwardSoftLimitThreshold =
         0.5 / PivotConstants.ReductionRatio; // 0.5 cycle, 106.66667 reduction ratio
     pivotConfigs.SoftwareLimitSwitch.ReverseSoftLimitEnable = true;
