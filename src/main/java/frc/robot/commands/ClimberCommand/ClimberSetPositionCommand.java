@@ -1,13 +1,16 @@
 package frc.robot.commands.ClimberCommand;
 
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.constants.ClimberConstants;
 import frc.robot.subsystems.climber.ClimberSubsystem;
 
-public class ClimberPivotCommand extends Command {
+public class ClimberSetPositionCommand extends Command {
   private final ClimberSubsystem m_subsystem;
+  private final double m_position;
 
-  public ClimberPivotCommand(ClimberSubsystem subsystem) {
+  public ClimberSetPositionCommand(ClimberSubsystem subsystem, double position) {
     m_subsystem = subsystem;
+    m_position = position;
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(subsystem);
   }
@@ -19,7 +22,12 @@ public class ClimberPivotCommand extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    m_subsystem.setPivotVoltage(1.0);
+    if (m_position < -100) {
+      m_subsystem.setClimberPivotDefaultPosition(-420);
+
+    } else {
+      m_subsystem.setClimberPivotFinalPosition(360);
+    }
   }
 
   // Called once the command ends or is interrupted.
@@ -31,6 +39,7 @@ public class ClimberPivotCommand extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return m_subsystem.getInput().ClawPositionRad > 0.5;
+    return Math.abs(m_position - m_subsystem.getInput().PivotPositionDeg)
+        < ClimberConstants.allowableError;
   }
 }

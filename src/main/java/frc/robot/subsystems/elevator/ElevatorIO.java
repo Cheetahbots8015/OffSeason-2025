@@ -21,4 +21,6 @@ public interface ElevatorIO {
   public default void VelocityVoltage(double velocity) {}
 
   public default void setPosition(double position) {}
+
+  public default void resetElevetorPosition() {}
 }

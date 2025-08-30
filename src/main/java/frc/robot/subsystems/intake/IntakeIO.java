@@ -42,4 +42,6 @@ public interface IntakeIO {
   public default void setArmToDegrees(double degrees) {}
 
   public default void armVelocityVoltage(double velocity) {}
+
+  public default void resetArmPosition() {}
 }

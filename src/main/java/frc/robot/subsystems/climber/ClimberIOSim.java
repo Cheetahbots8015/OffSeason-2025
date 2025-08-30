@@ -31,7 +31,7 @@ public class ClimberIOSim implements ClimberIO {
     inputs.ClawVelocityRadPerSec = rollerSim.getAngularVelocityRadPerSec();
     inputs.ClawAppliedVolts = ClawAppliedVolts;
     inputs.ClawCurrentAmps = Math.abs(rollerSim.getCurrentDrawAmps());
-    inputs.PivotPositionRad = climberSim.getAngularPositionRad();
+    inputs.PivotPositionDeg = climberSim.getAngularPositionRad();
     inputs.PivotVelocityRadPerSec = climberSim.getAngularVelocityRadPerSec();
     inputs.PivotAppliedVolts = PivotAppliedVolts;
     inputs.PivotCurrentAmps = Math.abs(climberSim.getCurrentDrawAmps());

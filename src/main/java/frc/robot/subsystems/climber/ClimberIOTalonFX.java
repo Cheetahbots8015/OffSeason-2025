@@ -2,30 +2,34 @@ package frc.robot.subsystems.climber;
 
 import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.StatusSignal;
-import com.ctre.phoenix6.configs.CANrangeConfiguration;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.DutyCycleOut;
-import com.ctre.phoenix6.hardware.CANrange;
+import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.hardware.ParentDevice;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
+import edu.wpi.first.math.filter.MedianFilter;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Current;
 import edu.wpi.first.units.measure.Voltage;
+import edu.wpi.first.wpilibj.DigitalInput;
 import frc.robot.constants.ClimberConstants;
+import frc.robot.util.CheetahUtil;
 
 public class ClimberIOTalonFX implements ClimberIO {
   // Hardware objects
   private final TalonFX claw;
   private final TalonFX pivot;
-  private final CANrange canrange;
+
   private TalonFXConfiguration clawConfigs = new TalonFXConfiguration();
   private TalonFXConfiguration pivotConfigs = new TalonFXConfiguration();
-  private CANrangeConfiguration canrangeConfigs = new CANrangeConfiguration();
+  private final DigitalInput lightTrigger2 = new DigitalInput(3);
+
   // Voltage control requests
+  final MotionMagicVoltage m_motorRequest = new MotionMagicVoltage(0);
 
   // Inputs from claw
   private final StatusSignal<Angle> ClawPosition;
@@ -37,12 +41,14 @@ public class ClimberIOTalonFX implements ClimberIO {
   private final StatusSignal<Voltage> PivotAppliedVolts;
   private final StatusSignal<Current> PivotCurrent;
 
+  // Median filter for light trigger
+  private final MedianFilter filter = new MedianFilter(30);
+
   public ClimberIOTalonFX() {
     claw = new TalonFX(ClimberConstants.clawID, "canivore");
     pivot = new TalonFX(ClimberConstants.pivotID, "canivore");
     clawConfigs.MotorOutput.withNeutralMode(
         ClimberConstants.claw_neutralmode_Coast ? NeutralModeValue.Coast : NeutralModeValue.Brake);
-    canrange = new CANrange(ClimberConstants.canrangID, "caniovre");
 
     // Set motor inversion based on desired rotation direction
     clawConfigs.MotorOutput.withInverted(
@@ -73,6 +79,20 @@ public class ClimberIOTalonFX implements ClimberIO {
     pivotConfigs.Slot0.kS = ClimberConstants.pivotkS;
     pivotConfigs.Slot0.kV = ClimberConstants.pivotkV;
 
+    pivotConfigs.Slot1.kP = ClimberConstants.pivotClimbkP;
+    pivotConfigs.Slot1.kI = ClimberConstants.pivotClimbkI;
+    pivotConfigs.Slot1.kD = ClimberConstants.pivotClimbkD;
+    pivotConfigs.Slot1.kA = ClimberConstants.pivotClimbkA;
+    pivotConfigs.Slot1.kS = ClimberConstants.pivotClimbkS;
+    pivotConfigs.Slot1.kV = ClimberConstants.pivotClimbkV;
+
+    pivotConfigs.SoftwareLimitSwitch.ReverseSoftLimitThreshold = 0.0;
+    pivotConfigs.SoftwareLimitSwitch.ForwardSoftLimitThreshold = 0.0;
+    pivotConfigs.SoftwareLimitSwitch.ReverseSoftLimitEnable = false;
+    pivotConfigs.SoftwareLimitSwitch.ForwardSoftLimitEnable = false;
+    pivotConfigs.MotionMagic.MotionMagicCruiseVelocity = 100;
+    pivotConfigs.MotionMagic.MotionMagicAcceleration = 100;
+
     // Apply the configuration to the motor
     claw.getConfigurator().apply(clawConfigs);
     pivot.getConfigurator().apply(pivotConfigs);
@@ -85,7 +105,7 @@ public class ClimberIOTalonFX implements ClimberIO {
     PivotPosition = pivot.getPosition();
     PivotVelocity = pivot.getVelocity();
     PivotAppliedVolts = pivot.getMotorVoltage();
-    PivotCurrent = pivot.getStatorCurrent();
+    PivotCurrent = pivot.getTorqueCurrent();
 
     BaseStatusSignal.setUpdateFrequencyForAll(
         ClimberConstants.statusUpdateFrequency,
@@ -117,10 +137,13 @@ public class ClimberIOTalonFX implements ClimberIO {
     inputs.ClawAppliedVolts = ClawAppliedVolts.getValueAsDouble();
     inputs.ClawCurrentAmps = ClawCurrent.getValueAsDouble();
 
-    inputs.PivotPositionRad = Units.rotationsToRadians(PivotPosition.getValueAsDouble());
+    inputs.PivotPositionDeg =
+        CheetahUtil.climberPivotRotationToDegrees(PivotPosition.getValueAsDouble());
     inputs.PivotVelocityRadPerSec = Units.rotationsToRadians(PivotVelocity.getValueAsDouble());
     inputs.PivotAppliedVolts = PivotAppliedVolts.getValueAsDouble();
     inputs.PivotCurrentAmps = PivotCurrent.getValueAsDouble();
+    // Update light trigger input
+    inputs.lightTrigger2 = filter.calculate((!lightTrigger2.get()) ? 1.0 : 0.0);
   }
 
   @Override
@@ -140,7 +163,14 @@ public class ClimberIOTalonFX implements ClimberIO {
   }
 
   @Override
-  public boolean returnCanrange() {
-    return canrange.getDistance().getValueAsDouble() < ClimberConstants.canrangeDistance;
+  public void setClimberPivotDefaultPosition(double degree) {
+    double rotation = CheetahUtil.climberPivotDegreesToRotation(degree);
+    pivot.setControl(m_motorRequest.withPosition(rotation).withSlot(0));
+  }
+
+  @Override
+  public void setClimberPivotFinalPosition(double degree) {
+    double rotation = CheetahUtil.climberPivotDegreesToRotation(degree);
+    pivot.setControl(m_motorRequest.withPosition(rotation).withSlot(1));
   }
 }

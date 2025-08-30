@@ -23,10 +23,11 @@ public class ClimberSubsystem extends SubsystemBase {
 
   public ClimberSubsystem(ClimberIO io) {
     this.io = io;
-    SmartDashboard.putNumber("Climber's pivot Up Duty Cycle Out Value", pivotUpDutyCycleOutValue);
-    SmartDashboard.putNumber(
-        "Climber's pivot Down Duty Cycle Out Value", pivotDownDutyCycleOutValue);
-    SmartDashboard.putNumber("Climber's claw Duty Cycle Out Value", clawDutyCycleOutValue);
+    // SmartDashboard.putNumber("Climber's pivot Up Duty Cycle Out Value",
+    // pivotUpDutyCycleOutValue);
+    // SmartDashboard.putNumber(
+    //     "Climber's pivot Down Duty Cycle Out Value", pivotDownDutyCycleOutValue);
+    // SmartDashboard.putNumber("Climber's claw Duty Cycle Out Value", clawDutyCycleOutValue);
 
     clawsysId =
         new SysIdRoutine(
@@ -50,14 +51,15 @@ public class ClimberSubsystem extends SubsystemBase {
   public void periodic() {
     io.updateInputs(inputs);
     Logger.processInputs("Climber", inputs);
-    pivotUpDutyCycleOutValue =
-        SmartDashboard.getNumber(
-            "Climber's pivot Up Duty Cycle Out Value", pivotUpDutyCycleOutValue);
-    pivotDownDutyCycleOutValue =
-        SmartDashboard.getNumber(
-            "Climber's pivot Down Duty Cycle Out Value", pivotDownDutyCycleOutValue);
-    clawDutyCycleOutValue =
-        SmartDashboard.getNumber("Climber's claw Duty Cycle Out Value", clawDutyCycleOutValue);
+    // pivotUpDutyCycleOutValue =
+    //     SmartDashboard.getNumber(
+    //         "Climber's pivot Up Duty Cycle Out Value", pivotUpDutyCycleOutValue);
+    // pivotDownDutyCycleOutValue =
+    //     SmartDashboard.getNumber(
+    //         "Climber's pivot Down Duty Cycle Out Value", pivotDownDutyCycleOutValue);
+    // clawDutyCycleOutValue =
+    //     SmartDashboard.getNumber("Climber's claw Duty Cycle Out Value", clawDutyCycleOutValue);
+    SmartDashboard.putBoolean("Climber Claw Status", inputs.lightTrigger2 >= 0.9);
   }
 
   public double getPivotUpDutyCycleOutValue() {
@@ -88,11 +90,15 @@ public class ClimberSubsystem extends SubsystemBase {
     io.setPivotVoltage(volts);
   }
 
-  public boolean returnCanrange() {
-    return io.returnCanrange();
-  }
-
   public ClimberIOInputs getInput() {
     return inputs;
+  }
+
+  public void setClimberPivotDefaultPosition(double degrees) {
+    io.setClimberPivotDefaultPosition(degrees);
+  }
+
+  public void setClimberPivotFinalPosition(double degrees) {
+    io.setClimberPivotFinalPosition(degrees);
   }
 }

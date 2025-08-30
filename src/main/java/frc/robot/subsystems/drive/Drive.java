@@ -51,6 +51,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.LimelightHelpers;
+import frc.robot.LimelightHelpers.PoseEstimate;
 import frc.robot.constants.ContainerConstants;
 import frc.robot.constants.ContainerConstants.Mode;
 import frc.robot.constants.DriveConstants;
@@ -111,6 +112,11 @@ public class Drive extends SubsystemBase {
   private boolean doRejectUpdate;
   private boolean doRejectUpdater;
 
+  private ChassisSpeeds preSpeeds;
+  private RobotConfig robotconfig;
+
+  public boolean autoFliped = false;
+
   public Drive(
       GyroIO gyroIO,
       ModuleIO flModuleIO,
@@ -136,14 +142,7 @@ public class Drive extends SubsystemBase {
         this::getChassisSpeeds,
         this::runVelocity,
         new PPHolonomicDriveController(
-            new PIDConstants(
-                DriveConstants.autoTranslationkP,
-                DriveConstants.autoTranslationkI,
-                DriveConstants.autoTranslationkD),
-            new PIDConstants(
-                DriveConstants.autoRotationkP,
-                DriveConstants.autoRotationkI,
-                DriveConstants.autoRotationkD)),
+            new PIDConstants(10.0, 0.0, 0.1), new PIDConstants(5, 0.0, 0.0)),
         PP_CONFIG,
         () -> DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Red,
         this);
@@ -158,6 +157,12 @@ public class Drive extends SubsystemBase {
           Logger.recordOutput("Odometry/TrajectorySetpoint", targetPose);
         });
 
+    try {
+      robotconfig = RobotConfig.fromGUISettings();
+    } catch (Exception e) {
+      // Handle exception as needed
+      e.printStackTrace();
+    }
     // Configure SysId
     sysId =
         new SysIdRoutine(
@@ -200,8 +205,38 @@ public class Drive extends SubsystemBase {
         });
   }
 
+  private boolean shouldReject(PoseEstimate mt1, int[] validateID) {
+    // ambiguity check
+    if (mt1.tagCount == 0) {
+      return false;
+    } else if (mt1.tagCount == 1 && mt1.rawFiducials.length == 1) {
+      if (mt1.rawFiducials[0].ambiguity > 0.5) {
+        return true;
+      }
+      // check distance
+      if (mt1.rawFiducials[0].distToCamera > 2.0) {
+        return true;
+      }
+      // check if allowed
+      else {
+        boolean allowed = false;
+        for (int i : validateID) {
+          if (mt1.rawFiducials[0].id == i) {
+            allowed = true;
+          }
+        }
+        return !allowed;
+      }
+    }
+    // if multiple tags
+    else {
+      return mt1.avgTagDist > 2.0;
+    }
+  }
+
   @Override
   public void periodic() {
+    SmartDashboard.putData("Drive", this);
     odometryLock.lock(); // Prevents odometry updates while reading data
     gyroIO.updateInputs(gyroInputs);
     Logger.processInputs("Drive/Gyro", gyroInputs);
@@ -250,52 +285,70 @@ public class Drive extends SubsystemBase {
         Twist2d twist = kinematics.toTwist2d(moduleDeltas);
         rawGyroRotation = rawGyroRotation.plus(new Rotation2d(twist.dtheta));
       }
-      doRejectUpdate = false;
       // Apply update
       poseEstimator.updateWithTime(sampleTimestamps[i], rawGyroRotation, modulePositions);
+    }
+    doRejectUpdate = false;
+
+    LimelightHelpers.SetRobotOrientation(
+        "limelight-left",
+        poseEstimator.getEstimatedPosition().getRotation().getDegrees(),
+        0,
+        0,
+        0,
+        0,
+        0);
+    int[] validateID = DriveConstants.blueTags;
+    if (DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Red) {
+      validateID = DriveConstants.redTags;
+    }
+    try {
+      doRejectUpdate = false;
+      LimelightHelpers.SetFiducialIDFiltersOverride("limelight-left", validateID);
+      LimelightHelpers.PoseEstimate mt1 =
+          LimelightHelpers.getBotPoseEstimate_wpiBlue("limelight-left");
+      if (mt1.tagCount == 0) {
+        doRejectUpdate = true;
+      } else {
+        doRejectUpdate = shouldReject(mt1, validateID);
+      }
+      if (!doRejectUpdate) {
+        poseEstimator.setVisionMeasurementStdDevs(VecBuilder.fill(.5, .5, 9999999));
+        poseEstimator.addVisionMeasurement(mt1.pose, mt1.timestampSeconds);
+      }
+      Logger.recordOutput("LL/left-pose", mt1.pose);
+      Logger.recordOutput("LL/left-timestamp", mt1.timestampSeconds);
+      Logger.recordOutput("LL/avgdist", mt1.avgTagDist);
+      Logger.recordOutput("LL/latency", mt1.latency);
+
+    } catch (Exception e) {
+      // TODO: handle exception
+    }
+    try {
+      doRejectUpdater = false;
       LimelightHelpers.SetRobotOrientation(
-          "limelight-left",
+          "limelight-right",
           poseEstimator.getEstimatedPosition().getRotation().getDegrees(),
           0,
           0,
           0,
           0,
           0);
-      try {
-        LimelightHelpers.PoseEstimate mt2 =
-            LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2("limelight-left");
-        if (mt2.tagCount == 0) {
-          doRejectUpdate = true;
-        }
-        if (!doRejectUpdate) {
-          poseEstimator.setVisionMeasurementStdDevs(VecBuilder.fill(.5, .5, 9999999));
-          poseEstimator.addVisionMeasurement(mt2.pose, mt2.timestampSeconds);
-        }
-      } catch (Exception e) {
-        // TODO: handle exception
+      LimelightHelpers.SetFiducialIDFiltersOverride("limelight-right", validateID);
+      LimelightHelpers.PoseEstimate mt1r =
+          LimelightHelpers.getBotPoseEstimate_wpiBlue("limelight-right");
+      if (mt1r.tagCount == 0) {
+        doRejectUpdater = true;
+      } else {
+        doRejectUpdater = shouldReject(mt1r, validateID);
       }
-      try {
-        doRejectUpdater = false;
-        LimelightHelpers.SetRobotOrientation(
-            "limelight-right",
-            poseEstimator.getEstimatedPosition().getRotation().getDegrees(),
-            0,
-            0,
-            0,
-            0,
-            0);
-        LimelightHelpers.PoseEstimate mt2r =
-            LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2("limelight-right");
-        if (mt2r.tagCount == 0) {
-          doRejectUpdater = true;
-        }
-        if (!doRejectUpdater) {
-          poseEstimator.setVisionMeasurementStdDevs(VecBuilder.fill(.5, .5, 9999999));
-          poseEstimator.addVisionMeasurement(mt2r.pose, mt2r.timestampSeconds);
-        }
-      } catch (Exception e) {
-        // TODO: handle exception
+      if (!doRejectUpdater) {
+        poseEstimator.setVisionMeasurementStdDevs(VecBuilder.fill(.5, .5, 9999999));
+        poseEstimator.addVisionMeasurement(mt1r.pose, mt1r.timestampSeconds);
       }
+      Logger.recordOutput("LL/right-pose", mt1r.pose);
+    } catch (Exception e) {
+      // TODO: handle exception
     }
 
     // Update gyro alert
@@ -322,7 +375,6 @@ public class Drive extends SubsystemBase {
       modules[i].runSetpoint(setpointStates[i]);
     }
 
-    // Log optimized setpoints (runSetpoint mutates each state)
     Logger.recordOutput("SwerveStates/SetpointsOptimized", setpointStates);
   }
 

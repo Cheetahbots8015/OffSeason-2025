@@ -4,6 +4,7 @@ package frc.robot.subsystems.claw;
 
 import static edu.wpi.first.units.Units.Volt;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
@@ -31,6 +32,8 @@ public class ClawSubsystem extends SubsystemBase {
   public void periodic() {
     io.updateInputs(inputs);
     Logger.processInputs("Claw", inputs);
+    SmartDashboard.putBoolean("Claw LightTrigger Status", inputs.lightTrigger >= 0.9);
+    SmartDashboard.putNumber("Claw LightTrigger Status", inputs.lightTrigger);
   }
 
   public void runVelocity(double intakeOutput, double shooterOutput) {
@@ -67,5 +70,9 @@ public class ClawSubsystem extends SubsystemBase {
 
   public void IntakeVelocityVoltage(double velocity) {
     io.IntakeVelocityVoltage(velocity);
+  }
+
+  public void ClawIntakeTorqueCurrent(double current) {
+    io.ClawIntakeTorqueCurrent(current);
   }
 }

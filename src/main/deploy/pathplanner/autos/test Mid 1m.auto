@@ -5,9 +5,15 @@
     "data": {
       "commands": [
         {
+          "type": "named",
+          "data": {
+            "name": "PivotLocked"
+          }
+        },
+        {
           "type": "path",
           "data": {
-            "pathName": "Example Path"
+            "pathName": "test Mid 1m"
           }
         }
       ]

@@ -9,10 +9,11 @@ public interface ClimberIO {
     public double ClawVelocityRadPerSec = 0.0;
     public double ClawAppliedVolts = 0.0;
     public double ClawCurrentAmps = 0.0;
-    public double PivotPositionRad = 0.0;
+    public double PivotPositionDeg = 0.0;
     public double PivotVelocityRadPerSec = 0.0;
     public double PivotAppliedVolts = 0.0;
     public double PivotCurrentAmps = 0.0;
+    public double lightTrigger2 = 0.0;
   }
 
   /** Updates the set of loggable inputs. */
@@ -27,7 +28,7 @@ public interface ClimberIO {
   public default void setPivotVoltage(double volts) {}
   ;
 
-  public default boolean returnCanrange() {
-    return true;
-  }
+  public default void setClimberPivotFinalPosition(double degeree) {}
+
+  public default void setClimberPivotDefaultPosition(double degeree) {}
 }

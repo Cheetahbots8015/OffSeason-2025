@@ -2,6 +2,7 @@ package frc.robot.subsystems.intake;
 
 import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.StatusSignal;
+import com.ctre.phoenix6.configs.CANrangeConfiguration;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.DutyCycleOut;
 import com.ctre.phoenix6.controls.MotionMagicTorqueCurrentFOC;
@@ -29,6 +30,7 @@ public class IntakeIOTalonFX implements IntakeIO {
   private TalonFXConfiguration indexerConfigs = new TalonFXConfiguration();
   private TalonFXConfiguration intakeConfigs = new TalonFXConfiguration();
   private TalonFXConfiguration armConfigs = new TalonFXConfiguration();
+  private final CANrangeConfiguration canRangeConfigs = new CANrangeConfiguration();
 
   // Inputs from indexer
   private final StatusSignal<Angle> IndexerPosition;
@@ -69,6 +71,13 @@ public class IntakeIOTalonFX implements IntakeIO {
         IntakeConstants.indexer_inverted_CounterClockwisePositive
             ? InvertedValue.CounterClockwise_Positive
             : InvertedValue.Clockwise_Positive);
+
+    // Set Canrange constants
+    // config canRange
+    canRangeConfigs.ProximityParams.ProximityThreshold = IntakeConstants.canRangeThreshold;
+    canRangeConfigs.ProximityParams.MinSignalStrengthForValidMeasurement =
+        IntakeConstants.minSignalStrength;
+    canRangeConfigs.ProximityParams.ProximityHysteresis = IntakeConstants.canRangeHysteresis;
 
     // Set PID and feedforward constants from constants file
     indexerConfigs.Slot0.kP = IntakeConstants.indexer_kP;
@@ -115,8 +124,8 @@ public class IntakeIOTalonFX implements IntakeIO {
     armConfigs.Slot0.GravityType = GravityTypeValue.Elevator_Static;
 
     // MotionMagic config
-    armConfigs.MotionMagic.MotionMagicCruiseVelocity = 6.5;
-    armConfigs.MotionMagic.MotionMagicAcceleration = 6.5;
+    armConfigs.MotionMagic.MotionMagicCruiseVelocity = 10;
+    armConfigs.MotionMagic.MotionMagicAcceleration = 20;
 
     // Limit TorqueCurrent
     armConfigs.TorqueCurrent.PeakForwardTorqueCurrent = 20;
@@ -131,18 +140,19 @@ public class IntakeIOTalonFX implements IntakeIO {
     indexer.getConfigurator().apply(indexerConfigs);
     intake.getConfigurator().apply(intakeConfigs);
     arm.getConfigurator().apply(armConfigs);
+    canrange.getConfigurator().apply(canRangeConfigs);
 
     // Create Indexer status signals
     IndexerPosition = indexer.getPosition();
     IndexerVelocity = indexer.getVelocity();
     IndexerAppliedVolts = indexer.getMotorVoltage();
-    IndexerCurrent = indexer.getStatorCurrent();
+    IndexerCurrent = indexer.getTorqueCurrent();
 
     // Create Intake status signals
     IntakePosition = intake.getPosition();
     IntakeVelocity = intake.getVelocity();
     IntakeAppliedVolts = intake.getMotorVoltage();
-    IntakeCurrent = intake.getStatorCurrent();
+    IntakeCurrent = intake.getTorqueCurrent();
 
     // Create Arm status signals
     ArmPosition = arm.getPosition();
@@ -229,12 +239,18 @@ public class IntakeIOTalonFX implements IntakeIO {
 
   @Override
   public boolean getCanRange() {
-    return Canrange.getValue();
+    canrange.getIsDetected().refresh();
+    return canrange.getIsDetected().getValue();
   }
 
   @Override
   public void setArmToDegrees(double degrees) {
     double rotation = CheetahUtil.intakeArmDegreesToRotation(degrees);
     arm.setControl(m_motorRequest.withPosition(rotation));
+  }
+
+  @Override
+  public void resetArmPosition() {
+    arm.setPosition(0.0);
   }
 }

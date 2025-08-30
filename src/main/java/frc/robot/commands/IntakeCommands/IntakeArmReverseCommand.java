@@ -23,7 +23,7 @@ public class IntakeArmReverseCommand extends Command {
 
   @Override
   public void end(boolean interrupted) {
-    m_subsystem.setArmVoltage(0.0);
+    m_subsystem.resetArmPosition();
   }
 
   @Override

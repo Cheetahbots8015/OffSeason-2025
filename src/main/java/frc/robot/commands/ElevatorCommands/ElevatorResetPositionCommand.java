@@ -3,10 +3,10 @@ package frc.robot.commands.ElevatorCommands;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.elevator.ElevatorSubsystem;
 
-public class ElevatorReleaseCommand extends Command {
+public class ElevatorResetPositionCommand extends Command {
   private final ElevatorSubsystem m_subsystem;
 
-  public ElevatorReleaseCommand(ElevatorSubsystem subsystem) {
+  public ElevatorResetPositionCommand(ElevatorSubsystem subsystem) {
     m_subsystem = subsystem;
     addRequirements(subsystem);
   }
@@ -16,11 +16,14 @@ public class ElevatorReleaseCommand extends Command {
 
   @Override
   public void execute() {
-    m_subsystem.setElevatorVoltage(0);
+    m_subsystem.setElevatorVoltage(-3.0);
   }
 
   @Override
-  public void end(boolean interrupted) {}
+  public void end(boolean interrupted) {
+    m_subsystem.setElevatorVoltage(0.0);
+    m_subsystem.resetElevatorPosition();
+  }
 
   @Override
   public boolean isFinished() {
